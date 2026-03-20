@@ -3,55 +3,74 @@
 }
 
 <div class="text-center mb-10">
-    <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Welcome Admin!</h1>
-    <p class="text-gray-500 mt-2 text-lg">System Supervision & Management</p>
+    <h1 class="text-4xl font-extrabold text-white tracking-tight">Welcome Admin!</h1>
+    <p class="text-slate-400 mt-2 text-lg">System Supervision & Management</p>
 </div>
 
 <div class="flex flex-wrap justify-center gap-4 mb-12">
-    <a asp-area="Admin" asp-controller="User" asp-action="All" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow transition">
+    <a asp-area="Admin" asp-controller="User" asp-action="All"
+           class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg
+        transition-all duration-200 ease-in-out hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(59,130,246,0.5)] active:scale-95">
         <i class="bi bi-people-fill mr-2"></i> Manage Users
     </a>
-    <a asp-area="Admin" asp-controller="Product" asp-action="DeletedProducts" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg shadow transition">
+    
+    <a asp-area="Admin" asp-controller="Product" asp-action="DeletedProducts"
+           class="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium rounded-lg
+        transition-all duration-200 ease-in-out hover:bg-red-500 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] active:scale-95">
         <i class="bi bi-trash-fill mr-2"></i> Deleted Products
     </a>
 </div>
 
-<div class="text-center mb-6">
-    <button id="statistics-button" class="px-6 py-2 bg-gray-800 hover:bg-gray-900 text-white font-medium rounded-lg shadow transition">
+<div class="text-center mb-8">
+    <button id="statistics-button"
+            class="inline-flex items-center px-6 py-2 bg-slate-800 text-slate-200 border border-slate-700 font-medium rounded-lg
+        transition-all duration-200 ease-in-out hover:bg-slate-700 hover:text-white hover:shadow-[0_0_15px_rgba(148,163,184,0.3)] active:scale-95">
         <i class="bi bi-bar-chart-fill mr-2"></i> Load Live Statistics
     </button>
 </div>
 
 <div id="userStatistics" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
-        <h3 class="text-gray-500 text-sm font-semibold uppercase tracking-wider">Total Users</h3>
-        <p id="total-users" class="text-3xl font-bold text-blue-600 mt-2">-</p>
+    <div class="bg-slate-900 p-6 rounded-xl shadow-lg border border-slate-700 text-center transition hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)] duration-300">
+        <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Total Users</h3>
+        <p id="total-users" class="text-4xl font-bold text-blue-400 mt-3">-</p>
     </div>
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
-        <h3 class="text-gray-500 text-sm font-semibold uppercase tracking-wider">Active Users</h3>
-        <p id="active-users" class="text-3xl font-bold text-green-600 mt-2">-</p>
+    
+    <div class="bg-slate-900 p-6 rounded-xl shadow-lg border border-slate-700 text-center transition hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)] duration-300">
+        <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Active Users</h3>
+        <p id="active-users" class="text-4xl font-bold text-green-400 mt-3">-</p>
     </div>
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
-        <h3 class="text-gray-500 text-sm font-semibold uppercase tracking-wider">Total Products</h3>
-        <p id="total-products" class="text-3xl font-bold text-indigo-600 mt-2">-</p>
+    
+    <div class="bg-slate-900 p-6 rounded-xl shadow-lg border border-slate-700 text-center transition hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)] duration-300">
+        <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Total Products</h3>
+        <p id="total-products" class="text-4xl font-bold text-indigo-400 mt-3">-</p>
     </div>
-    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
-        <h3 class="text-gray-500 text-sm font-semibold uppercase tracking-wider">Active Products</h3>
-        <p id="active-products" class="text-3xl font-bold text-teal-600 mt-2">-</p>
+    
+    <div class="bg-slate-900 p-6 rounded-xl shadow-lg border border-slate-700 text-center transition hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)] duration-300">
+        <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Active Products</h3>
+        <p id="active-products" class="text-4xl font-bold text-teal-400 mt-3">-</p>
     </div>
 </div>
 
 @section Scripts {
     <script>
         $('#statistics-button').on('click', ev => {
+            // Optional: Add a spinning icon while loading
+            const btnIcon = $(ev.currentTarget).find('i');
+            btnIcon.removeClass('bi-bar-chart-fill').addClass('bi-arrow-repeat animate-spin');
+
             $.get('https://medshopapi.azurewebsites.net/api/usersstatisticsapi', (data) => {
                 $('#total-users').text(data.totalUsers);
                 $('#active-users').text(data.activeUsers);
                 $('#total-products').text(data.totalProducts);
                 $('#active-products').text(data.activeProducts);
                 
-                $('#userStatistics').removeClass('hidden');
-                $('#statistics-button').fadeOut();
+                // Smooth fade in instead of harsh display jump
+                $('#userStatistics').removeClass('hidden').hide().fadeIn(400);
+                $('#statistics-button').fadeOut(300);
+            }).fail(function() {
+                // Failsafe just in case the API is asleep
+                btnIcon.removeClass('bi-arrow-repeat animate-spin').addClass('bi-exclamation-triangle-fill text-red-400');
+                $('#statistics-button').text(' Failed to load data');
             });
         });
     </script>

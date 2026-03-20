@@ -638,9 +638,14 @@ namespace MedShop.Infrastructure.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -777,6 +782,10 @@ namespace MedShop.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MedShop.Infrastructure.Data.Models.User", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -805,6 +814,8 @@ namespace MedShop.Infrastructure.Migrations
 
             modelBuilder.Entity("MedShop.Infrastructure.Data.Models.User", b =>
                 {
+                    b.Navigation("UserRoles");
+
                     b.Navigation("UsersProducts");
                 });
 #pragma warning restore 612, 618

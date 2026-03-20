@@ -6,5 +6,7 @@ namespace MedShop.Infrastructure.Data.Models
     {
         public bool IsActive { get; set; } = true;
         public ICollection<UserProduct> UsersProducts { get; set; } = new List<UserProduct>();
+        public virtual ICollection<IdentityUserRole<string>> UserRoles { get; set; }
+            = new List<IdentityUserRole<string>>();
     }
 }

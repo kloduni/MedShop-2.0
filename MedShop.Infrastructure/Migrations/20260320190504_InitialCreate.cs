@@ -3,10 +3,14 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace MedShop.Infrastructure.Migrations
 {
-    public partial class Initial : Migration
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -28,6 +32,7 @@ namespace MedShop.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -128,7 +133,8 @@ namespace MedShop.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserId1 = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -145,6 +151,11 @@ namespace MedShop.Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -287,12 +298,12 @@ namespace MedShop.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsActive", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e", 0, "23a9e6ba-beb5-4215-a6a3-91a598abc6b9", "guest1@medshop.com", false, false, null, "guest1@medshop.com", "guest1", "AQAAAAEAACcQAAAAEAmeYRYm9+l0O65FXIeUZriZPQoMCqpqeEdhKgQylqMNSTn3zE5hRxwHAtBK8AMFwQ==", null, false, "20b9cd23-e3ad-4fa7-ae3d-07616f82222f", false, "guest1" },
-                    { "89159c08-2f95-456f-91ea-75136c030b7b", 0, "0749268a-5356-4d70-8f27-6d00ad46e1f5", "guest@medshop.com", false, false, null, "guest@medshop.com", "guest", "AQAAAAEAACcQAAAAECQv7EBcCk6yzA6/XI3j6QXzVzuM/OWxz61XyD6LTYdk7Gk1G7jXnwv8tbLu8zD56Q==", null, false, "c72fd83f-c68e-4f08-aae5-ca55aede3f6f", false, "guest" },
-                    { "dea12856-c198-4129-b3f3-b893d8395082", 0, "479cd3a4-8145-474a-a822-62d112132259", "admin@medshop.com", false, false, null, "admin@medshop.com", "admin", "AQAAAAEAACcQAAAAEA58S2+z0lpZmg0gCOVXd5MAJ5FbAxjkO+uiFXJmiVfGNy1v5h64iXBOULZO9b0+ww==", null, false, "ea685ed6-2c52-4963-9ea0-e27b6ba0fb33", false, "admin" }
+                    { "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e", 0, "f2868ff8-e6b7-4a00-bf69-7ee4a66a1e8a", "guest1@medshop.com", false, true, false, null, "guest1@medshop.com", "guest1", "AQAAAAIAAYagAAAAEJB9OkGYgADBwQDJcDPt/IUTtyPnO/fDaeHjGK9rVbuc7cyEMWLN50zXsRExiITBHw==", null, false, "1d5ef264-b52a-4fdf-9767-f584fdf6e64c", false, "guest1" },
+                    { "89159c08-2f95-456f-91ea-75136c030b7b", 0, "e95222c5-7f4c-47fc-8f6a-fbaeb0ccdaaf", "guest@medshop.com", false, true, false, null, "guest@medshop.com", "guest", "AQAAAAIAAYagAAAAEJKa30JvACzHXUvKYL463Ov4nPvw2uKouDeMxPQPe9V0JQmWnghIg7tkLioViIrpHQ==", null, false, "7b686259-873b-486d-b8de-fae7826359eb", false, "guest" },
+                    { "dea12856-c198-4129-b3f3-b893d8395082", 0, "8c350119-9236-407d-a169-2fdf07e4d283", "admin@medshop.com", false, true, false, null, "admin@medshop.com", "admin", "AQAAAAIAAYagAAAAEEC93LkGA1IblokFJD/R69GtPP5iUOvhMRI0EeT257PPE5qr8DZdn4TnoBZcG+YPDA==", null, false, "0a5b8207-6bb3-4d2c-8ab5-f2d4e7de4eb0", false, "admin" }
                 });
 
             migrationBuilder.InsertData(
@@ -316,8 +327,16 @@ namespace MedShop.Infrastructure.Migrations
                 {
                     { 1, 1, "Used for urination complications.", "https://www.bbraun.com/content/dam/catalog/bbraun/bbraunProductCatalog/S/AEM2015/en-01/b8/vasofix-braunuele.jpeg.transform/75/image.jpg", true, 13.76m, "Catheter", 10 },
                     { 2, 7, "General instrument.", "https://www.bbraun-vetcare.com/content/dam/b-braun/global/website/veterinary/products-and-therapies/wound-therapy-and-wound-closure/text_image_nadeln_DLM.jpg.transform/600/image.jpg", true, 1.50m, "Spatula", 0 },
-                    { 3, 7, "General instrument.", "https://www.carlroth.com/medias/3607-1000Wx1000H?context=bWFzdGVyfGltYWdlc3w1NjMxNnxpbWFnZS9qcGVnfGltYWdlcy9oOTYvaGM5Lzg4MjIxNDM5NzU0NTQuanBnfGMzZDZlODk0YmE0Y2MyZWE2MmU2ZTA2ZjkxNTNjOGI3MWMyMjgyYzZmNmFjOWFjOTAwMzY5ZjJjNDVkOGEyNTE", true, 2.50m, "Scalpel", 10 },
-                    { 4, 7, "General instrument.", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Forceps_plastic.jpg/1200px-Forceps_plastic.jpg", true, 1.00m, "Forceps", 10 }
+                    { 3, 3, "Used for scalping.", "https://www.carlroth.com/medias/3607-1000Wx1000H?context=bWFzdGVyfGltYWdlc3w1NjMxNnxpbWFnZS9qcGVnfGltYWdlcy9oOTYvaGM5Lzg4MjIxNDM5NzU0NTQuanBnfGMzZDZlODk0YmE0Y2MyZWE2MmU2ZTA2ZjkxNTNjOGI3MWMyMjgyYzZmNmFjOWFjOTAwMzY5ZjJjNDVkOGEyNTE", true, 2.50m, "Scalpel", 10 },
+                    { 4, 2, "Used for cutting.", "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Forceps_plastic.jpg/1200px-Forceps_plastic.jpg", true, 1.00m, "Forceps", 10 },
+                    { 5, 4, "Tube used for various purposes.", "https://www.helmed.bg/media/t44s4/1883.webp", true, 1.73m, "Cannula", 10 },
+                    { 6, 5, "Inspection instrument used to look deep into the body.", "https://www.msschippers.com/products/images/00/0010816/0010816_fotodtp_1_750x750_1459677832333.jpg", true, 105.20m, "Endoscope", 10 },
+                    { 7, 7, "Storage and containment of gasses.", "https://www.amcaremed.com/wp-content/uploads/2020/01/steel-seamless-medical-gas-cylinder.jpg", true, 55m, "Gas cylinder", 10 },
+                    { 8, 5, "Medical device used to look into ears.", "https://m.media-amazon.com/images/I/31W7wpCID4L.jpg", true, 13.20m, "Otoscope", 10 },
+                    { 9, 1, "Used for auscultation - listening to inner sounds of the human body", "https://www.veterinarna-apteka.com/images/products/dc02e706cde3923b65404ac663791616.jpg", true, 20m, "Stethoscope", 10 },
+                    { 10, 5, "Used for measuring temperature.", "https://tfa.bg/userfiles/productlargeimages/product_1820.jpg", true, 3.70m, "Thermometer", 10 },
+                    { 11, 2, "Used for blood transfusion.", "https://www.smd-medical.com/wp-content/uploads/2017/01/7-Blood-Transfusion-Set-480x480.jpg", true, 12.30m, "Transfusion kit", 10 },
+                    { 12, 5, "Used to deliver medicine in the form of a mist inhaled orally.", "https://medicaldepot.com.ph/wp-content/uploads/products/3b9a64f6-38fa-fdfc-cadb-74e041fda45f.jpg", true, 40.20m, "Nebulizer", 10 }
                 });
 
             migrationBuilder.InsertData(
@@ -325,6 +344,14 @@ namespace MedShop.Infrastructure.Migrations
                 columns: new[] { "ProductId", "UserId" },
                 values: new object[,]
                 {
+                    { 9, "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e" },
+                    { 10, "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e" },
+                    { 11, "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e" },
+                    { 12, "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e" },
+                    { 5, "89159c08-2f95-456f-91ea-75136c030b7b" },
+                    { 6, "89159c08-2f95-456f-91ea-75136c030b7b" },
+                    { 7, "89159c08-2f95-456f-91ea-75136c030b7b" },
+                    { 8, "89159c08-2f95-456f-91ea-75136c030b7b" },
                     { 1, "dea12856-c198-4129-b3f3-b893d8395082" },
                     { 2, "dea12856-c198-4129-b3f3-b893d8395082" },
                     { 3, "dea12856-c198-4129-b3f3-b893d8395082" },
@@ -357,6 +384,11 @@ namespace MedShop.Infrastructure.Migrations
                 name: "IX_AspNetUserRoles_RoleId",
                 table: "AspNetUserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_UserId1",
+                table: "AspNetUserRoles",
+                column: "UserId1");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -401,6 +433,7 @@ namespace MedShop.Infrastructure.Migrations
                 column: "ProductId");
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

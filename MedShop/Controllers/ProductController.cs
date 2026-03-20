@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static MedShop.Core.Constants.Product.ProductConstants;
 using static MedShop.Core.Constants.MessageConstants;
-using static MedShop.Areas.Admin.AdminConstants;
+using static MedShop.Core.Constants.User.AdminConstants;
 
 namespace MedShop.Controllers
 {

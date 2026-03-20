@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static MedShop.Areas.Admin.AdminConstants;
+using static MedShop.Core.Constants.User.AdminConstants;
 
 namespace MedShop.Areas.Admin.Controllers
 {

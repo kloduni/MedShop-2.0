@@ -4,7 +4,7 @@ using System.Diagnostics;
 using MedShop.Core.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
-using static MedShop.Areas.Admin.AdminConstants;
+using static MedShop.Core.Constants.User.AdminConstants;
 
 namespace MedShop.Controllers
 {

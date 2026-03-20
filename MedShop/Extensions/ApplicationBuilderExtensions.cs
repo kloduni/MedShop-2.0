@@ -1,4 +1,4 @@
-﻿using MedShop.Areas.Admin;
+﻿using static MedShop.Core.Constants.User.AdminConstants;
 using MedShop.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -16,8 +16,8 @@ namespace MedShop.Extensions
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
             
-            string adminRoleName = AdminConstants.AdminRoleName;
-            string adminEmail = AdminConstants.AdminEmail;
+            string adminRoleName = AdminRoleName;
+            string adminEmail = AdminEmail;
 
             // 1. Check if the Admin role exists, create it if not
             if (await roleManager.RoleExistsAsync(adminRoleName) == false)

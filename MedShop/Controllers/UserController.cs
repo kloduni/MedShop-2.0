@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using static MedShop.Core.Constants.MessageConstants;
 using static MedShop.Core.Constants.User.UserConstants;
-using static MedShop.Areas.Admin.AdminConstants;
+using static MedShop.Core.Constants.User.AdminConstants;
 
 namespace MedShop.Controllers
 {

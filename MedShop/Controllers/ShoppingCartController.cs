@@ -6,7 +6,7 @@ using MedShop.Core.Cart;
 using static MedShop.Core.Constants.MessageConstants;
 using static MedShop.Core.Constants.Cart.ShoppingCartConstants;
 using static MedShop.Core.Constants.Product.ProductConstants;
-using static MedShop.Areas.Admin.AdminConstants;
+using static MedShop.Core.Constants.User.AdminConstants;
 
 namespace MedShop.Controllers
 {

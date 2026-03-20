@@ -12,17 +12,18 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MedShop.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221202130602_Initial")]
-    partial class Initial
+    [Migration("20260320190504_InitialCreate")]
+    partial class InitialCreate
     {
+        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.10")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
             modelBuilder.Entity("MedShop.Infrastructure.Data.Models.Category", b =>
                 {
@@ -30,7 +31,7 @@ namespace MedShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -85,7 +86,7 @@ namespace MedShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -108,7 +109,7 @@ namespace MedShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
@@ -137,7 +138,7 @@ namespace MedShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -197,8 +198,8 @@ namespace MedShop.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            CategoryId = 7,
-                            Description = "General instrument.",
+                            CategoryId = 3,
+                            Description = "Used for scalping.",
                             ImageUrl = "https://www.carlroth.com/medias/3607-1000Wx1000H?context=bWFzdGVyfGltYWdlc3w1NjMxNnxpbWFnZS9qcGVnfGltYWdlcy9oOTYvaGM5Lzg4MjIxNDM5NzU0NTQuanBnfGMzZDZlODk0YmE0Y2MyZWE2MmU2ZTA2ZjkxNTNjOGI3MWMyMjgyYzZmNmFjOWFjOTAwMzY5ZjJjNDVkOGEyNTE",
                             IsActive = true,
                             Price = 2.50m,
@@ -208,12 +209,100 @@ namespace MedShop.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            CategoryId = 7,
-                            Description = "General instrument.",
+                            CategoryId = 2,
+                            Description = "Used for cutting.",
                             ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Forceps_plastic.jpg/1200px-Forceps_plastic.jpg",
                             IsActive = true,
                             Price = 1.00m,
                             ProductName = "Forceps",
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CategoryId = 4,
+                            Description = "Tube used for various purposes.",
+                            ImageUrl = "https://www.helmed.bg/media/t44s4/1883.webp",
+                            IsActive = true,
+                            Price = 1.73m,
+                            ProductName = "Cannula",
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = 6,
+                            CategoryId = 5,
+                            Description = "Inspection instrument used to look deep into the body.",
+                            ImageUrl = "https://www.msschippers.com/products/images/00/0010816/0010816_fotodtp_1_750x750_1459677832333.jpg",
+                            IsActive = true,
+                            Price = 105.20m,
+                            ProductName = "Endoscope",
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = 7,
+                            CategoryId = 7,
+                            Description = "Storage and containment of gasses.",
+                            ImageUrl = "https://www.amcaremed.com/wp-content/uploads/2020/01/steel-seamless-medical-gas-cylinder.jpg",
+                            IsActive = true,
+                            Price = 55m,
+                            ProductName = "Gas cylinder",
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = 8,
+                            CategoryId = 5,
+                            Description = "Medical device used to look into ears.",
+                            ImageUrl = "https://m.media-amazon.com/images/I/31W7wpCID4L.jpg",
+                            IsActive = true,
+                            Price = 13.20m,
+                            ProductName = "Otoscope",
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = 9,
+                            CategoryId = 1,
+                            Description = "Used for auscultation - listening to inner sounds of the human body",
+                            ImageUrl = "https://www.veterinarna-apteka.com/images/products/dc02e706cde3923b65404ac663791616.jpg",
+                            IsActive = true,
+                            Price = 20m,
+                            ProductName = "Stethoscope",
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = 10,
+                            CategoryId = 5,
+                            Description = "Used for measuring temperature.",
+                            ImageUrl = "https://tfa.bg/userfiles/productlargeimages/product_1820.jpg",
+                            IsActive = true,
+                            Price = 3.70m,
+                            ProductName = "Thermometer",
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = 11,
+                            CategoryId = 2,
+                            Description = "Used for blood transfusion.",
+                            ImageUrl = "https://www.smd-medical.com/wp-content/uploads/2017/01/7-Blood-Transfusion-Set-480x480.jpg",
+                            IsActive = true,
+                            Price = 12.30m,
+                            ProductName = "Transfusion kit",
+                            Quantity = 10
+                        },
+                        new
+                        {
+                            Id = 12,
+                            CategoryId = 5,
+                            Description = "Used to deliver medicine in the form of a mist inhaled orally.",
+                            ImageUrl = "https://medicaldepot.com.ph/wp-content/uploads/products/3b9a64f6-38fa-fdfc-cadb-74e041fda45f.jpg",
+                            IsActive = true,
+                            Price = 40.20m,
+                            ProductName = "Nebulizer",
                             Quantity = 10
                         });
                 });
@@ -224,7 +313,7 @@ namespace MedShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
@@ -261,6 +350,11 @@ namespace MedShop.Infrastructure.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -312,15 +406,16 @@ namespace MedShop.Infrastructure.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "479cd3a4-8145-474a-a822-62d112132259",
+                            ConcurrencyStamp = "8c350119-9236-407d-a169-2fdf07e4d283",
                             Email = "admin@medshop.com",
                             EmailConfirmed = false,
+                            IsActive = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@medshop.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEA58S2+z0lpZmg0gCOVXd5MAJ5FbAxjkO+uiFXJmiVfGNy1v5h64iXBOULZO9b0+ww==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEC93LkGA1IblokFJD/R69GtPP5iUOvhMRI0EeT257PPE5qr8DZdn4TnoBZcG+YPDA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ea685ed6-2c52-4963-9ea0-e27b6ba0fb33",
+                            SecurityStamp = "0a5b8207-6bb3-4d2c-8ab5-f2d4e7de4eb0",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -328,15 +423,16 @@ namespace MedShop.Infrastructure.Migrations
                         {
                             Id = "89159c08-2f95-456f-91ea-75136c030b7b",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0749268a-5356-4d70-8f27-6d00ad46e1f5",
+                            ConcurrencyStamp = "e95222c5-7f4c-47fc-8f6a-fbaeb0ccdaaf",
                             Email = "guest@medshop.com",
                             EmailConfirmed = false,
+                            IsActive = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "guest@medshop.com",
                             NormalizedUserName = "guest",
-                            PasswordHash = "AQAAAAEAACcQAAAAECQv7EBcCk6yzA6/XI3j6QXzVzuM/OWxz61XyD6LTYdk7Gk1G7jXnwv8tbLu8zD56Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJKa30JvACzHXUvKYL463Ov4nPvw2uKouDeMxPQPe9V0JQmWnghIg7tkLioViIrpHQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c72fd83f-c68e-4f08-aae5-ca55aede3f6f",
+                            SecurityStamp = "7b686259-873b-486d-b8de-fae7826359eb",
                             TwoFactorEnabled = false,
                             UserName = "guest"
                         },
@@ -344,15 +440,16 @@ namespace MedShop.Infrastructure.Migrations
                         {
                             Id = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "23a9e6ba-beb5-4215-a6a3-91a598abc6b9",
+                            ConcurrencyStamp = "f2868ff8-e6b7-4a00-bf69-7ee4a66a1e8a",
                             Email = "guest1@medshop.com",
                             EmailConfirmed = false,
+                            IsActive = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "guest1@medshop.com",
                             NormalizedUserName = "guest1",
-                            PasswordHash = "AQAAAAEAACcQAAAAEAmeYRYm9+l0O65FXIeUZriZPQoMCqpqeEdhKgQylqMNSTn3zE5hRxwHAtBK8AMFwQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJB9OkGYgADBwQDJcDPt/IUTtyPnO/fDaeHjGK9rVbuc7cyEMWLN50zXsRExiITBHw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "20b9cd23-e3ad-4fa7-ae3d-07616f82222f",
+                            SecurityStamp = "1d5ef264-b52a-4fdf-9767-f584fdf6e64c",
                             TwoFactorEnabled = false,
                             UserName = "guest1"
                         });
@@ -392,6 +489,46 @@ namespace MedShop.Infrastructure.Migrations
                         {
                             UserId = "dea12856-c198-4129-b3f3-b893d8395082",
                             ProductId = 4
+                        },
+                        new
+                        {
+                            UserId = "89159c08-2f95-456f-91ea-75136c030b7b",
+                            ProductId = 5
+                        },
+                        new
+                        {
+                            UserId = "89159c08-2f95-456f-91ea-75136c030b7b",
+                            ProductId = 6
+                        },
+                        new
+                        {
+                            UserId = "89159c08-2f95-456f-91ea-75136c030b7b",
+                            ProductId = 7
+                        },
+                        new
+                        {
+                            UserId = "89159c08-2f95-456f-91ea-75136c030b7b",
+                            ProductId = 8
+                        },
+                        new
+                        {
+                            UserId = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
+                            ProductId = 9
+                        },
+                        new
+                        {
+                            UserId = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
+                            ProductId = 10
+                        },
+                        new
+                        {
+                            UserId = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
+                            ProductId = 11
+                        },
+                        new
+                        {
+                            UserId = "6d5800ce-d726-4fc8-83d9-d6b3ac1f591e",
+                            ProductId = 12
                         });
                 });
 
@@ -428,7 +565,7 @@ namespace MedShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -453,7 +590,7 @@ namespace MedShop.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
                         .HasColumnType("nvarchar(max)");
@@ -504,9 +641,14 @@ namespace MedShop.Infrastructure.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("UserId", "RoleId");
 
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -643,6 +785,10 @@ namespace MedShop.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MedShop.Infrastructure.Data.Models.User", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -671,6 +817,8 @@ namespace MedShop.Infrastructure.Migrations
 
             modelBuilder.Entity("MedShop.Infrastructure.Data.Models.User", b =>
                 {
+                    b.Navigation("UserRoles");
+
                     b.Navigation("UsersProducts");
                 });
 #pragma warning restore 612, 618

@@ -1,4 +1,4 @@
-﻿namespace MedShop.Areas.Admin
+﻿namespace MedShop.Core.Constants.User
 {
     public static class AdminConstants
     {

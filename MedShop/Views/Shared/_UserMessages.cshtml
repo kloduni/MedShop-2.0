@@ -1,23 +1,32 @@
 ﻿@using MedShop.Core.Constants
 
+<script>
+    $(function () {
+        // 1. Apply the configuration first
+        toastr.options = {
+            "positionClass": "toast-bottom-right",
+            "progressBar": true,
+            "preventDuplicates": true,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000"
+        };
 
-@if (TempData[MessageConstants.ErrorMessage] != null)
-{
-    <script>
-        $(function () { toastr.error('@TempData[MessageConstants.ErrorMessage].ToString()'); });
-    </script>
-}
+        // 2. Fire the appropriate message
+        @if (TempData[MessageConstants.ErrorMessage] != null)
+        {
+                @:toastr.error('@TempData[MessageConstants.ErrorMessage].ToString()');
+        }
 
-@if (TempData[MessageConstants.WarningMessage] != null)
-{
-    <script>
-        $(function () { toastr.warning('@TempData[MessageConstants.WarningMessage].ToString()'); });
-    </script>
-}
+        @if (TempData[MessageConstants.WarningMessage] != null)
+        {
+                @:toastr.warning('@TempData[MessageConstants.WarningMessage].ToString()');
+        }
 
-@if (TempData[MessageConstants.SuccessMessage] != null)
-{
-    <script>
-        $(function () { toastr.success('@TempData[MessageConstants.SuccessMessage].ToString()'); });
-    </script>
-}
+        @if (TempData[MessageConstants.SuccessMessage] != null)
+        {
+                @:toastr.success('@TempData[MessageConstants.SuccessMessage].ToString()');
+        }
+    });
+</script>

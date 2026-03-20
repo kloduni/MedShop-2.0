@@ -68,6 +68,11 @@ namespace MedShop.Controllers
                 ModelState.AddModelError("", error.Description);
             }
 
+            if (result.Errors.Any())
+            {
+                TempData[ErrorMessage] = result.Errors.First().Description;
+            }
+
             return View(model);
         }
 
@@ -129,6 +134,7 @@ namespace MedShop.Controllers
                 }
             }
 
+            TempData[ErrorMessage] = "Invalid Login!";
             ModelState.AddModelError("", "Invalid Login!");
 
             return View(model);

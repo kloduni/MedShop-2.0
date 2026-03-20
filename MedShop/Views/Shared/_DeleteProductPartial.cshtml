@@ -1,34 +1,41 @@
 ﻿@model ProductServiceModel
 
-<div class="row">
-    <div class="col-md-3">
-        <img class="card-img-top" src="@Model.ImageUrl" alt="Product Image">
+<div class="max-w-4xl mx-auto flex flex-col md:flex-row gap-8 items-start">
+    <div class="md:w-1/3 w-full shrink-0">
+        <img class="w-full h-auto rounded-lg shadow-md border border-gray-200 object-cover" src="@Model.ImageUrl" alt="Product Image">
     </div>
-    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-        <form method="post">
-            <input type="hidden" asp-for="@Model.Id"/>
-            <div class="form-group">
-                <label asp-for="ProductName" class="control-label"></label>
-                <input asp-for="ProductName" class="form-control" disabled="disabled" />
+    
+    <div class="md:w-2/3 w-full bg-white p-6 rounded-lg shadow-md">
+        <form method="post" class="space-y-4">
+            <input type="hidden" asp-for="@Model.Id" />
+            
+            <div>
+                <label asp-for="ProductName" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="ProductName" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed" disabled="disabled" />
             </div>
-            <div class="form-group">
-                <label asp-for="Category" class="control-label"></label>
-                <input asp-for="Category" class="form-control" disabled="disabled" />
+            
+            <div>
+                <label asp-for="Category" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Category" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed" disabled="disabled" />
             </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" disabled="disabled" />
+            
+            <div>
+                <label asp-for="Description" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Description" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed" disabled="disabled" />
             </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" disabled="disabled" />
+            
+            <div>
+                <label asp-for="Price" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Price" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed" disabled="disabled" />
             </div>
-            <div class="form-group">
-                <label asp-for="Seller" class="control-label"></label>
-                <input asp-for="Seller" class="form-control" disabled="disabled" />
+            
+            <div>
+                <label asp-for="Seller" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Seller" class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-md text-gray-500 cursor-not-allowed" disabled="disabled" />
             </div>
-            <div class="text-center">
-                <input asp-route-information="@Model.GetInformation()" class="btn btn-danger mt-3" type="submit" value="Delete"/>
+            
+            <div class="text-center pt-4">
+                <input asp-route-information="@Model.GetInformation()" class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-md shadow-sm cursor-pointer transition-colors" type="submit" value="Delete" />
             </div>
         </form>
     </div>

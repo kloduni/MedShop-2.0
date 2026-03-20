@@ -4,69 +4,65 @@
     ViewData["Title"] = "Completed orders";
 }
 
-<h2 class="text-center text-capitalize text-primary" style="font-family: cursive">@ViewBag.Title</h2>
-<hr />
+<h2 class="text-center capitalize text-blue-600 font-serif text-3xl font-bold mb-4">@ViewBag.Title</h2>
+<hr class="border-gray-300 mb-6" />
 
 @if (Model.Any())
 {
-    <div class="row">
-        <div class="col-md-8 offset-2">
-            <p>
-                <h4>Your orders</h4>
-            </p>
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h4 class="text-xl font-semibold mb-4 text-gray-800">Your orders</h4>
 
-            <table class="table align-middle">
-                <thead>
-                    <tr class="text-center">
-                        <th>Order ID</th>
-                        <th>Items</th>
-                        <th>Quantity</th>
-                        <th>Total</th>
-                        <th>Seller</th>
-
-
+        <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Items</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Seller</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200 text-center">
                     @foreach (var order in Model)
                     {
                         <tr>
-                            <td class="align-middle">
-                                <div class="alert text-dark text-decoration-underline">
+                            <td class="px-6 py-4 whitespace-nowrap align-middle">
+                                <div class="text-sm text-gray-900 underline font-medium">
                                     @order.Id
                                 </div>
                             </td>
-                            <td class="align-middle">
-                                <ul style="list-style-type:none">
+                            <td class="px-6 py-4 whitespace-nowrap align-middle">
+                                <ul class="space-y-2">
                                     @foreach (var item in order.OrderItems)
                                     {
                                         <li>
-                                            <div class="alert bg-secondary text-dark" role="alert">
+                                            <div class="px-3 py-2 bg-gray-100 text-gray-800 rounded-md text-sm">
                                                 [@item.Price.ToString("c")] - @item.ProductName
                                             </div>
                                         </li>
                                     }
                                 </ul>
                             </td>
-                            <td class="align-middle">
-                                <ul style="list-style-type:none">
+                            <td class="px-6 py-4 whitespace-nowrap align-middle">
+                                <ul class="space-y-2">
                                     @foreach (var item in order.OrderItems)
                                     {
                                         <li>
-                                            <div class="alert bg-secondary text-dark">
+                                            <div class="px-3 py-2 bg-gray-100 text-gray-800 rounded-md text-sm">
                                                 @item.Amount pcs
                                             </div>
                                         </li>
                                     }
                                 </ul>
                             </td>
-                            <td class="align-middle">
-                                <div class="alert bg-secondary text-dark">
+                            <td class="px-6 py-4 whitespace-nowrap align-middle">
+                                <div class="px-3 py-2 bg-gray-100 text-gray-800 rounded-md text-sm font-semibold">
                                     $@order.TotalPrice
                                 </div>
                             </td>
-                            <td class="align-middle">
-                                <div class="alert bg-secondary text-dark">
+                            <td class="px-6 py-4 whitespace-nowrap align-middle">
+                                <div class="px-3 py-2 bg-gray-100 text-gray-800 rounded-md text-sm">
                                     @order.UserName
                                 </div>
                             </td>
@@ -79,5 +75,5 @@
 }
 else
 {
-    <h3 class="text-center"> You have no orders yet!</h3>
+    <h3 class="text-center text-2xl text-gray-600 font-semibold mt-10">You have no orders yet!</h3>
 }

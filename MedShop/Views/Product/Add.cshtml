@@ -2,12 +2,12 @@
     ViewBag.Title = "Enter Product Details";
 }
 
-<h2 class="text-center text-capitalize text-primary" style="font-family: cursive">@ViewBag.Title</h2>
-<hr/>
+<h2 class="text-center capitalize text-blue-600 font-serif text-3xl font-bold mb-4">@ViewBag.Title</h2>
+<hr class="border-gray-300 mb-6" />
 
-<partial name="_ProductFormPartial" model="@Model"/>
+<partial name="_ProductFormPartial" model="@Model" />
 
 @section Scripts
 {
-    <partial name="_ValidationScriptsPartial"/>
+    <partial name="_ValidationScriptsPartial" />
 }

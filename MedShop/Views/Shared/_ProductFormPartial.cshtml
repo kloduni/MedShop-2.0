@@ -1,48 +1,52 @@
 ﻿@model ProductBaseModel
 
-
-<div class="row">
-    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
-        <form method="post">
-            <input type="hidden" asp-for="@Model.Id" />
-            <div class="form-group">
-                <label asp-for="ProductName">Product Name</label>
-                <input asp-for="ProductName" class="form-control" placeholder="Product name...">
-                <span asp-validation-for="ProductName" class="small text-danger"></span>
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md text-gray-800">
+    <form method="post" class="space-y-5">
+        <input type="hidden" asp-for="@Model.Id" />
+        
+        <div>
+            <label asp-for="ProductName" class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+            <input asp-for="ProductName" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Product name...">
+                <span asp-validation-for="ProductName" class="text-xs text-red-500 mt-1 block"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Price"></label>
-                <input asp-for="Price" class="form-control" placeholder="Price...">
-                <span asp-validation-for="Price" class="small text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity"></label>
-                <input asp-for="Quantity" class="form-control" placeholder="Quantity...">
-                <span asp-validation-for="Quantity" class="small text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description"></label>
-                <textarea asp-for="Description" rows="4" class="form-control" placeholder="Medical use..."></textarea>
-                <span asp-validation-for="Description" class="small text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageUrl"></label>
-                <input asp-for="ImageUrl" class="form-control" placeholder="Place your Image URL here...">
-                <span asp-validation-for="ImageUrl" class="small text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId"></label>
-                <select asp-for="CategoryId" class="form-control">
-                    @foreach (var category in Model.ProductCategories)
-                    {
-                        <option value="@category.Id">@category.Name</option>
-                    }
-                </select>
-                <span asp-validation-for="CategoryId" class="small text-danger"></span>
-            </div>
-            <div class="text-center">
-                <input class="btn btn-primary mt-3" type="submit" value="Save" />
-            </div>
-        </form>
-    </div>
-</div>
+        
+            <div>
+                <label asp-for="Price" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Price" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Price...">
+                    <span asp-validation-for="Price" class="text-xs text-red-500 mt-1 block"></span>
+                </div>
+        
+                <div>
+                    <label asp-for="Quantity" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                    <input asp-for="Quantity" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Quantity...">
+                        <span asp-validation-for="Quantity" class="text-xs text-red-500 mt-1 block"></span>
+                    </div>
+        
+                    <div>
+                        <label asp-for="Description" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                        <textarea asp-for="Description" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Medical use..."></textarea>
+                        <span asp-validation-for="Description" class="text-xs text-red-500 mt-1 block"></span>
+                    </div>
+        
+                    <div>
+                        <label asp-for="ImageUrl" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                        <input asp-for="ImageUrl" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Place your Image URL here...">
+                            <span asp-validation-for="ImageUrl" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+        
+                        <div>
+                            <label asp-for="CategoryId" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                            <select asp-for="CategoryId" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 bg-white">
+                                @foreach (var category in Model.ProductCategories)
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            </select>
+                            <span asp-validation-for="CategoryId" class="text-xs text-red-500 mt-1 block"></span>
+                        </div>
+        
+                        <div class="text-center pt-4">
+                            <input class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm cursor-pointer transition-colors" type="submit" value="Save" />
+                        </div>
+                    </form>
+                </div>

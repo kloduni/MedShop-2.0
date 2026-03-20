@@ -1,43 +1,43 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ProductServiceModel
 
-<div class="col-md-4">
-    <div class="card mb-3">
-        <div class="card-body text-center text-white bg-secondary" style="font-family: monospace">
-            <h3 class="card-header bg-white text-black text-capitalize" style="font-size: 25px"><b>@Model.ProductName</b></h3>
-            <img class="align-content-center card-img-top" src="@Model.ImageUrl" style="height: 300px; max-width: 400px" alt="Product Image">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item bg-secondary text-dark" style="font-size: 17px">
-                    Seller:
-                    <b>@Model.Seller</b>
-                </li>
-                <li class="list-group-item bg-secondary text-dark" style="font-size: 17px">
-                    Category:
-                    <b>@Model.Category</b>
-                </li>
-                <li class="list-group-item bg-secondary text-dark" style="font-size: 17px">
-                    Quantity:
-                    <b>@Model.Quantity</b>
-                </li>
-                <li class="list-group-item bg-secondary text-black" style="font-size: 22px">
-                    <b>$@String.Format("{0:f2}", Model.Price)</b>
-                </li>
-            </ul>
-            <br />
+<div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col h-full border border-gray-200">
+    <div class="p-4 border-b border-gray-200 bg-gray-50 flex-shrink-0">
+        <h3 class="text-xl font-bold text-gray-900 capitalize text-center truncate">@Model.ProductName</h3>
+    </div>
+    
+    <div class="flex-grow flex items-center justify-center p-4 bg-white">
+        <img class="max-h-48 object-contain" src="@Model.ImageUrl" alt="Product Image">
+    </div>
+    
+    <div class="bg-gray-50 border-t border-gray-200 text-sm text-gray-700 flex-shrink-0">
+        <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+            <span>Seller:</span>
+            <span class="font-bold text-gray-900 truncate max-w-[120px]">@Model.Seller</span>
         </div>
-        <div class="text-center text-white bg-secondary">
-            <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()" class="btn btn-warning">
-                <i class="bi bi-info-circle-fill"></i>
-                Details
+        <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+            <span>Category:</span>
+            <span class="font-bold text-gray-900">@Model.Category</span>
+        </div>
+        <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+            <span>Quantity:</span>
+            <span class="font-bold text-gray-900">@Model.Quantity</span>
+        </div>
+        <div class="text-center px-4 py-3 bg-white">
+            <span class="text-2xl font-bold text-green-600">$@String.Format("{0:f2}", Model.Price)</span>
+        </div>
+    </div>
+    
+    <div class="p-4 bg-gray-100 flex flex-wrap justify-center gap-3 mt-auto">
+        <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()" class="inline-flex items-center gap-2 px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white text-sm font-medium rounded-md transition-colors shadow-sm">
+            <i class="bi bi-info-circle-fill"></i> Details
+        </a>
+        
+        @if (this.User?.Identity?.IsAuthenticated ?? false)
+        {
+            <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id" class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors shadow-sm">
+                <i class="bi bi-bag-check-fill"></i> Buy
             </a>
-            @if (this.User?.Identity?.IsAuthenticated ?? false)
-            {
-                <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id" class="btn btn-success">
-                    <i class="bi bi-bag-check-fill"></i>
-                    Buy
-                </a>
-                <p></p>
-            }
-        </div>
+        }
     </div>
 </div>

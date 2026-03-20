@@ -8,6 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//var hasher = new Microsoft.AspNetCore.Identity.PasswordHasher<MedShop.Infrastructure.Data.Models.User>();
+//var adminHash = hasher.HashPassword(null, "admin");
+//var guestHash = hasher.HashPassword(null, "guest");
+//var guest1Hash = hasher.HashPassword(null, "guest1");
+
+//Console.WriteLine("\n=================================");
+//Console.WriteLine($"ADMIN HASH: {adminHash}");
+//Console.WriteLine($"GUEST HASH: {guestHash}");
+//Console.WriteLine($"GUEST HASH: {guest1Hash}");
+//Console.WriteLine("=================================\n");
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

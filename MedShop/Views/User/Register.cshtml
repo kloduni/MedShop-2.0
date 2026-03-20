@@ -5,35 +5,40 @@
     ViewData["Title"] = "Register";
 }
 
-<h1 class="text-center">@ViewData["Title"]</h1>
+<div class="max-w-md mx-auto mt-10 mb-10">
+    <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200">
+        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6 font-serif">@ViewData["Title"]</h1>
 
-<div class="row">
-    <div class="col-md-4 offset-md-4">
-        <form id="registerForm" method="post">
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="text-center mb-3">
-                <label asp-for="@Model.UserName">Username</label>
-                <input class="form-control " autocomplete="username" aria-required="true" asp-for="@Model.UserName" />
-                <span asp-validation-for="@Model.UserName" class="text-danger"></span>
+        <form id="registerForm" method="post" class="space-y-5">
+            <hr class="border-gray-300 mb-4" />
+            <div asp-validation-summary="ModelOnly" class="text-sm text-red-500 mb-4 text-center"></div>
+            
+            <div>
+                <label asp-for="@Model.UserName" class="block text-sm font-medium text-gray-700 text-center mb-1">Username</label>
+                <input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" autocomplete="username" aria-required="true" asp-for="@Model.UserName" />
+                <span asp-validation-for="@Model.UserName" class="text-xs text-red-500 mt-1 block text-center"></span>
             </div>
-            <div class="text-center mb-3">
-                <label asp-for="@Model.Email">Email</label>
-                <input class="form-control " autocomplete="username" aria-required="true" asp-for="@Model.Email" />
-                <span asp-validation-for="@Model.Email" class="text-danger"></span>
+            
+            <div>
+                <label asp-for="@Model.Email" class="block text-sm font-medium text-gray-700 text-center mb-1">Email</label>
+                <input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" autocomplete="email" aria-required="true" asp-for="@Model.Email" />
+                <span asp-validation-for="@Model.Email" class="text-xs text-red-500 mt-1 block text-center"></span>
             </div>
-            <div class="text-center mb-3">
-                <label asp-for="@Model.Password">Password</label>
-                <input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="@Model.Password" />
-                <span asp-validation-for="@Model.Password" class="text-danger"></span>
+            
+            <div>
+                <label asp-for="@Model.Password" class="block text-sm font-medium text-gray-700 text-center mb-1">Password</label>
+                <input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" type="password" autocomplete="new-password" aria-required="true" asp-for="@Model.Password" />
+                <span asp-validation-for="@Model.Password" class="text-xs text-red-500 mt-1 block text-center"></span>
             </div>
-            <div class="text-center mb-3">
-                <label asp-for="@Model.ConfirmPassword">Confirm Password</label>
-                <input class="form-control" type="password" autocomplete="new-password" aria-required="true" asp-for="@Model.ConfirmPassword" />
-                <span asp-validation-for="@Model.ConfirmPassword" class="text-danger"></span>
+            
+            <div>
+                <label asp-for="@Model.ConfirmPassword" class="block text-sm font-medium text-gray-700 text-center mb-1">Confirm Password</label>
+                <input class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" type="password" autocomplete="new-password" aria-required="true" asp-for="@Model.ConfirmPassword" />
+                <span asp-validation-for="@Model.ConfirmPassword" class="text-xs text-red-500 mt-1 block text-center"></span>
             </div>
-            <div class="text-center">
-                <button id="registerSubmit" type="submit" class="btn btn-primary">Register</button>
+            
+            <div class="pt-4">
+                <button id="registerSubmit" type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition-colors">Register</button>
             </div>
         </form>
     </div>

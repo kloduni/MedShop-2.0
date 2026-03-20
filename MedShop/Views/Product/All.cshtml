@@ -2,51 +2,8 @@
 
 @{
     ViewBag.Title = "All Products";
-}
-
-<h2 class="text-center text-capitalize text-primary" style="font-family: cursive">@ViewBag.Title</h2>
-<hr />
-
-<form method="get">
-    <div class="row">
-        <div class="form-group col-md-3 d-flex justify-content-between">
-            <div class="form-group">
-                <label asp-for="Category"></label>
-                <select asp-for="Category" class="form-control">
-                    <option value="">All</option>
-                    @foreach (var category in Model.Categories)
-                    {
-                        <option value="@category">@category</option>
-                    }
-                </select>
-            </div>
-        </div>
-
-        <div class="form-group col-md-3">
-            <label asp-for="SearchTerm">Search</label>
-            <input asp-for="SearchTerm" class="form-control" placeholder="Search by name or description">
-        </div>
-
-        <div class="form-group col-md-3">
-            <div class="form-group">
-                <label asp-for="Sorting"></label>
-                <select asp-for="Sorting" class="form-control">
-                    <option value="0">Newest</option>
-                    <option value="1">Lowest price</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="form-group mt-4 p-2">
-                <input type="submit" value="Search" class="btn btn-primary" />
-            </div>
-        </div>
-    </div>
-</form>
-
-
-@{
+    
+    // Pagination Logic
     var previousPage = Model.CurrentPage - 1;
     if (previousPage < 1)
     {
@@ -54,42 +11,133 @@
     }
 
     var maxPage = Math.Ceiling((double)Model.TotalProductsCount / AllProductsQueryModel.ProductsPerPage);
+    var shouldButtonBeDisabled = Model.CurrentPage == maxPage || !Model.Products.Any();
 }
 
-<div class="row mb-5">
-    <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-start">
-        <a class="btn btn-primary @(Model.CurrentPage == 1 ? "disabled" : string.Empty)"
-           asp-controller="Product"
-           asp-action="All"
-           asp-route-currentPage="@previousPage"
-           asp-route-category="@Model.Category"
-           asp-route-searchTerm="@Model.SearchTerm"
-           asp-route-sorting="@((int)Model.Sorting)"><<</a>
+<div class="py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-white tracking-tight">@ViewBag.Title</h1>
+        <p class="mt-2 text-sm text-slate-400">Browse our complete catalog of high-grade medical supplies.</p>
     </div>
 
-    @{
-        var shouldButtonBeDisabled = Model.CurrentPage == maxPage || !Model.Products.Any();
-    }
+    <form method="get" class="mb-10 bg-slate-800/50 backdrop-blur-md border border-slate-700 rounded-2xl p-6 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+            
+            <div>
+                <label asp-for="Category" class="block text-sm font-medium text-slate-300 mb-2"></label>
+                <select asp-for="Category" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 transition-colors">
+                    <option value="">All Categories</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        <option value="@category">@category</option>
+                    }
+                </select>
+            </div>
 
-    <div class="col-md-6 d-grid gap-2 d-md-flex justify-content-md-end">
-        <a class="btn btn-primary @(shouldButtonBeDisabled ? "disabled" : string.Empty)"
-           asp-controller="Product"
-           asp-action="All"
-           asp-route-currentPage="@(Model.CurrentPage + 1)"
-           asp-route-category="@Model.Category"
-           asp-route-searchTerm="@Model.SearchTerm"
-           asp-route-sorting="@((int)Model.Sorting)">>></a>
+            <div>
+                <label asp-for="SearchTerm" class="block text-sm font-medium text-slate-300 mb-2">Search</label>
+                <div class="relative">
+                    <i class="bi bi-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-500"></i>
+                    <input asp-for="SearchTerm" placeholder="Search by name..." class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 pl-10 p-2.5 transition-colors" />
+                </div>
+            </div>
+
+            <div>
+                <label asp-for="Sorting" class="block text-sm font-medium text-slate-300 mb-2"></label>
+                <select asp-for="Sorting" class="w-full bg-slate-900 border border-slate-700 text-white rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 transition-colors">
+                    <option value="0">Newest</option>
+                    <option value="1">Lowest price</option>
+                </select>
+            </div>
+
+            <div>
+                <button type="submit" class="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.4)] transition-all duration-200">
+                    <i class="bi bi-funnel text-lg mr-2"></i> Filter
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        
+        @if (!Model.Products.Any())
+        {
+            <div class="col-span-full py-12 text-center bg-slate-800/30 rounded-2xl border border-slate-700 border-dashed">
+                <i class="bi bi-box-seam text-6xl text-slate-600 mb-4 block"></i>
+                <h3 class="text-xl font-medium text-slate-300">No products found</h3>
+                <p class="text-slate-500 mt-2">Try adjusting your search or category filters.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var product in Model.Products)
+            {
+                <div class="group relative bg-slate-800/40 backdrop-blur-sm border border-slate-700 rounded-2xl overflow-hidden hover:-translate-y-1 hover:shadow-[0_10px_40px_-10px_rgba(37,99,235,0.3)] transition-all duration-300 flex flex-col">
+                    
+                    <div class="aspect-[4/3] w-full bg-slate-900 overflow-hidden relative">
+                        @if (string.IsNullOrEmpty(product.ImageUrl))
+                        {
+                            <div class="w-full h-full flex items-center justify-center text-slate-700">
+                                <i class="bi bi-image text-4xl"></i>
+                            </div>
+                        }
+                        else
+                        {
+                            <img src="@product.ImageUrl" alt="@product.ProductName" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        }
+                    </div>
+
+                    <div class="p-5 flex flex-col flex-grow">
+                        <div class="flex justify-between items-start mb-2 gap-2">
+                            <h3 class="text-lg font-bold text-white leading-tight truncate" title="@product.ProductName">
+                                <a asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" class="focus:outline-none">
+                                    <span class="absolute inset-0" aria-hidden="true"></span>
+                                    @product.ProductName
+                                </a>
+                            </h3>
+                            <p class="text-lg font-extrabold text-blue-400 whitespace-nowrap">
+                                $@product.Price.ToString("0.00")
+                            </p>
+                        </div>
+                        
+                        <p class="text-sm text-slate-400 mb-4 line-clamp-2">
+                            @product.Description
+                        </p>
+
+                        <div class="mt-auto relative z-20">
+                            <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@product.Id" class="inline-flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md transition-colors shadow-sm w-full justify-center">
+                                <i class="bi bi-cart-plus mr-2 text-lg"></i> Add to Cart
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
     </div>
-</div>
 
-@if (!Model.Products.Any())
-{
-    <h2 class="text-center">No products found by the given criteria!</h2>
-}
+    <div class="mt-12 flex justify-between items-center border-t border-slate-800 pt-6">
+        <a asp-controller="Product"
+               asp-action="All"
+               asp-route-currentPage="@previousPage"
+               asp-route-category="@Model.Category"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-sorting="@((int)Model.Sorting)"
+               class="inline-flex items-center px-4 py-2 border border-slate-700 text-sm font-medium rounded-lg text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white transition-colors @(Model.CurrentPage == 1 ? "opacity-50 pointer-events-none" : "")">
+            <i class="bi bi-chevron-left mr-2"></i> Previous
+        </a>
 
-<div class="row">
-    @foreach (var house in Model.Products)
-    {
-        <partial name="_ProductPartial" model="@house" />
-    }
+        <span class="text-sm text-slate-400">
+            Page <span class="font-medium text-white">@Model.CurrentPage</span> of <span class="font-medium text-white">@(maxPage == 0 ? 1 : maxPage)</span>
+        </span>
+
+        <a asp-controller="Product"
+               asp-action="All"
+               asp-route-currentPage="@(Model.CurrentPage + 1)"
+               asp-route-category="@Model.Category"
+               asp-route-searchTerm="@Model.SearchTerm"
+               asp-route-sorting="@((int)Model.Sorting)"
+               class="inline-flex items-center px-4 py-2 border border-slate-700 text-sm font-medium rounded-lg text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white transition-colors @(shouldButtonBeDisabled ? "opacity-50 pointer-events-none" : "")">
+            Next <i class="bi bi-chevron-right ml-2"></i>
+        </a>
+    </div>
 </div>

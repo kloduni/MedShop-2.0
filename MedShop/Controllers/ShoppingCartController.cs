@@ -44,7 +44,7 @@ namespace MedShop.Controllers
         }
 
 
-        public async Task<IActionResult> AddItemToShoppingCartAsync(int id)
+        public async Task<IActionResult> AddItemToShoppingCart(int id)
         {
             var product = await productService.GetProductByIdAsync(id);
 
@@ -76,7 +76,7 @@ namespace MedShop.Controllers
             return RedirectToAction(nameof(ShoppingCart));
         }
 
-        public async Task<IActionResult> RemoveItemFromShoppingCartAsync(int id)
+        public async Task<IActionResult> RemoveItemFromShoppingCart(int id)
         {
             var cartItem = await shoppingCart.GetCartItemByIdAsync(id);
 

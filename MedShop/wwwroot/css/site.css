@@ -2,3 +2,27 @@
 
 @source "../../Views";
 @source "../../Areas";
+
+@layer base {
+    html {
+        scrollbar-gutter: stable;
+    }
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 5px;
+    border: 2px solid #0f172a;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #475569;
+    }

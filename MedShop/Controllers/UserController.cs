@@ -140,25 +140,5 @@ namespace MedShop.Controllers
 
             return RedirectToAction("Index", "Home");
         }
-
-        public async Task<IActionResult> CreateAdmin()
-        {
-            if (await roleManager.Roles.AnyAsync(r => r.Name == AdminRoleName) == false)
-            {
-                await roleManager.CreateAsync(new IdentityRole(AdminRoleName));
-            }
-
-            var admin = await userManager.FindByEmailAsync(AdminEmail);
-
-            if (await userManager.IsInRoleAsync(admin, AdminRoleName))
-            {
-                TempData[WarningMessage] = AdminExists;
-            }
-
-            await userManager.AddToRoleAsync(admin, AdminRoleName);
-            TempData[SuccessMessage] = AdminCreated;
-
-            return RedirectToAction("Index", "Home");
-        }
     }
 }

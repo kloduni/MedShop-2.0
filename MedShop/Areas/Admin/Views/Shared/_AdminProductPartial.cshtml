@@ -1,37 +1,34 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ProductServiceModel
 
-<div class="col-md-4">
-    <div class="card mb-3">
-        <img class="align-content-center card-img-top" src="@Model.ImageUrl" style="height: 300px;max-width: 400px" alt="Product Image">
-        <div class="card-body text-center">
-            <h4>@Model.ProductName</h4>
-            <h6>
-                Description:
-                <b>@Model.Description</b>
-            </h6>
-            <h6>
-                Category:
-                <b>@Model.Category</b>
-            </h6>
-            <h6>
-                Quantity:
-                <b>@Model.Quantity</b>
-            </h6>
-            <h6>
-                Seller:
-                <b>@Model.Seller</b>
-            </h6>
-            <h6>
-                Price:
-                <b>$@String.Format("{0:f2}", Model.Price)</b>
-            </h6>
-            <br />
-            <a asp-area="Admin" asp-controller="Product" asp-action="Restore" asp-route-id="@Model.Id" class="btn btn-success">
-                <i class="bi bi-bandaid-fill"></i>
-                Restore
-            </a>
-            <p></p>
+<div class="bg-red-50 rounded-xl shadow-md overflow-hidden flex flex-col h-full border border-red-200 opacity-80 hover:opacity-100 transition-opacity">
+    <div class="p-4 border-b border-red-200 bg-red-100 flex-shrink-0 text-center">
+        <h3 class="text-lg font-bold text-red-900 capitalize truncate">@Model.ProductName</h3>
+        <span class="text-xs font-bold uppercase tracking-wider text-red-600">Deleted</span>
+    </div>
+    
+    <div class="flex-grow flex items-center justify-center p-4 bg-white">
+        <img class="max-h-48 object-contain grayscale" src="@Model.ImageUrl" alt="Product Image">
+    </div>
+    
+    <div class="bg-gray-50 border-t border-gray-200 text-sm text-gray-700 flex-shrink-0">
+        <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+            <span>Seller:</span>
+            <span class="font-bold text-gray-900 truncate max-w-[120px]">@Model.Seller</span>
         </div>
+        <div class="flex justify-between px-4 py-2 border-b border-gray-200">
+            <span>Category:</span>
+            <span class="font-bold text-gray-900">@Model.Category</span>
+        </div>
+        <div class="text-center px-4 py-3 bg-white">
+            <span class="text-xl font-bold text-gray-600">$@String.Format("{0:f2}", Model.Price)</span>
+        </div>
+    </div>
+    
+    <div class="p-4 bg-gray-100 flex justify-center mt-auto">
+        <a asp-area="Admin" asp-controller="Product" asp-action="Restore" asp-route-id="@Model.Id"
+               class="inline-flex items-center gap-2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition shadow-sm w-full justify-center">
+            <i class="bi bi-bandaid-fill"></i> Restore Product
+        </a>
     </div>
 </div>

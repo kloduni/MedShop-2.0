@@ -2,48 +2,56 @@
     ViewData["Title"] = "Admin Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome Admin!</h1>
+<div class="text-center mb-10">
+    <h1 class="text-4xl font-extrabold text-gray-900 tracking-tight">Welcome Admin!</h1>
+    <p class="text-gray-500 mt-2 text-lg">System Supervision & Management</p>
 </div>
 
-<p class="text-center h4">
-    Supervision functions
-</p>
-
-<hr class="my-4"/>
-
-<div class="text-center">
-    <a asp-area="Admin" asp-controller="User" asp-action="All"
-       class="btn btn-primary btn-lg">All Users</a>
-    <a asp-area="Admin" asp-controller="Product" asp-action="DeletedProducts"
-       class="btn btn-primary btn-lg">Deleted Products</a>
+<div class="flex flex-wrap justify-center gap-4 mb-12">
+    <a asp-area="Admin" asp-controller="User" asp-action="All" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow transition">
+        <i class="bi bi-people-fill mr-2"></i> Manage Users
+    </a>
+    <a asp-area="Admin" asp-controller="Product" asp-action="DeletedProducts" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg shadow transition">
+        <i class="bi bi-trash-fill mr-2"></i> Deleted Products
+    </a>
 </div>
 
-<div class="mb-5"></div>
-<div class="row">
-    <div class="col-12 text-center">
-        <button class="btn btn-primary" id="statistics-button">Show User Statistics</button>
+<div class="text-center mb-6">
+    <button id="statistics-button" class="px-6 py-2 bg-gray-800 hover:bg-gray-900 text-white font-medium rounded-lg shadow transition">
+        <i class="bi bi-bar-chart-fill mr-2"></i> Load Live Statistics
+    </button>
+</div>
+
+<div id="userStatistics" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+        <h3 class="text-gray-500 text-sm font-semibold uppercase tracking-wider">Total Users</h3>
+        <p id="total-users" class="text-3xl font-bold text-blue-600 mt-2">-</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+        <h3 class="text-gray-500 text-sm font-semibold uppercase tracking-wider">Active Users</h3>
+        <p id="active-users" class="text-3xl font-bold text-green-600 mt-2">-</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+        <h3 class="text-gray-500 text-sm font-semibold uppercase tracking-wider">Total Products</h3>
+        <p id="total-products" class="text-3xl font-bold text-indigo-600 mt-2">-</p>
+    </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 text-center">
+        <h3 class="text-gray-500 text-sm font-semibold uppercase tracking-wider">Active Products</h3>
+        <p id="active-products" class="text-3xl font-bold text-teal-600 mt-2">-</p>
     </div>
 </div>
 
-<div class="mt-4 p-5 bg-light d-none" id="userStatistics">
-    <div class="row">
-        <h2 class="col-md-6 text-center" id="total-users"></h2>
-        <h2 class="col-md-6 text-center" id="total-products"></h2>
-        <h2 class="col-md-6 text-center" id="active-users"></h2>
-        <h2 class="col-md-6 text-center" id="active-products"></h2>
-    </div>
-</div>
 @section Scripts {
     <script>
         $('#statistics-button').on('click', ev => {
             $.get('https://medshopapi.azurewebsites.net/api/usersstatisticsapi', (data) => {
-                $('#total-users').text(data.totalUsers + " users");
-                $('#active-users').text(data.activeUsers + " active users");
-                $('#total-products').text(data.totalProducts + " products");
-                $('#active-products').text(data.activeProducts + " active products");
-                $('#userStatistics').removeClass('d-none');
-                $('#statistics-button').hide();
+                $('#total-users').text(data.totalUsers);
+                $('#active-users').text(data.activeUsers);
+                $('#total-products').text(data.totalProducts);
+                $('#active-products').text(data.activeProducts);
+                
+                $('#userStatistics').removeClass('hidden');
+                $('#statistics-button').fadeOut();
             });
         });
     </script>

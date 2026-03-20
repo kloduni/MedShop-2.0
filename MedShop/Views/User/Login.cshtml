@@ -6,27 +6,27 @@
 }
 
 <div class="max-w-md mx-auto mt-10">
-    <div class="bg-white p-8 rounded-lg shadow-md border border-gray-200">
-        <h1 class="text-3xl font-bold text-center text-blue-600 mb-6 font-serif">@ViewData["Title"]</h1>
+    <div class="bg-slate-900 p-8 rounded-xl shadow-lg border border-slate-700">
+        <h1 class="text-3xl font-bold text-center text-blue-400 mb-6 font-serif">@ViewData["Title"]</h1>
         
         <form id="account" method="post" class="space-y-5">
-            <hr class="border-gray-300 mb-4" />
-            <div asp-validation-summary="ModelOnly" class="text-sm text-red-500 mb-4 text-center"></div>
+            <hr class="border-slate-700 mb-4" />
+            <div asp-validation-summary="ModelOnly" class="text-sm text-red-400 mb-4 text-center"></div>
             
             <div>
-                <label asp-for="@Model.UserName" class="block text-sm font-medium text-gray-700 text-center mb-1">Username</label>
-                <input asp-for="@Model.UserName" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" autocomplete="username" aria-required="true" />
-                <span asp-validation-for="UserName" class="text-xs text-red-500 mt-1 block text-center"></span>
+                <label asp-for="@Model.UserName" class="block text-sm font-medium text-slate-300 text-center mb-1">Username</label>
+                <input asp-for="@Model.UserName" class="w-full px-4 py-2 bg-slate-800 border border-slate-600 text-white rounded-md focus:ring-blue-500 focus:border-blue-500 placeholder-slate-500 transition-colors" autocomplete="username" aria-required="true" />
+                <span asp-validation-for="UserName" class="text-xs text-red-400 mt-1 block text-center"></span>
             </div>
             
             <div>
-                <label asp-for="@Model.Password" class="block text-sm font-medium text-gray-700 text-center mb-1"></label>
-                <input asp-for="@Model.Password" type="password" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" autocomplete="current-password" aria-required="true" />
-                <span asp-validation-for="Password" class="text-xs text-red-500 mt-1 block text-center"></span>
+                <label asp-for="@Model.Password" class="block text-sm font-medium text-slate-300 text-center mb-1"></label>
+                <input asp-for="@Model.Password" type="password" class="w-full px-4 py-2 bg-slate-800 border border-slate-600 text-white rounded-md focus:ring-blue-500 focus:border-blue-500 placeholder-slate-500 transition-colors" autocomplete="current-password" aria-required="true" />
+                <span asp-validation-for="Password" class="text-xs text-red-400 mt-1 block text-center"></span>
             </div>
             
             <div class="pt-4">
-                <button id="login-submit" type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md shadow-sm transition-colors">Log in</button>
+                <button id="login-submit" type="submit" class="w-full py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-md shadow-sm transition-colors">Log in</button>
             </div>
         </form>
     </div>

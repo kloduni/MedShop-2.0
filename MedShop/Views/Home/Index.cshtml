@@ -1,52 +1,55 @@
-﻿@model IEnumerable<ProductServiceModel>
-
-@{
-    ViewData["Title"] = "MedShop";
-    bool first = true;
+﻿@{
+    ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4 text-primary" style="font-family: cursive">Welcome to MedShop!</h1>
-    <p class="text-primary" style="font-family: cursive">Your trading platform for medical consumatives.</p>
+<div class="relative overflow-hidden bg-slate-900 py-16 sm:py-24 lg:py-32 rounded-3xl border border-slate-800 shadow-2xl mt-4 mb-16">
+    <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 right-0 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight mb-6">
+            Next-Generation <br class="hidden sm:block" />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
+                Medical E-Commerce
+            </span>
+        </h1>
+        <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-400 mb-10">
+            MedShop 2.0 is blazingly fast, fully secure, and built on the cutting-edge .NET 10 architecture. Experience the future of healthcare supply logistics.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a asp-controller="Product" asp-action="All" class="inline-flex justify-center items-center px-8 py-3.5 border border-transparent text-base font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-500 shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)] transition-all duration-200">
+                <i class="bi bi-cart3 mr-2"></i> Browse Products
+            </a>
+            <a href="#features" class="inline-flex justify-center items-center px-8 py-3.5 border border-slate-700 text-base font-semibold rounded-lg text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white transition-all duration-200">
+                Learn More
+            </a>
+        </div>
+    </div>
 </div>
 
-@if (!Model.Any())
-{
-    <div class="mt-4 p-5 bg-light">
-        <p class="lead text-center text-primary">
-            There are no products being sold at the moment. Would you like to add one?
-        </p>
-        <hr class="my-4">
-        <p class="lead text-center">
-            <a asp-controller="Product" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Product</a>
-        </p>
+<div id="features" class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12">
+    <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:bg-slate-800 transition-colors duration-300">
+        <div class="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 border border-blue-500/20">
+            <i class="bi bi-lightning-charge-fill text-blue-400 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">.NET 10 Powered</h3>
+        <p class="text-slate-400">Running on the absolute latest Microsoft architecture for maximum performance and minimum latency.</p>
     </div>
-}
 
-<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-    <div class="carousel-inner">
-        @foreach (var product in Model)
-        {
-            <div class="carousel-item @(first ? "active" : string.Empty)">
-                <div class="d-flex justify-content-center">
-                    <img class="d-block w-auto" style="height: 400px" src="@product.ImageUrl" alt="@product.ProductName">
-                </div>
-                <div class="carousel-caption d-none d-md-block">
-                    <h5>
-                        <a class="btn btn-primary" asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" asp-route-information="@product.GetInformation()"> @product.ProductName</a>
-                    </h5>
-                </div>
-            </div>
-
-            first = false;
-        }
+    <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:bg-slate-800 transition-colors duration-300">
+        <div class="w-14 h-14 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-6 border border-indigo-500/20">
+            <i class="bi bi-shield-lock-fill text-indigo-400 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Enterprise Security</h3>
+        <p class="text-slate-400">Identity framework integration with advanced role-based authorization and secure data handling.</p>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-    </button>
+
+    <div class="bg-slate-800/50 border border-slate-700 rounded-2xl p-8 hover:bg-slate-800 transition-colors duration-300">
+        <div class="w-14 h-14 bg-teal-500/10 rounded-xl flex items-center justify-center mb-6 border border-teal-500/20">
+            <i class="bi bi-palette-fill text-teal-400 text-2xl"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Tailwind UI</h3>
+        <p class="text-slate-400">A completely custom, utility-first frontend that abandons rigid templates for pixel-perfect design.</p>
+    </div>
 </div>

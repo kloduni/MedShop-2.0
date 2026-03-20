@@ -1,0 +1,83 @@
+﻿@model ICollection<OrderServiceModel>
+
+@{
+    ViewData["Title"] = "Completed orders";
+}
+
+<h2 class="text-center text-capitalize text-primary" style="font-family: cursive">@ViewBag.Title</h2>
+<hr />
+
+@if (Model.Any())
+{
+    <div class="row">
+        <div class="col-md-8 offset-2">
+            <p>
+                <h4>Your orders</h4>
+            </p>
+
+            <table class="table align-middle">
+                <thead>
+                    <tr class="text-center">
+                        <th>Order ID</th>
+                        <th>Items</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Seller</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td class="align-middle">
+                                <div class="alert text-dark text-decoration-underline">
+                                    @order.Id
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <ul style="list-style-type:none">
+                                    @foreach (var item in order.OrderItems)
+                                    {
+                                        <li>
+                                            <div class="alert bg-secondary text-dark" role="alert">
+                                                [@item.Price.ToString("c")] - @item.ProductName
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </td>
+                            <td class="align-middle">
+                                <ul style="list-style-type:none">
+                                    @foreach (var item in order.OrderItems)
+                                    {
+                                        <li>
+                                            <div class="alert bg-secondary text-dark">
+                                                @item.Amount pcs
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </td>
+                            <td class="align-middle">
+                                <div class="alert bg-secondary text-dark">
+                                    $@order.TotalPrice
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div class="alert bg-secondary text-dark">
+                                    @order.UserName
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <h3 class="text-center"> You have no orders yet!</h3>
+}

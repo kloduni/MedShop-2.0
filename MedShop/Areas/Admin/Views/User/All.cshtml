@@ -1,0 +1,48 @@
+﻿@model IEnumerable<UserServiceModel>
+
+@{
+    ViewBag.Title = "All Users";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th><label>Username</label></th>
+            <th><label>Email</label></th>
+            <th><label>Status</label></th>
+            <th><label>Action</label></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td><label>@user.UserName</label></td>
+                <td><label>@user.Email</label></td>
+                <td>
+                    @if (user.IsActive)
+                    {
+                        <label>✔</label>
+                    }
+                    else
+                    {
+                        <label class="text-center">❌</label>
+                    }
+                </td>
+                <td>
+                    <a asp-area="Admin" asp-controller="User" asp-action="Ban" asp-route-userId="@user.UserId" class="btn btn-danger">
+                        <i class="bi bi-person-x-fill"></i>
+                        Ban
+                    </a>
+                    <a asp-area="Admin" asp-controller="User" asp-action="Unban" asp-route-userId="@user.UserId" class="btn btn-success">
+                        <i class="bi bi-person-check-fill"></i>
+                        Unban
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

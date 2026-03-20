@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ProductServiceModel
+
+<div class="col-md-4">
+    <div class="card mb-3">
+        <img class="align-content-center card-img-top" src="@Model.ImageUrl" style="height: 300px;max-width: 400px" alt="Product Image">
+        <div class="card-body text-center">
+            <h4>@Model.ProductName</h4>
+            <h6>
+                Description:
+                <b>@Model.Description</b>
+            </h6>
+            <h6>
+                Category:
+                <b>@Model.Category</b>
+            </h6>
+            <h6>
+                Quantity:
+                <b>@Model.Quantity</b>
+            </h6>
+            <h6>
+                Seller:
+                <b>@Model.Seller</b>
+            </h6>
+            <h6>
+                Price:
+                <b>$@String.Format("{0:f2}", Model.Price)</b>
+            </h6>
+            <br />
+            <a asp-area="Admin" asp-controller="Product" asp-action="Restore" asp-route-id="@Model.Id" class="btn btn-success">
+                <i class="bi bi-bandaid-fill"></i>
+                Restore
+            </a>
+            <p></p>
+        </div>
+    </div>
+</div>

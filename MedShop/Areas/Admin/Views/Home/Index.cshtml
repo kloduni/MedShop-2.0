@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "Admin Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome Admin!</h1>
+</div>
+
+<p class="text-center h4">
+    Supervision functions
+</p>
+
+<hr class="my-4"/>
+
+<div class="text-center">
+    <a asp-area="Admin" asp-controller="User" asp-action="All"
+       class="btn btn-primary btn-lg">All Users</a>
+    <a asp-area="Admin" asp-controller="Product" asp-action="DeletedProducts"
+       class="btn btn-primary btn-lg">Deleted Products</a>
+</div>
+
+<div class="mb-5"></div>
+<div class="row">
+    <div class="col-12 text-center">
+        <button class="btn btn-primary" id="statistics-button">Show User Statistics</button>
+    </div>
+</div>
+
+<div class="mt-4 p-5 bg-light d-none" id="userStatistics">
+    <div class="row">
+        <h2 class="col-md-6 text-center" id="total-users"></h2>
+        <h2 class="col-md-6 text-center" id="total-products"></h2>
+        <h2 class="col-md-6 text-center" id="active-users"></h2>
+        <h2 class="col-md-6 text-center" id="active-products"></h2>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $('#statistics-button').on('click', ev => {
+            $.get('https://medshopapi.azurewebsites.net/api/usersstatisticsapi', (data) => {
+                $('#total-users').text(data.totalUsers + " users");
+                $('#active-users').text(data.activeUsers + " active users");
+                $('#total-products').text(data.totalProducts + " products");
+                $('#active-products').text(data.activeProducts + " active products");
+                $('#userStatistics').removeClass('d-none');
+                $('#statistics-button').hide();
+            });
+        });
+    </script>
+}

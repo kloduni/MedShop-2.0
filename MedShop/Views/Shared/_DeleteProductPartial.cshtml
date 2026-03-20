@@ -1,0 +1,35 @@
+﻿@model ProductServiceModel
+
+<div class="row">
+    <div class="col-md-3">
+        <img class="card-img-top" src="@Model.ImageUrl" alt="Product Image">
+    </div>
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form method="post">
+            <input type="hidden" asp-for="@Model.Id"/>
+            <div class="form-group">
+                <label asp-for="ProductName" class="control-label"></label>
+                <input asp-for="ProductName" class="form-control" disabled="disabled" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <input asp-for="Category" class="form-control" disabled="disabled" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" disabled="disabled" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" disabled="disabled" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Seller" class="control-label"></label>
+                <input asp-for="Seller" class="form-control" disabled="disabled" />
+            </div>
+            <div class="text-center">
+                <input asp-route-information="@Model.GetInformation()" class="btn btn-danger mt-3" type="submit" value="Delete"/>
+            </div>
+        </form>
+    </div>
+</div>

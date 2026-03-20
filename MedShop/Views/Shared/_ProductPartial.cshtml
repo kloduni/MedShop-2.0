@@ -1,0 +1,43 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model ProductServiceModel
+
+<div class="col-md-4">
+    <div class="card mb-3">
+        <div class="card-body text-center text-white bg-secondary" style="font-family: monospace">
+            <h3 class="card-header bg-white text-black text-capitalize" style="font-size: 25px"><b>@Model.ProductName</b></h3>
+            <img class="align-content-center card-img-top" src="@Model.ImageUrl" style="height: 300px; max-width: 400px" alt="Product Image">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item bg-secondary text-dark" style="font-size: 17px">
+                    Seller:
+                    <b>@Model.Seller</b>
+                </li>
+                <li class="list-group-item bg-secondary text-dark" style="font-size: 17px">
+                    Category:
+                    <b>@Model.Category</b>
+                </li>
+                <li class="list-group-item bg-secondary text-dark" style="font-size: 17px">
+                    Quantity:
+                    <b>@Model.Quantity</b>
+                </li>
+                <li class="list-group-item bg-secondary text-black" style="font-size: 22px">
+                    <b>$@String.Format("{0:f2}", Model.Price)</b>
+                </li>
+            </ul>
+            <br />
+        </div>
+        <div class="text-center text-white bg-secondary">
+            <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()" class="btn btn-warning">
+                <i class="bi bi-info-circle-fill"></i>
+                Details
+            </a>
+            @if (this.User?.Identity?.IsAuthenticated ?? false)
+            {
+                <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id" class="btn btn-success">
+                    <i class="bi bi-bag-check-fill"></i>
+                    Buy
+                </a>
+                <p></p>
+            }
+        </div>
+    </div>
+</div>

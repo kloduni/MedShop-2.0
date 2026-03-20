@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "Enter Product Details";
+}
+
+<h2 class="text-center text-capitalize text-primary" style="font-family: cursive">@ViewBag.Title</h2>
+<hr/>
+
+<partial name="_ProductFormPartial" model="@Model"/>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial"/>
+}

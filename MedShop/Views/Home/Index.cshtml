@@ -1,0 +1,52 @@
+﻿@model IEnumerable<ProductServiceModel>
+
+@{
+    ViewData["Title"] = "MedShop";
+    bool first = true;
+}
+
+<div class="text-center">
+    <h1 class="display-4 text-primary" style="font-family: cursive">Welcome to MedShop!</h1>
+    <p class="text-primary" style="font-family: cursive">Your trading platform for medical consumatives.</p>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="mt-4 p-5 bg-light">
+        <p class="lead text-center text-primary">
+            There are no products being sold at the moment. Would you like to add one?
+        </p>
+        <hr class="my-4">
+        <p class="lead text-center">
+            <a asp-controller="Product" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Product</a>
+        </p>
+    </div>
+}
+
+<div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        @foreach (var product in Model)
+        {
+            <div class="carousel-item @(first ? "active" : string.Empty)">
+                <div class="d-flex justify-content-center">
+                    <img class="d-block w-auto" style="height: 400px" src="@product.ImageUrl" alt="@product.ProductName">
+                </div>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5>
+                        <a class="btn btn-primary" asp-controller="Product" asp-action="Details" asp-route-id="@product.Id" asp-route-information="@product.GetInformation()"> @product.ProductName</a>
+                    </h5>
+                </div>
+            </div>
+
+            first = false;
+        }
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>

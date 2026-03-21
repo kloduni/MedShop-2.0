@@ -1,7 +1,10 @@
 @import "tailwindcss";
 
-@source "../../Views";
-@source "../../Areas";
+@source "../../Views/**/*.cshtml";
+@source "../../Areas/**/*.cshtml";
+@source "../../Pages/**/*.cshtml";
+
+@custom-variant hover (&:hover);
 
 @layer base {
     html {

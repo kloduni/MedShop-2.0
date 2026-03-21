@@ -46,8 +46,8 @@
 	<ItemGroup>
 		<ProjectReference Include="..\MedShop.Core\MedShop.Core.csproj" />
 	</ItemGroup>
-	
+
 	<Target Name="Tailwind" BeforeTargets="Build">
-		<Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/site.css -o ./wwwroot/css/tailwind.output.css" />
+		<Exec Command="npx @tailwindcss/cli -i ./wwwroot/css/site.css -o ./wwwroot/css/tailwind.output.css" WorkingDirectory="$(ProjectDir)" />
 	</Target>
 </Project>

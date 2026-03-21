@@ -70,7 +70,8 @@ namespace MedShop.Core.Services
                     Price = p.Price,
                     Category = p.Category.Name,
                     Quantity = p.Quantity,
-                    Seller = p.UsersProducts.Select(up => up.User.UserName).First()
+                    Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
+                    SellerId = p.UsersProducts.Select(up => up.UserId).First()
                 })
                 .ToListAsync();
 
@@ -203,7 +204,8 @@ namespace MedShop.Core.Services
                     Price = p.Price,
                     Category = p.Category.Name,
                     Quantity = p.Quantity,
-                    Seller = p.UsersProducts.Select(up => up.User.UserName).First()
+                    Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
+                    SellerId = p.UsersProducts.Select(up => up.UserId).First()
                 })
                 .FirstAsync();
         }
@@ -226,7 +228,8 @@ namespace MedShop.Core.Services
                     Price = p.Price,
                     Category = p.Category.Name,
                     Quantity = p.Quantity,
-                    Seller = p.UsersProducts.Select(up => up.User.UserName).First()
+                    Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
+                    SellerId = p.UsersProducts.Select(up => up.UserId).First()
                 })
                 .ToListAsync();
         }
@@ -355,7 +358,8 @@ namespace MedShop.Core.Services
                         Price = p.Price,
                         Category = p.Category.Name,
                         Quantity = p.Quantity,
-                        Seller = p.UsersProducts.Select(up => up.User.UserName).First()
+                        Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
+                        SellerId = p.UsersProducts.Select(up => up.UserId).First()
                     })
                     .ToListAsync();
 

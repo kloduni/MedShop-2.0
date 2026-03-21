@@ -21,5 +21,7 @@ namespace MedShop.Core.Models.Product
         public int Quantity { get; set; }
 
         public string Seller { get; set; } = null!;
+
+        public string SellerId { get; set; } = string.Empty;
     }
 }

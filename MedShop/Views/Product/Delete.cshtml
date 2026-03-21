@@ -1,13 +1,69 @@
-﻿@{
+﻿@model ProductServiceModel
+@using static MedShop.Core.Constants.User.AdminConstants
+
+@{
     ViewBag.Title = "Delete Product";
 }
 
-<h2 class="text-center capitalize text-blue-600 font-serif text-3xl font-bold mb-4">@ViewBag.Title</h2>
-<hr class="border-gray-300 mb-6" />
+<div class="max-w-5xl mx-auto py-10 px-4">
+    <div class="text-center mb-10">
+        <h2 class="text-3xl font-black text-white tracking-tight uppercase">Confirm Deletion</h2>
+        <p class="text-red-400 mt-2 flex items-center justify-center gap-2 font-medium">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            This action is permanent and cannot be reversed.
+        </p>
+    </div>
 
-<partial name="_DeleteProductPartial" model="@Model" />
+    <div class="flex flex-col md:flex-row gap-8 items-start">
+        <div class="md:w-1/3 w-full shrink-0">
+            <div class="relative overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 p-4 shadow-2xl">
+                <img class="w-full h-auto object-contain rounded-lg" src="@Model.ImageUrl" alt="Product Image">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent"></div>
+            </div>
+        </div>
+        
+        <div class="md:w-2/3 w-full bg-slate-900 p-8 rounded-2xl shadow-2xl border border-slate-700">
+            <form method="post" asp-route-information="@Model.GetInformation()" class="space-y-5">
+                <input type="hidden" asp-for="@Model.Id" />
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Product Name</label>
+                        <div class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-300 font-medium">@Model.ProductName</div>
+                    </div>
 
-@section Scripts
-{
-    <partial name="_ValidationScriptsPartial" />
-}
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Category</label>
+                        <div class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-300">@Model.Category</div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Price</label>
+                        <div class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-emerald-400 font-bold">$@Model.Price.ToString("F2")</div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Description</label>
+                        <div class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-400 italic text-sm">@Model.Description</div>
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-2">Seller</label>
+                        <div class="w-full px-4 py-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-300 flex items-center gap-2">
+                            <i class="bi bi-person-circle text-blue-400"></i> @Model.Seller
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 pt-8 mt-4 border-t border-slate-800">
+                    <a asp-action="All" class="flex-1 text-center px-6 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all active:scale-95 border border-slate-700">
+                        Cancel
+                    </a>
+                    <button type="submit" class="flex-1 px-6 py-4 bg-red-600 hover:bg-red-500 text-white font-black rounded-xl shadow-[0_0_25px_rgba(220,38,38,0.3)] transition-all active:scale-95 uppercase tracking-widest text-sm">
+                        Confirm Delete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

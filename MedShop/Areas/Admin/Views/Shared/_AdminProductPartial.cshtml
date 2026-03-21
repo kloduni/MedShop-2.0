@@ -1,34 +1,41 @@
 ﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model ProductServiceModel
 
-<div class="bg-red-50 rounded-xl shadow-md overflow-hidden flex flex-col h-full border border-red-200 opacity-80 hover:opacity-100 transition-opacity">
-    <div class="p-4 border-b border-red-200 bg-red-100 flex-shrink-0 text-center">
-        <h3 class="text-lg font-bold text-red-900 capitalize truncate">@Model.ProductName</h3>
-        <span class="text-xs font-bold uppercase tracking-wider text-red-600">Deleted</span>
+<div class="group bg-slate-900/80 rounded-2xl shadow-xl overflow-hidden flex flex-col h-full border border-red-900/30 transition-all duration-300 hover:border-red-600/50 hover:shadow-[0_15px_30px_rgba(220,38,38,0.1)]">
+    
+    <div class="p-4 border-b border-slate-800 bg-slate-950/50 flex flex-col items-center gap-1">
+        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-red-500 bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20 mb-1">
+            Archived / Deleted
+        </span>
+        <h3 class="text-lg font-bold text-slate-300 capitalize truncate w-full text-center">@Model.ProductName</h3>
     </div>
     
-    <div class="flex-grow flex items-center justify-center p-4 bg-white">
-        <img class="max-h-48 object-contain grayscale" src="@Model.ImageUrl" alt="Product Image">
+    <div class="aspect-[4/3] p-6 bg-slate-950 flex items-center justify-center relative">
+        <img class="max-h-40 object-contain grayscale opacity-40 group-hover:opacity-60 transition-opacity duration-500"
+             src="@Model.ImageUrl" alt="Deleted Product">
+        
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-60"></div>
     </div>
     
-    <div class="bg-gray-50 border-t border-gray-200 text-sm text-gray-700 flex-shrink-0">
-        <div class="flex justify-between px-4 py-2 border-b border-gray-200">
-            <span>Seller:</span>
-            <span class="font-bold text-gray-900 truncate max-w-[120px]">@Model.Seller</span>
+    <div class="p-5 flex-grow bg-slate-900/50 border-t border-slate-800 text-sm">
+        <div class="flex justify-between items-center mb-2">
+            <span class="text-slate-500 text-xs font-bold uppercase tracking-widest">Seller</span>
+            <span class="text-slate-300 font-medium">@Model.Seller</span>
         </div>
-        <div class="flex justify-between px-4 py-2 border-b border-gray-200">
-            <span>Category:</span>
-            <span class="font-bold text-gray-900">@Model.Category</span>
+        <div class="flex justify-between items-center mb-4">
+            <span class="text-slate-500 text-xs font-bold uppercase tracking-widest">Category</span>
+            <span class="text-slate-300 font-medium">@Model.Category</span>
         </div>
-        <div class="text-center px-4 py-3 bg-white">
-            <span class="text-xl font-bold text-gray-600">$@String.Format("{0:f2}", Model.Price)</span>
+        
+        <div class="text-center py-3 bg-slate-950/50 rounded-xl border border-slate-800 mb-4">
+            <span class="text-xl font-black text-slate-500">$@Model.Price.ToString("F2")</span>
         </div>
-    </div>
-    
-    <div class="p-4 bg-gray-100 flex justify-center mt-auto">
-        <a asp-area="Admin" asp-controller="Product" asp-action="Restore" asp-route-id="@Model.Id"
-               class="inline-flex items-center gap-2 px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition shadow-sm w-full justify-center">
-            <i class="bi bi-bandaid-fill"></i> Restore Product
-        </a>
+
+        <div class="mt-auto">
+            <a asp-area="Admin" asp-controller="Product" asp-action="Restore" asp-route-id="@Model.Id"
+                   class="flex justify-center items-center gap-2 w-full py-3 bg-emerald-600/10 hover:bg-emerald-600 text-emerald-500 hover:text-white font-black text-xs uppercase tracking-widest rounded-xl border border-emerald-600/20 transition-all active:scale-95 shadow-lg shadow-emerald-900/20">
+                <i class="bi bi-patch-plus-fill text-lg"></i> Restore Product
+            </a>
+        </div>
     </div>
 </div>

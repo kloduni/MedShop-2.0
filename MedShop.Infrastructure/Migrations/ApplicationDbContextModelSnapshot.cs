@@ -37,7 +37,7 @@ namespace MedShop.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -97,7 +97,7 @@ namespace MedShop.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("MedShop.Infrastructure.Data.Models.OrderItem", b =>
@@ -126,7 +126,7 @@ namespace MedShop.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("MedShop.Infrastructure.Data.Models.Product", b =>
@@ -167,7 +167,7 @@ namespace MedShop.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
 
                     b.HasData(
                         new
@@ -326,7 +326,7 @@ namespace MedShop.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ShoppingCartItems");
+                    b.ToTable("ShoppingCartItems", (string)null);
                 });
 
             modelBuilder.Entity("MedShop.Infrastructure.Data.Models.User", b =>
@@ -464,7 +464,7 @@ namespace MedShop.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("UsersProducts");
+                    b.ToTable("UsersProducts", (string)null);
 
                     b.HasData(
                         new

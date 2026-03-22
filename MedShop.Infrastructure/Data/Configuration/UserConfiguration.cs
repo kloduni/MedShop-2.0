@@ -26,7 +26,8 @@ namespace MedShop.Infrastructure.Data.Configuration
                 Email = "admin@medshop.com",
                 NormalizedEmail = "admin@medshop.com",
                 PasswordHash = "AQAAAAIAAYagAAAAEEC93LkGA1IblokFJD/R69GtPP5iUOvhMRI0EeT257PPE5qr8DZdn4TnoBZcG+YPDA==",
-                // Add these two lines to all users:
+                // ConcurrencyStamp and SecurityStamp are hardcoded so that every database
+                // creation produces identical seed rows and migration snapshots stay stable.
                 ConcurrencyStamp = "8c350119-9236-407d-a169-2fdf07e4d283",
                 SecurityStamp = "0a5b8207-6bb3-4d2c-8ab5-f2d4e7de4eb0"
             };
@@ -40,7 +41,6 @@ namespace MedShop.Infrastructure.Data.Configuration
                 Email = "guest@medshop.com",
                 NormalizedEmail = "guest@medshop.com",
                 PasswordHash = "AQAAAAIAAYagAAAAEJKa30JvACzHXUvKYL463Ov4nPvw2uKouDeMxPQPe9V0JQmWnghIg7tkLioViIrpHQ==",
-                // Hardcoded stamps
                 ConcurrencyStamp = "e95222c5-7f4c-47fc-8f6a-fbaeb0ccdaaf",
                 SecurityStamp = "7b686259-873b-486d-b8de-fae7826359eb"
             };
@@ -54,7 +54,6 @@ namespace MedShop.Infrastructure.Data.Configuration
                 Email = "guest1@medshop.com",
                 NormalizedEmail = "guest1@medshop.com",
                 PasswordHash = "AQAAAAIAAYagAAAAEJB9OkGYgADBwQDJcDPt/IUTtyPnO/fDaeHjGK9rVbuc7cyEMWLN50zXsRExiITBHw==",
-                // Hardcoded stamps
                 ConcurrencyStamp = "f2868ff8-e6b7-4a00-bf69-7ee4a66a1e8a",
                 SecurityStamp = "1d5ef264-b52a-4fdf-9767-f584fdf6e64c"
             };

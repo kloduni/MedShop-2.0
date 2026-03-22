@@ -2,7 +2,6 @@
 
 <script>
     $(function () {
-        // 1. Apply the configuration first
         toastr.options = {
             "positionClass": "toast-bottom-right",
             "progressBar": true,
@@ -13,7 +12,6 @@
             "extendedTimeOut": "1000"
         };
 
-        // 2. Fire the appropriate message
         @if (TempData[MessageConstants.ErrorMessage] != null)
         {
                 @:toastr.error('@TempData[MessageConstants.ErrorMessage].ToString()');

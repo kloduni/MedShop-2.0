@@ -3,6 +3,12 @@ using System.Globalization;
 
 namespace MedShop.ModelBinders
 {
+    /// <summary>
+    /// Custom model binder for <see cref="decimal"/> that normalises both '.' and ',' to the
+    /// current culture's decimal separator before parsing.  This is necessary because form
+    /// inputs submitted from browsers in different locales may use either character as the
+    /// decimal point, and the default binder rejects whichever is not the server's separator.
+    /// </summary>
     public class DecimalModelBinder : IModelBinder
     {
         public Task BindModelAsync(ModelBindingContext bindingContext)

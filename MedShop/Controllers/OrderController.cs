@@ -42,9 +42,10 @@ namespace MedShop.Controllers
 
             var items = shoppingCart.GetShoppingCartItems();
 
-
             string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
 
+            // Reduce stock quantities, persist the order, then clear the cart so it is
+            // empty for the next purchase session.
             await productService.ReduceProductAmount(items);
             await orderService.StoreOrderAsync(items, userId, userEmailAddress);
             await shoppingCart.ClearShoppingCartAsync();

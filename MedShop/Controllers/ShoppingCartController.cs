@@ -66,7 +66,9 @@ namespace MedShop.Controllers
             var existingCartItem = cartItems.FirstOrDefault(i => i.Product.Id == id);
             int amountAlreadyInCart = existingCartItem?.Amount ?? 0;
 
-            // Prevent adding if it exceeds the store's inventory
+            // Guard against adding more units than are actually in stock.  We compare the
+            // amount already in the cart (not just the current request) so repeated "add"
+            // clicks cannot collectively exceed the available inventory.
             if (amountAlreadyInCart >= product.Quantity)
             {
                 TempData[ErrorMessage] = ProductQuantityDepleted;

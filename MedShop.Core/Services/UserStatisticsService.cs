@@ -15,10 +15,6 @@ namespace MedShop.Core.Services
             repo = _repo;
         }
 
-        /// <summary>
-        /// Gets user and product info
-        /// </summary>
-        /// <returns></returns>
         public async Task<StatisticsViewModel> UsersInfo()
         {
             int totalUsers = await repo.AllReadonly<User>()

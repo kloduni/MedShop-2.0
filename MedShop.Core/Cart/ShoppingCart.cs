@@ -20,10 +20,10 @@ namespace MedShop.Core.Cart
         public ICollection<ShoppingCartItem> ShoppingCartItems { get; set; }
 
         /// <summary>
-        /// Gets/Creates shopping cart with session
+        /// Retrieves the current user's shopping cart from the session, creating one with a new
+        /// GUID if no cart ID exists yet.  The GUID is persisted in the session so the same
+        /// cart is reused for the duration of the browser session.
         /// </summary>
-        /// <param name="services"></param>
-        /// <returns></returns>
         public static ShoppingCart GetShoppingCart(IServiceProvider services)
         {
             ISession? session = services.GetRequiredService<IHttpContextAccessor>()?.HttpContext?.Session;
@@ -37,11 +37,6 @@ namespace MedShop.Core.Cart
             };
         }
 
-        /// <summary>
-        /// Adds product to shopping cart
-        /// </summary>
-        /// <param name="product"></param>
-        /// <returns></returns>
         public async Task AddItemToCartAsync(Product product)
         {
             var shoppingCartItem = await repo.All<ShoppingCartItem>().FirstOrDefaultAsync(i => i.Product.Id == product.Id && i.ShoppingCartId == ShoppingCartId);
@@ -65,11 +60,6 @@ namespace MedShop.Core.Cart
             await repo.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Removes product from shopping cart
-        /// </summary>
-        /// <param name="cartItem"></param>
-        /// <returns></returns>
         public async Task RemoveItemFromCartAsync(ShoppingCartItem cartItem)
         {
             var shoppingCartItem = await repo.All<ShoppingCartItem>()
@@ -90,10 +80,6 @@ namespace MedShop.Core.Cart
             await repo.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Gets items currently in shopping cart
-        /// </summary>
-        /// <returns></returns>
         public ICollection<ShoppingCartItem> GetShoppingCartItems()
         {
             return ShoppingCartItems ?? (ShoppingCartItems = repo.All<ShoppingCartItem>()
@@ -102,11 +88,6 @@ namespace MedShop.Core.Cart
                 .ToList());
         }
 
-        /// <summary>
-        /// Gets cart item by item Id
-        /// </summary>
-        /// <param name="cartItemId"></param>
-        /// <returns></returns>
         public async Task<ShoppingCartItem> GetCartItemByIdAsync(int cartItemId)
         {
             return await repo.AllReadonly<ShoppingCartItem>()
@@ -114,19 +95,11 @@ namespace MedShop.Core.Cart
                 .FirstOrDefaultAsync();
         }
 
-        /// <summary>
-        /// Gets shopping cart total price
-        /// </summary>
-        /// <returns></returns>
         public async Task<double> GetShoppingCartTotalAsync() => await repo.All<ShoppingCartItem>()
             .Where(n => n.ShoppingCartId == ShoppingCartId)
             .Select(n => (double)(n.Product.Price * n.Amount))
             .SumAsync();
 
-        /// <summary>
-        /// Clears shopping cart items
-        /// </summary>
-        /// <returns></returns>
         public async Task ClearShoppingCartAsync()
         {
             var items = await repo.All<ShoppingCartItem>()

@@ -9,11 +9,13 @@ namespace MedShop.Infrastructure.Data
     {
         private bool seedDb;
 
+        /// <param name="seed">
+        /// Pass <c>false</c> in unit tests to skip seed data so migrations aren't applied against
+        /// an in-memory database and foreign-key constraints remain predictable.
+        /// </param>
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, bool seed = true)
             : base(options)
         {
-            // UNCOMMENT WHEN CREATING DB
-
             seedDb = seed;
         }
 
@@ -28,6 +30,8 @@ namespace MedShop.Infrastructure.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // UserProduct uses a composite primary key to model the many-to-many relationship
+            // between users (sellers) and products.
             builder.Entity<UserProduct>()
                 .HasKey(up => new {up.UserId, up.ProductId});
 

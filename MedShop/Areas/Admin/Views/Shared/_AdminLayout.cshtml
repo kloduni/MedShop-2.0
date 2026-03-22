@@ -56,7 +56,6 @@
 
             <div class="flex-shrink-0">
                 <div class="flex items-center gap-2 md:gap-4">
-                    @await Component.InvokeAsync("ShoppingCartSummary")
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -92,6 +91,7 @@
     </footer>
 
     <script src="~/lib/toastr/toastr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <partial name="_UserMessages" />
 
     @await RenderSectionAsync("Scripts", required: false)

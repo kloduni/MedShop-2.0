@@ -36,6 +36,7 @@
                     // Visual Success!
                     button.innerHTML = '<i class="bi bi-check-circle-fill"></i> Added!';
                     button.classList.replace('bg-blue-600', 'bg-emerald-600');
+                    button.classList.replace('hover:bg-blue-500', 'hover:bg-emerald-500'); // <-- Add this!
 
                     // Update the Cart Notification Badge
                     const badge = document.getElementById('cart-badge-count');
@@ -48,25 +49,28 @@
                     setTimeout(() => {
                         button.innerHTML = originalText;
                         button.classList.replace('bg-emerald-600', 'bg-blue-600');
+                        button.classList.replace('hover:bg-emerald-500', 'hover:bg-blue-500'); // <-- Add this!
                         button.disabled = false;
                     }, 2000);
                 } else {
 
                     // Change the button to a Red Error State
-                    button.innerHTML = '<i class="bi bi-x-circle-fill"></i> Your Product';
+                    button.innerHTML = '<i class="bi bi-x-circle-fill"></i> Unavailable';
                     button.classList.replace('bg-blue-600', 'bg-red-600');
+                    button.classList.replace('hover:bg-blue-500', 'hover:bg-red-500'); // <-- Add this!
 
                     // Show friendly warning using Toastr if there's a specific message
                     if (data.message) {
                         toastr.warning(data.message, 'Notice');
                     }
 
-                    // Reset the button back to normal (Blue) after 3 seconds
+                    // Reset the button back to normal (Blue) after 2 seconds
                     setTimeout(() => {
                         button.innerHTML = originalText;
                         button.classList.replace('bg-red-600', 'bg-blue-600');
+                        button.classList.replace('hover:bg-red-500', 'hover:bg-blue-500'); // <-- Add this!
                         button.disabled = false;
-                    }, 3000);
+                    }, 2000);
                 }
             } catch (error) {
                 console.error("Network or Fetch error:", error);

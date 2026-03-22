@@ -1,12 +1,17 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using MedShop.Infrastructure.Data.Models
+@using MedShop.Core.Cart
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
+@inject ShoppingCart ShoppingCartService
 
 <ul class="flex items-center gap-3 lg:gap-4">
     @if (SignInManager.IsSignedIn(User))
     {
+        var currentCartItems = ShoppingCartService.GetShoppingCartItems();
+        int initialCartCount = currentCartItems?.Sum(i => i.Amount) ?? 0;
+
         <li class="flex items-center gap-3 flex-wrap justify-end">
             <a class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors flex items-center gap-1.5"
                    asp-area="" asp-controller="Product" asp-action="Add">
@@ -25,7 +30,7 @@
             <a class="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors flex items-center gap-1.5 relative mr-2"
                    asp-area="" asp-controller="ShoppingCart" asp-action="ShoppingCart">
                 <i class="bi bi-cart3 text-lg"></i> <span class="hidden xl:inline">Cart</span>
-                <span id="cart-badge-count" class="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full hidden">0</span>
+                <span id="cart-badge-count" class="absolute -top-2 -right-3 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full @(initialCartCount > 0 ? "" : "hidden")">@initialCartCount</span>
             </a>
 
             <span class="text-slate-700">|</span>

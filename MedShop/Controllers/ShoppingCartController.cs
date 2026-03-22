@@ -43,54 +43,81 @@ namespace MedShop.Controllers
             return View(response);
         }
 
-
-        public async Task<IActionResult> AddItemToShoppingCart(int id)
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> AddItemJson(int id)
         {
             var product = await productService.GetProductByIdAsync(id);
 
             if (product == null)
-            {
-                TempData[ErrorMessage] = ProductDoesNotExist;
-
-                return RedirectToAction("All", "Product");
-            }
+                return Json(new { success = false, message = ProductDoesNotExist });
 
             if (product.UsersProducts.Any(up => up.UserId == User.Id()) && User.IsInRole(AdminRoleName) == false)
-            {
-                TempData[WarningMessage] = ProductBelongsToUser;
-
-                return RedirectToAction("All", "Product");
-            }
+                return Json(new { success = false, message = ProductBelongsToUser });
 
             var cartItems = shoppingCart.GetShoppingCartItems();
             var existingCartItem = cartItems.FirstOrDefault(i => i.Product.Id == id);
             int amountAlreadyInCart = existingCartItem?.Amount ?? 0;
 
-            // Guard against adding more units than are actually in stock.  We compare the
-            // amount already in the cart (not just the current request) so repeated "add"
-            // clicks cannot collectively exceed the available inventory.
             if (amountAlreadyInCart >= product.Quantity)
-            {
-                TempData[ErrorMessage] = ProductQuantityDepleted;
-
-                return RedirectToAction(nameof(ShoppingCart));
-            }
+                return Json(new { success = false, message = ProductQuantityDepleted });
 
             await shoppingCart.AddItemToCartAsync(product);
 
-            return RedirectToAction(nameof(ShoppingCart));
+            shoppingCart.ShoppingCartItems = null;
+            var updatedItems = shoppingCart.GetShoppingCartItems();
+            var updatedItem = updatedItems.FirstOrDefault(i => i.Product.Id == id);
+
+            int newAmount = updatedItem?.Amount ?? 0;
+            decimal subtotal = newAmount * product.Price;
+            double grandTotal = await shoppingCart.GetShoppingCartTotalAsync();
+            int totalItems = updatedItems.Sum(i => i.Amount);
+
+            return Json(new
+            {
+                success = true,
+                newAmount = newAmount,
+                subtotalFormatted = subtotal.ToString("c"),
+                grandTotalFormatted = grandTotal.ToString("c"),
+                grandTotalRaw = grandTotal,
+                cartCount = totalItems,
+                message = "Added to cart!"
+            });
         }
 
-        public async Task<IActionResult> RemoveItemFromShoppingCart(int id)
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> RemoveItemJson(int id)
         {
             var cartItem = await shoppingCart.GetCartItemByIdAsync(id);
 
-            if (cartItem != null)
-            {
-                await shoppingCart.RemoveItemFromCartAsync(cartItem);
-            }
+            if (cartItem == null)
+                return Json(new { success = false, message = "Item not found" });
 
-            return RedirectToAction(nameof(ShoppingCart));
+            await shoppingCart.RemoveItemFromCartAsync(cartItem);
+
+            shoppingCart.ShoppingCartItems = null;
+            var updatedItems = shoppingCart.GetShoppingCartItems();
+            var updatedItem = updatedItems.FirstOrDefault(i => i.Id == id);
+
+            int newAmount = updatedItem?.Amount ?? 0;
+
+            decimal price = cartItem.Product?.Price ?? 0;
+            if (price == 0 && updatedItem != null) price = updatedItem.Product.Price;
+
+            decimal subtotal = newAmount * price;
+            double grandTotal = await shoppingCart.GetShoppingCartTotalAsync();
+            int totalItems = updatedItems.Sum(i => i.Amount);
+
+            return Json(new
+            {
+                success = true,
+                newAmount = newAmount,
+                subtotalFormatted = subtotal.ToString("c"),
+                grandTotalFormatted = grandTotal.ToString("c"),
+                grandTotalRaw = grandTotal,
+                cartCount = totalItems
+            });
         }
 
         public async Task<IActionResult> ClearCart()

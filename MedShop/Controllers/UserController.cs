@@ -105,7 +105,6 @@ namespace MedShop.Controllers
                 if (!user.IsActive)
                 {
                     TempData[ErrorMessage] = Banned;
-
                     return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
                 }
 
@@ -113,16 +112,8 @@ namespace MedShop.Controllers
 
                 if (result.Succeeded)
                 {
-                    if (HttpContext.Session.GetString("UserId") == null)
-                    {
-                        HttpContext.Session.SetString("UserId", user.Id);
-                    }
-
-                    if(HttpContext.Session.GetString("UserId") != user.Id)
-                    {
-                        HttpContext.Session.SetString("CartId", Guid.NewGuid().ToString());
-                        HttpContext.Session.SetString("UserId", user.Id);
-                    }
+                    HttpContext.Session.Remove("CartId");
+                    HttpContext.Session.SetString("UserId", user.Id);
 
                     if (await userManager.IsInRoleAsync(user, AdminRoleName))
                     {
@@ -141,6 +132,9 @@ namespace MedShop.Controllers
 
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Remove("CartId");
+            HttpContext.Session.Remove("UserId");
+
             await signInManager.SignOutAsync();
 
             return RedirectToAction("Index", "Home");

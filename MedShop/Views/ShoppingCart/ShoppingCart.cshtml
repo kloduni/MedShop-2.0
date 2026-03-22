@@ -27,7 +27,7 @@
                 <tbody class="divide-y divide-slate-800/50">
                     @foreach (var item in Model.ShoppingCart.ShoppingCartItems)
                     {
-                        <tr class="hover:bg-slate-800/20 transition-colors">
+                        <tr id="cart-row-@item.Id" class="hover:bg-slate-800/20 transition-colors">
                             <td class="px-6 py-5 whitespace-nowrap text-sm font-medium text-white">
                                 @item.Product.ProductName
                             </td>
@@ -35,23 +35,23 @@
                                 @item.Product.Price.ToString("c")
                             </td>
                             <td class="px-6 py-5 whitespace-nowrap text-sm text-slate-300 text-center">
-                                <span class="bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 font-mono">
+                                <span id="qty-@item.Id" class="bg-slate-800 px-3 py-1 rounded-lg border border-slate-700 font-mono transition-all duration-300">
                                     @item.Amount
                                 </span>
                             </td>
-                            <td class="px-6 py-5 whitespace-nowrap text-sm font-bold text-blue-400">
+                            <td id="subtotal-@item.Id" class="px-6 py-5 whitespace-nowrap text-sm font-bold text-blue-400 transition-all duration-300">
                                 @((item.Amount * item.Product.Price).ToString("c"))
                             </td>
                             <td class="px-6 py-5 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end gap-4">
-                                    <a class="text-slate-400 hover:text-red-400 transition-colors hover:scale-110"
-                                           asp-controller="ShoppingCart" asp-action="RemoveItemFromShoppingCart" asp-route-id="@item.Id" title="Remove One">
-                                        <i class="bi bi-dash-circle-fill text-xl"></i>
-                                    </a>
-                                    <a class="text-slate-400 hover:text-emerald-400 transition-colors hover:scale-110"
-                                           asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@item.Product.Id" title="Add One">
-                                        <i class="bi bi-plus-circle-fill text-xl"></i>
-                                    </a>
+                                    <button class="cart-action-btn text-slate-400 hover:text-red-400 transition-colors hover:scale-110 disabled:opacity-50"
+                                            data-action="remove" data-cartitem-id="@item.Id" title="Remove One">
+                                        <i class="bi bi-dash-circle-fill text-xl pointer-events-none"></i>
+                                    </button>
+                                    <button class="cart-action-btn text-slate-400 hover:text-emerald-400 transition-colors hover:scale-110 disabled:opacity-50"
+                                            data-action="add" data-product-id="@item.Product.Id" data-cartitem-id="@item.Id" title="Add One">
+                                        <i class="bi bi-plus-circle-fill text-xl pointer-events-none"></i>
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -61,7 +61,7 @@
                     <tr>
                         <td colspan="2" class="px-6 py-5"></td>
                         <td class="px-6 py-5 whitespace-nowrap text-sm font-bold text-slate-300 text-right uppercase tracking-wider">Total:</td>
-                        <td class="px-6 py-5 whitespace-nowrap text-lg font-black text-emerald-400">
+                        <td id="grand-total-display" class="px-6 py-5 whitespace-nowrap text-lg font-black text-emerald-400 transition-all duration-300">
                             @Model.ShoppingCartTotal.ToString("c")
                         </td>
                         <td class="px-6 py-5"></td>
@@ -98,6 +98,74 @@
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
     <script>
         let _total = @Html.Raw(Model.ShoppingCartTotal);
+
+        document.querySelectorAll('.cart-action-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+                
+        const action = btn.getAttribute('data-action');
+        const cartItemId = btn.getAttribute('data-cartitem-id');
+        const productId = btn.getAttribute('data-product-id');
+                
+        btn.disabled = true;
+                
+        let url = action === 'add'
+        ? `/ShoppingCart/AddItemJson?id=${productId}`
+        : `/ShoppingCart/RemoveItemJson?id=${cartItemId}`;
+                
+        try {
+        const res = await fetch(url, { method: 'POST' });
+        const text = await res.text();
+                    
+        if (!res.ok) {
+        console.error("Server Error:", text);
+        toastr.error("An error occurred connecting to the server.", "Error");
+        btn.disabled = false;
+        return;
+        }
+
+        const data = JSON.parse(text);
+                    
+        if (data.success) {
+        if (action === 'remove' && data.newAmount === 0) {
+        document.getElementById(`cart-row-${cartItemId}`).remove();
+        } else if (action === 'remove' || action === 'add') {
+        const targetId = action === 'add' ? cartItemId || productId : cartItemId;
+                            
+        document.getElementById(`qty-${cartItemId}`).innerText = data.newAmount;
+        document.getElementById(`subtotal-${cartItemId}`).innerText = data.subtotalFormatted;
+                            
+        document.getElementById(`qty-${cartItemId}`).classList.add('text-amber-400');
+        setTimeout(() => document.getElementById(`qty-${cartItemId}`).classList.remove('text-amber-400'), 300);
+        }
+                        
+        document.getElementById('grand-total-display').innerText = data.grandTotalFormatted;
+                        
+        const badge = document.getElementById('cart-badge-count');
+        if (badge) {
+        badge.innerText = data.cartCount;
+        if (data.cartCount === 0) {
+        badge.classList.add('hidden');
+        window.location.reload();
+        } else {
+        badge.classList.remove('hidden');
+        }
+        }
+                        
+        _total = data.grandTotalRaw;
+                        
+        } else {
+        toastr.warning(data.message || "Action could not be completed.", "Notice");
+        }
+        } catch (err) {
+        console.error("Fetch error:", err);
+        toastr.error("An error occurred. Check the console.", "Error");
+        } finally {
+        btn.disabled = false;
+        }
+        });
+        });
+
         paypal.Button.render({
         env: 'sandbox',
         client: {

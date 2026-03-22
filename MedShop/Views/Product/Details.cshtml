@@ -8,68 +8,121 @@
     var isOwnerOrAdmin = User.Identity?.IsAuthenticated == true && (Model.SellerId == currentUserId || User.IsInRole(AdminRoleName));
 }
 
-<div class="max-w-6xl mx-auto py-8 px-4">
-    <div class="flex flex-col lg:flex-row gap-12 bg-slate-900 rounded-3xl p-8 border border-slate-700 shadow-2xl relative overflow-hidden">
-        
-        <div class="absolute -top-24 -right-24 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl"></div>
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <a asp-action="All" class="text-slate-400 hover:text-blue-400 transition-colors flex items-center gap-2 text-sm font-bold uppercase tracking-widest">
+            <i class="bi bi-arrow-left"></i> Back to Catalog
+        </a>
+    </div>
 
-        <div class="lg:w-1/2 flex items-center justify-center bg-slate-800/30 rounded-2xl border border-slate-800 p-6">
-            <img class="max-h-[500px] w-auto object-contain rounded-lg shadow-2xl transition-transform duration-500 hover:scale-105"
-                 src="@Model.ImageUrl" alt="@Model.ProductName">
-        </div>
+    <div class="bg-slate-900 rounded-[2.5rem] p-4 lg:p-10 border border-slate-700/50 shadow-2xl relative overflow-hidden">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-emerald-600/5 rounded-full blur-[100px] pointer-events-none"></div>
 
-        <div class="lg:w-1/2 flex flex-col">
-            <div class="mb-6">
-                <span class="px-3 py-1 bg-blue-600/20 text-blue-400 text-xs font-bold uppercase tracking-wider rounded-full border border-blue-600/30">
-                    @Model.Category
-                </span>
-                <h2 class="text-4xl font-black text-white mt-4 mb-2 capitalize">@Model.ProductName</h2>
-                <p class="text-slate-400 text-lg leading-relaxed">@Model.Description</p>
-            </div>
-
-            <div class="grid grid-cols-2 gap-6 py-6 border-y border-slate-800 my-4">
-                <div>
-                    <span class="text-slate-500 text-xs uppercase font-bold tracking-widest block mb-1">Seller</span>
-                    <span class="text-white font-medium flex items-center gap-2">
-                        <i class="bi bi-person-badge text-blue-400"></i> @Model.Seller
-                    </span>
-                </div>
-                <div>
-                    <span class="text-slate-500 text-xs uppercase font-bold tracking-widest block mb-1">Stock Availability</span>
-                    <span class="text-white font-medium flex items-center gap-2">
-                        <i class="bi bi-box-seam text-blue-400"></i> @Model.Quantity units
-                    </span>
+        <div class="flex flex-col lg:flex-row gap-12 relative z-10">
+            
+            <div class="lg:w-1/2 group">
+                <div class="aspect-square bg-slate-950/50 rounded-[2rem] border border-slate-800 p-12 flex items-center justify-center relative overflow-hidden shadow-inner">
+                    <img class="max-h-full w-auto object-contain transition-transform duration-700 group-hover:scale-110 drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                         src="@Model.ImageUrl" alt="@Model.ProductName">
+                    
+                    <div class="absolute bottom-6 right-6 bg-slate-900/80 backdrop-blur-md p-3 rounded-full border border-slate-700 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="bi bi-zoom-in text-blue-400"></i>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-auto pt-6 flex flex-col gap-6">
-                <div class="flex items-baseline gap-4">
-                    <span class="text-4xl font-black text-emerald-400">$@Model.Price.ToString("F2")</span>
-                    <span class="text-slate-500 text-sm italic">Includes standard medical handling fees</span>
-                </div>
-
-                <div class="flex flex-col sm:flex-row gap-4">
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id"
-                               class="flex-[2] flex justify-center items-center gap-3 px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all active:scale-95">
-                            <i class="bi bi-cart-plus-fill text-xl"></i> Add to Shopping Cart
-                        </a>
-                    }
-
-                    @if (isOwnerOrAdmin)
-                    {
-                        <div class="flex flex-1 gap-2">
-                            <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
-                                   class="flex-1 flex justify-center items-center bg-amber-600/20 text-amber-400 border border-amber-600/30 hover:bg-amber-600 hover:text-white rounded-2xl transition-all active:scale-95">
-                                <i class="bi bi-pencil-square"></i>
-                            </a>
-                            <a asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
-                                   class="flex-1 flex justify-center items-center bg-red-600/20 text-red-400 border border-red-600/30 hover:bg-red-600 hover:text-white rounded-2xl transition-all active:scale-95">
-                                <i class="bi bi-trash"></i>
-                            </a>
+            <div class="lg:w-1/2 flex flex-col">
+                <div class="mb-8">
+                    <span class="inline-flex items-center px-4 py-1.5 bg-blue-600/10 text-blue-400 text-xs font-black uppercase tracking-[0.2em] rounded-full border border-blue-500/20 backdrop-blur-md mb-6">
+                        @Model.Category
+                    </span>
+                    <h2 class="text-5xl font-black text-white mb-4 tracking-tight leading-tight">@Model.ProductName</h2>
+                    
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="flex text-amber-400 gap-1">
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-fill"></i>
+                            <i class="bi bi-star-half"></i>
                         </div>
-                    }
+                        <span class="text-slate-500 text-sm font-medium border-l border-slate-800 pl-4">Verified Professional Grade</span>
+                    </div>
+
+                    <p class="text-slate-400 text-lg leading-relaxed font-medium">@Model.Description</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                    <div class="bg-slate-800/40 rounded-2xl p-4 border border-slate-700/50">
+                        <span class="text-slate-500 text-[10px] uppercase font-black tracking-widest block mb-1">Authorized Seller</span>
+                        <span class="text-white font-bold flex items-center gap-2">
+                            <div class="w-6 h-6 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                <i class="bi bi-shield-check text-blue-400 text-xs"></i>
+                            </div>
+                            @Model.Seller
+                        </span>
+                    </div>
+                    <div class="bg-slate-800/40 rounded-2xl p-4 border border-slate-700/50">
+                        <span class="text-slate-500 text-[10px] uppercase font-black tracking-widest block mb-1">In Stock</span>
+                        <span class="text-white font-bold flex items-center gap-2">
+                            <div class="w-6 h-6 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                                <i class="bi bi-box-seam text-emerald-400 text-xs"></i>
+                            </div>
+                            @Model.Quantity Units
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-auto bg-slate-950/30 rounded-3xl p-8 border border-slate-800/50">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <span class="text-slate-500 text-xs font-bold uppercase tracking-widest block mb-1">Unit Price</span>
+                            <span class="text-5xl font-black text-emerald-400 drop-shadow-[0_0_15px_rgba(52,211,153,0.3)]">$@Model.Price.ToString("F2")</span>
+                        </div>
+                        <div class="text-right hidden sm:block">
+                            <span class="text-slate-500 text-[10px] font-bold uppercase tracking-tighter block italic">Quality Guaranteed</span>
+                            <div class="flex gap-2 mt-1">
+                                <i class="bi bi-patch-check-fill text-blue-500"></i>
+                                <i class="bi bi-truck text-slate-600"></i>
+                                <i class="bi bi-award text-slate-600"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id"
+                                   class="group relative flex justify-center items-center gap-3 px-8 py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-[0_15px_30px_rgba(16,185,129,0.2)] transition-all active:scale-95 overflow-hidden">
+                                <div class="absolute inset-0 w-1/4 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-[45deg] -translate-x-[200%] group-hover:translate-x-[400%] transition-transform duration-1000"></div>
+                                
+                                <i class="bi bi-cart-plus-fill text-2xl"></i>
+                                <span class="uppercase tracking-widest text-sm">Add To Order</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login"
+                                   class="flex justify-center items-center gap-3 px-8 py-5 bg-slate-800 hover:bg-slate-700 text-slate-300 font-black rounded-2xl border border-slate-700 transition-all">
+                                <i class="bi bi-lock-fill"></i> Sign in to Purchase
+                            </a>
+                        }
+
+                        @if (isOwnerOrAdmin)
+                        {
+                            <div class="flex gap-3 mt-2">
+                                <a asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
+                                       class="flex-1 flex justify-center items-center gap-2 py-4 bg-amber-600/10 text-amber-500 border border-amber-600/30 hover:bg-amber-600 hover:text-white rounded-2xl font-bold transition-all active:scale-95">
+                                    <i class="bi bi-pencil-square"></i> Edit Listing
+                                </a>
+                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
+                                       class="flex-1 flex justify-center items-center gap-2 py-4 bg-red-600/10 text-red-400 border border-red-600/30 hover:bg-red-600 hover:text-white rounded-2xl font-bold transition-all active:scale-95">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>

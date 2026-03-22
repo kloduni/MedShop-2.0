@@ -4,27 +4,41 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
-<ul class="flex items-center gap-4">
+<ul class="flex items-center gap-3 lg:gap-4">
     @if (SignInManager.IsSignedIn(User))
     {
-        <li class="flex items-center gap-3">
+        <li class="flex items-center gap-3 flex-wrap justify-end">
+            <a class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors flex items-center gap-1.5"
+                   asp-area="" asp-controller="Product" asp-action="Add">
+                <i class="bi bi-plus-circle"></i> <span class="hidden xl:inline">Sell</span>
+            </a>
+
+            <span class="text-slate-700">|</span>
+
+            <a class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors flex items-center gap-1.5"
+                   asp-area="" asp-controller="Product" asp-action="MyProducts">
+                <i class="bi bi-shop"></i> <span class="hidden xl:inline">My Products</span>
+            </a>
+
+            <span class="text-slate-700">|</span>
+
             <a class="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors flex items-center gap-1.5"
                    asp-area="" asp-controller="Order" asp-action="All">
-                <i class="bi bi-box-seam"></i> My Orders
+                <i class="bi bi-receipt"></i> <span class="hidden xl:inline">My Orders</span>
             </a>
 
             <span class="text-slate-700">|</span>
 
             <a class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors flex items-center gap-1.5"
                    asp-area="" asp-controller="User" asp-action="Manage" title="Manage Profile">
-                <i class="bi bi-person-circle"></i> @User.Identity?.Name
+                <i class="bi bi-person-circle"></i> <span class="hidden lg:inline">@User.Identity?.Name</span>
             </a>
 
             <span class="text-slate-700">|</span>
 
-            <form class="inline" asp-controller="User" asp-action="Logout" asp-route-id="@UserManager.GetUserId(User)">
+            <form class="inline m-0 p-0" asp-area="" asp-controller="User" asp-action="Logout" asp-route-id="@UserManager.GetUserId(User)">
                 <button type="submit" class="text-sm font-medium text-slate-300 hover:text-red-400 transition-colors flex items-center gap-1.5">
-                    <i class="bi bi-box-arrow-right"></i> Logout
+                    <i class="bi bi-box-arrow-right"></i> <span class="hidden lg:inline">Logout</span>
                 </button>
             </form>
         </li>

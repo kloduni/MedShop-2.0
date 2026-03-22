@@ -9,16 +9,18 @@
 
 <div class="group bg-slate-900 rounded-2xl shadow-xl overflow-hidden flex flex-col h-full border border-slate-700/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)] hover:border-blue-500/30 relative">
     
-    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+    <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()" class="absolute inset-0 z-10" aria-label="View details for @Model.ProductName"></a>
+
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
 
     <div class="aspect-[4/3] p-6 bg-slate-950/50 relative overflow-hidden flex items-center justify-center">
         <img class="max-h-40 object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-lg" src="@Model.ImageUrl" alt="@Model.ProductName">
-        <div class="absolute top-3 left-3 px-3 py-1 bg-blue-600/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest rounded-full border border-blue-600/30 backdrop-blur-sm z-20">
+        <div class="absolute top-3 left-3 px-3 py-1 bg-blue-600/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest rounded-full border border-blue-600/30 backdrop-blur-sm">
             @Model.Category
         </div>
     </div>
     
-    <div class="p-5 flex-grow bg-slate-900 border-t border-slate-800 flex flex-col justify-between relative z-20">
+    <div class="p-5 flex-grow bg-slate-900 border-t border-slate-800 flex flex-col justify-between">
         <div>
             <h3 class="text-lg font-black text-white capitalize truncate mb-1 group-hover:text-blue-400 transition-colors">@Model.ProductName</h3>
             <p class="text-xs text-slate-500 flex items-center gap-1 mb-4">
@@ -31,21 +33,21 @@
             </div>
         </div>
         
-        <div class="space-y-3 mt-auto">
-            <div class="flex gap-2">
-                <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
-                       class="flex-1 flex justify-center items-center gap-2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-bold rounded-lg transition-all duration-200 active:scale-95 border border-slate-600 hover:border-slate-500 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(148,163,184,0.3)]">
-                    <i class="bi bi-eye-fill"></i> View
+        <div class="space-y-3 mt-auto relative z-20">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id"
+                       class="w-full flex justify-center items-center gap-2 py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all duration-200 active:scale-95 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)] hover:-translate-y-1">
+                    <i class="bi bi-cart-plus-fill text-lg"></i> Add to Cart
                 </a>
-                
-                @if (User.Identity?.IsAuthenticated == true)
-                {
-                    <a asp-controller="ShoppingCart" asp-action="AddItemToShoppingCart" asp-route-id="@Model.Id"
-                           class="flex-[1.5] flex justify-center items-center gap-2 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-lg transition-all duration-200 active:scale-95 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)] hover:-translate-y-1">
-                        <i class="bi bi-cart-plus-fill text-sm"></i> Add
-                    </a>
-                }
-            </div>
+            }
+            else
+            {
+                <a asp-area="Identity" asp-page="/Account/Login"
+                       class="w-full flex justify-center items-center gap-2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl border border-slate-700 transition-all duration-200 active:scale-95">
+                    <i class="bi bi-lock-fill"></i> Sign in to buy
+                </a>
+            }
 
             @if (isOwnerOrAdmin)
             {

@@ -11,7 +11,7 @@ namespace MedShop.Core.Contracts
             string? searchTerm = null,
             ProductSorting sorting = ProductSorting.Newest,
             int currentPage = 1,
-            int productsPerPage = 1);
+            int productsPerPage = 8);
 
         Task<IEnumerable<ProductServiceModel>> AllCarousel();
         Task<IEnumerable<string>> AllCategoriesNamesAsync();

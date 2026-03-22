@@ -22,14 +22,14 @@ namespace MedShop.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> All([FromQuery]AllProductsQueryModel query)
+        public async Task<IActionResult> All([FromQuery] AllProductsQueryModel query)
         {
             var result = await productService.All(
                 query.Category,
                 query.SearchTerm,
                 query.Sorting,
                 query.CurrentPage,
-                AllProductsQueryModel.ProductsPerPage);
+                query.ProductsPerPage);
 
             query.TotalProductsCount = result.TotalProductsCount;
             query.Categories = await productService.AllCategoriesNamesAsync();

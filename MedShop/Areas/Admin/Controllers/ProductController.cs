@@ -24,7 +24,7 @@ namespace MedShop.Areas.Admin.Controllers
                 query.SearchTerm,
                 query.Sorting,
                 query.CurrentPage,
-                AllProductsQueryModel.ProductsPerPage);
+                query.ProductsPerPage);
 
             query.TotalProductsCount = result.TotalProductsCount;
             query.Categories = await productService.AllCategoriesNamesAsync();

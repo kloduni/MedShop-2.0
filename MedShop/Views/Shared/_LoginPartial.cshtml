@@ -8,20 +8,38 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="flex items-center gap-3">
-            <a class="text-sm font-medium text-slate-300 hover:text-white transition" asp-area="" asp-controller="User" asp-action="Manage" title="Manage">
-                Hello, <span class="text-blue-400">@User.Identity?.Name</span>!
+            <a class="text-sm font-medium text-slate-300 hover:text-emerald-400 transition-colors flex items-center gap-1.5"
+                   asp-area="" asp-controller="Order" asp-action="All">
+                <i class="bi bi-box-seam"></i> My Orders
             </a>
+
             <span class="text-slate-700">|</span>
+
+            <a class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors flex items-center gap-1.5"
+                   asp-area="" asp-controller="User" asp-action="Manage" title="Manage Profile">
+                <i class="bi bi-person-circle"></i> @User.Identity?.Name
+            </a>
+
+            <span class="text-slate-700">|</span>
+
             <form class="inline" asp-controller="User" asp-action="Logout" asp-route-id="@UserManager.GetUserId(User)">
-                <button type="submit" class="text-sm font-medium text-slate-300 hover:text-red-400 transition-colors">Logout</button>
+                <button type="submit" class="text-sm font-medium text-slate-300 hover:text-red-400 transition-colors flex items-center gap-1.5">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
             </form>
         </li>
     }
     else
     {
         <li class="flex items-center gap-4">
-            <a class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors" asp-area="" asp-controller="User" asp-action="Register">Register</a>
-            <a class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+            <a class="text-sm font-medium text-slate-300 hover:text-blue-400 transition-colors"
+                   asp-area="" asp-controller="User" asp-action="Register">
+                Register
+            </a>
+            <a class="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg transition-all shadow-[0_0_10px_rgba(37,99,235,0.3)] hover:shadow-[0_0_15px_rgba(37,99,235,0.5)]"
+                   asp-area="" asp-controller="User" asp-action="Login">
+                Login
+            </a>
         </li>
     }
 </ul>

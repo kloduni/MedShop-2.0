@@ -1,15 +1,15 @@
 ﻿@model ICollection<MedShop.Core.Models.Order.OrderServiceModel>
 
 @{
-    ViewData["Title"] = "Completed Orders";
+    ViewData["Title"] = "Global Order Management";
 }
 
 <div class="max-w-6xl mx-auto mt-10 px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-8">
         <h2 class="text-3xl font-bold text-white flex items-center justify-center gap-3">
-            <i class="bi bi-receipt text-blue-500"></i> @ViewData["Title"]
+            <i class="bi bi-globe2 text-blue-500"></i> @ViewData["Title"]
         </h2>
-        <p class="text-slate-400 mt-2">View your past purchases and order details.</p>
+        <p class="text-slate-400 mt-2">View all completed purchases across the entire platform.</p>
     </div>
 
     @if (Model.Any())
@@ -22,8 +22,8 @@
                             <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Order ID</th>
                             <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">Items Purchased</th>
                             <th scope="col" class="px-6 py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Quantity</th>
-                            <th scope="col" class="px-6 py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Total</th>
-                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Seller</th>
+                            <th scope="col" class="px-6 py-4 text-center text-xs font-bold text-slate-400 uppercase tracking-wider">Total Revenue</th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">Buyer Account</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-800/50">
@@ -31,7 +31,7 @@
                         {
                             <tr class="hover:bg-slate-800/20 transition-colors">
                                 <td class="px-6 py-5 whitespace-nowrap align-middle">
-                                    <div class="text-sm text-blue-400 font-mono bg-blue-500/10 px-3 py-1 rounded-lg border border-blue-500/20 inline-block">
+                                    <div class="text-sm text-emerald-400 font-mono bg-emerald-500/10 px-3 py-1 rounded-lg border border-emerald-500/20 inline-block">
                                         #@order.Id
                                     </div>
                                 </td>
@@ -41,7 +41,7 @@
                                         {
                                             <li>
                                                 <div class="px-3 py-1.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg text-sm inline-flex items-center gap-2">
-                                                    <span class="text-emerald-400 font-mono">@item.Price.ToString("c")</span>
+                                                    <span class="text-blue-400 font-mono">@item.Price.ToString("c")</span>
                                                     <span class="text-slate-500">|</span>
                                                     @item.ProductName
                                                 </div>
@@ -68,7 +68,7 @@
                                 </td>
                                 <td class="px-6 py-5 whitespace-nowrap align-middle text-right">
                                     <div class="px-3 py-1.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-lg text-sm inline-flex items-center gap-2">
-                                        <i class="bi bi-shop text-blue-400"></i> @order.UserName
+                                        <i class="bi bi-person-badge text-blue-400"></i> @order.UserName
                                     </div>
                                 </td>
                             </tr>
@@ -82,14 +82,10 @@
     {
         <div class="bg-slate-900 rounded-2xl shadow-xl border border-slate-700/50 p-12 text-center">
             <div class="w-24 h-24 bg-slate-800 text-slate-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i class="bi bi-box-seam text-4xl"></i>
+                <i class="bi bi-receipt text-4xl"></i>
             </div>
-            <h3 class="text-2xl text-white font-semibold mb-2">No orders found</h3>
-            <p class="text-slate-400 mb-8">You haven't purchased anything yet. Time to change that!</p>
-            <a asp-controller="Product" asp-action="All"
-                   class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl transition-all active:scale-95 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)]">
-                Browse Products
-            </a>
+            <h3 class="text-2xl text-white font-semibold mb-2">No global orders yet</h3>
+            <p class="text-slate-400 mb-8">Once users start checking out, their orders will appear here.</p>
         </div>
     }
 </div>

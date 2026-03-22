@@ -1,8 +1,30 @@
-﻿<div class="max-w-2xl mx-auto mt-10 px-4 sm:px-6">
-    <div class="bg-green-100 border border-green-400 text-green-700 px-6 py-8 rounded-lg shadow-md text-center">
-        <h2 class="text-2xl font-bold mb-4">Order completed successfully!</h2>
-        <p class="text-lg mb-4">You can check all your orders in the Orders section.</p>
-        <hr class="border-green-300 my-4" />
-        <p class="text-lg font-semibold">Thank you!</p>
+﻿@{
+    ViewData["Title"] = "Order Complete";
+}
+
+<div class="max-w-2xl mx-auto mt-16 px-4 sm:px-6">
+    <div class="bg-slate-900 rounded-2xl shadow-xl border border-emerald-500/30 overflow-hidden text-center p-10 relative">
+        
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-32 bg-emerald-500/20 blur-3xl rounded-full pointer-events-none"></div>
+
+        <div class="relative z-10">
+            <div class="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/20 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                <i class="bi bi-check-lg text-4xl font-bold"></i>
+            </div>
+            
+            <h2 class="text-3xl font-bold text-white mb-4">Order Completed Successfully!</h2>
+            <p class="text-slate-400 text-lg mb-8">Your payment has been processed and your items are confirmed.</p>
+            
+            <div class="flex items-center justify-center gap-4">
+                <a asp-controller="Order" asp-action="All"
+                       class="px-6 py-3 bg-transparent border border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white text-sm font-bold rounded-xl transition-all">
+                    View My Orders
+                </a>
+                <a asp-controller="Product" asp-action="All"
+                       class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl transition-all active:scale-95 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)]">
+                    Continue Shopping
+                </a>
+            </div>
+        </div>
     </div>
 </div>

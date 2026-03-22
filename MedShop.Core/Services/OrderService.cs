@@ -49,6 +49,33 @@ namespace MedShop.Core.Services
         }
 
         /// <summary>
+        /// Gets ALL orders globally for Admins
+        /// </summary>
+        public async Task<ICollection<OrderServiceModel>> GetAllOrdersAsync()
+        {
+            return await repo.All<Order>()
+                .OrderByDescending(o => o.Id) // Show newest orders first
+                .Select(o => new OrderServiceModel()
+                {
+                    Id = o.Id,
+                    OrderItems = repo.All<OrderItem>()
+                        .Where(oi => oi.Order.Id == o.Id)
+                        .Select(oi => new OrderItemServiceModel()
+                        {
+                            Id = oi.Id,
+                            Price = oi.Price,
+                            Amount = oi.Amount,
+                            ProductName = oi.Product.ProductName
+                        })
+                        .ToList(),
+                    // Show the email as username for admins, since they can see all orders
+                    UserName = o.Email,
+                    TotalPrice = o.OrderItems.Sum(oi => oi.Price * oi.Amount).ToString("f2")
+                })
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Gets orders by user Id
         /// </summary>
         /// <param name="userId"></param>

@@ -62,16 +62,19 @@ namespace MedShop.Controllers
                 return RedirectToAction("All", "Product");
             }
 
-            if (product.Quantity <= 0)
+            var cartItems = shoppingCart.GetShoppingCartItems();
+            var existingCartItem = cartItems.FirstOrDefault(i => i.Product.Id == id);
+            int amountAlreadyInCart = existingCartItem?.Amount ?? 0;
+
+            // Prevent adding if it exceeds the store's inventory
+            if (amountAlreadyInCart >= product.Quantity)
             {
                 TempData[ErrorMessage] = ProductQuantityDepleted;
 
-                return RedirectToAction("All", "Product");
+                return RedirectToAction(nameof(ShoppingCart));
             }
 
-
             await shoppingCart.AddItemToCartAsync(product);
-
 
             return RedirectToAction(nameof(ShoppingCart));
         }

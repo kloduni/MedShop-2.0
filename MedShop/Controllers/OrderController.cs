@@ -1,10 +1,10 @@
-﻿using MedShop.Core.Contracts;
-using Microsoft.AspNetCore.Mvc;
+﻿using MedShop.Core.Cart;
+using MedShop.Core.Contracts;
 using MedShop.Extensions;
-using MedShop.Core.Cart;
+using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static MedShop.Core.Constants.MessageConstants;
 using static MedShop.Core.Constants.Cart.ShoppingCartConstants;
+using static MedShop.Core.Constants.MessageConstants;
 
 namespace MedShop.Controllers
 {

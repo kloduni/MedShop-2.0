@@ -2,8 +2,8 @@
 using MedShop.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using static MedShop.Core.Constants.User.AdminConstants;
 using static MedShop.Core.Constants.MessageConstants;
+using static MedShop.Core.Constants.User.AdminConstants;
 
 namespace MedShop.Areas.Admin.Controllers
 {

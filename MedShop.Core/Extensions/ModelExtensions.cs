@@ -1,5 +1,5 @@
-﻿using System.Text;
-using MedShop.Core.Contracts;
+﻿using MedShop.Core.Contracts;
+using System.Text;
 
 namespace MedShop.Core.Extensions
 {

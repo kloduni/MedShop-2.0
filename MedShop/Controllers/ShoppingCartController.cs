@@ -1,10 +1,10 @@
-﻿using MedShop.Core.Models.ShoppingCart;
+﻿using MedShop.Core.Cart;
+using MedShop.Core.Contracts;
+using MedShop.Core.Models.ShoppingCart;
 using MedShop.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using MedShop.Core.Contracts;
-using MedShop.Core.Cart;
-using static MedShop.Core.Constants.MessageConstants;
 using static MedShop.Core.Constants.Cart.ShoppingCartConstants;
+using static MedShop.Core.Constants.MessageConstants;
 using static MedShop.Core.Constants.Product.ProductConstants;
 using static MedShop.Core.Constants.User.AdminConstants;
 

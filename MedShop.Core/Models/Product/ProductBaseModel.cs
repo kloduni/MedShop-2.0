@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using MedShop.Core.Contracts;
+﻿using MedShop.Core.Contracts;
+using System.ComponentModel.DataAnnotations;
 
 namespace MedShop.Core.Models.Product
 {

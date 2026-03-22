@@ -1,9 +1,9 @@
-﻿using MedShop.Models;
-using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-using MedShop.Core.Contracts;
+﻿using MedShop.Core.Contracts;
+using MedShop.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using static MedShop.Core.Constants.User.AdminConstants;
 
 namespace MedShop.Controllers

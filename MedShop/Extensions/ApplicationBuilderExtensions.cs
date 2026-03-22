@@ -1,6 +1,6 @@
-﻿using static MedShop.Core.Constants.User.AdminConstants;
-using MedShop.Infrastructure.Data.Models;
+﻿using MedShop.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Identity;
+using static MedShop.Core.Constants.User.AdminConstants;
 
 namespace MedShop.Extensions
 {

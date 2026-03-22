@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using static MedShop.Core.Constants.MessageConstants;
-using static MedShop.Core.Constants.User.UserConstants;
 using static MedShop.Core.Constants.User.AdminConstants;
+using static MedShop.Core.Constants.User.UserConstants;
 
 namespace MedShop.Controllers
 {

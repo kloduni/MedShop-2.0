@@ -1,5 +1,5 @@
-﻿using System.Globalization;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Globalization;
 
 namespace MedShop.ModelBinders
 {

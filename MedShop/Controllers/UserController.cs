@@ -3,7 +3,6 @@ using MedShop.Infrastructure.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using static MedShop.Core.Constants.MessageConstants;
 using static MedShop.Core.Constants.User.UserConstants;
@@ -145,6 +144,84 @@ namespace MedShop.Controllers
             await signInManager.SignOutAsync();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Manage()
+        {
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData[ErrorMessage] = UserNotFound;
+                return RedirectToAction("Index", "Home");
+            }
+
+            var model = new ManageViewModel
+            {
+                Email = user.Email
+            };
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Manage(ManageViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var user = await userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                TempData[ErrorMessage] = UserNotFound;
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (user.Email != model.Email)
+            {
+                user.Email = model.Email;
+                var emailResult = await userManager.UpdateAsync(user);
+
+                if (!emailResult.Succeeded)
+                {
+                    foreach (var error in emailResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(model);
+                }
+            }
+
+            if (!string.IsNullOrEmpty(model.NewPassword))
+            {
+                if (string.IsNullOrEmpty(model.CurrentPassword))
+                {
+                    ModelState.AddModelError(string.Empty, "Current password is required to set a new password.");
+                    return View(model);
+                }
+
+                var passwordResult = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+                if (!passwordResult.Succeeded)
+                {
+                    foreach (var error in passwordResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                    return View(model);
+                }
+
+                await signInManager.RefreshSignInAsync(user);
+                TempData[SuccessMessage] = PasswordChanged;
+                return RedirectToAction(nameof(Manage));
+            }
+
+            TempData[SuccessMessage] = ProfileUpdated;
+            return RedirectToAction(nameof(Manage));
         }
     }
 }

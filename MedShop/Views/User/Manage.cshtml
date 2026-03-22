@@ -1,0 +1,84 @@
+﻿@model MedShop.Core.Models.User.ManageViewModel
+
+@{
+    ViewData["Title"] = "Manage Profile";
+}
+
+<div class="max-w-2xl mx-auto mt-10">
+    <div class="bg-slate-900 rounded-2xl shadow-xl border border-slate-700/50 overflow-hidden">
+        
+        <div class="px-8 py-6 border-b border-slate-800 bg-slate-900/50">
+            <h2 class="text-2xl font-bold text-white flex items-center gap-3">
+                <i class="bi bi-person-badge text-blue-500"></i>
+                Account Settings
+            </h2>
+            <p class="text-slate-400 text-sm mt-1">Manage your email and security preferences.</p>
+        </div>
+
+        <div class="p-8">
+            <form asp-action="Manage" method="post" class="space-y-8">
+                <div asp-validation-summary="ModelOnly" class="text-red-400 text-sm bg-red-900/20 border border-red-500/30 p-3 rounded-lg mb-6"></div>
+
+                <div>
+                    <label asp-for="Email" class="block text-sm font-medium text-slate-300 mb-2"></label>
+                    <div class="relative group">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="bi bi-envelope text-slate-400 group-focus-within:text-blue-500 transition-colors"></i>
+                        </div>
+                        <input asp-for="Email"
+                               class="w-full bg-slate-800 border border-slate-600 rounded-xl py-3 pl-11 pr-4 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none"
+                               placeholder="your@email.com" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-red-400 text-xs mt-1 block"></span>
+                </div>
+
+                <div class="pt-6 border-t border-slate-800">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                        <i class="bi bi-shield-lock text-emerald-400"></i> Change Password
+                    </h3>
+                    <p class="text-xs text-slate-500 mb-6">Leave these fields blank if you do not wish to change your password.</p>
+
+                    <div class="space-y-5">
+                        <div>
+                            <label asp-for="CurrentPassword" class="block text-sm font-medium text-slate-300 mb-2"></label>
+                            <input asp-for="CurrentPassword"
+                                   class="w-full bg-slate-800 border border-slate-600 rounded-xl py-3 px-4 text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all outline-none" />
+                            <span asp-validation-for="CurrentPassword" class="text-red-400 text-xs mt-1 block"></span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label asp-for="NewPassword" class="block text-sm font-medium text-slate-300 mb-2"></label>
+                                <input asp-for="NewPassword"
+                                       class="w-full bg-slate-800 border border-slate-600 rounded-xl py-3 px-4 text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none" />
+                                <span asp-validation-for="NewPassword" class="text-red-400 text-xs mt-1 block"></span>
+                            </div>
+
+                            <div>
+                                <label asp-for="ConfirmPassword" class="block text-sm font-medium text-slate-300 mb-2"></label>
+                                <input asp-for="ConfirmPassword"
+                                       class="w-full bg-slate-800 border border-slate-600 rounded-xl py-3 px-4 text-white placeholder-slate-500 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all outline-none" />
+                                <span asp-validation-for="ConfirmPassword" class="text-red-400 text-xs mt-1 block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 mt-2 flex items-center justify-end gap-4">
+                    <a asp-controller="Home" asp-action="Index"
+                           class="px-6 py-2.5 bg-transparent border border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white text-sm font-bold rounded-lg transition-all">
+                        Cancel
+                    </a>
+                    <button type="submit"
+                            class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg transition-all active:scale-95 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)] flex items-center gap-2">
+                        <i class="bi bi-check2-circle"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

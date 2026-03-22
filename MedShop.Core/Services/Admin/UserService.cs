@@ -21,19 +21,18 @@ namespace MedShop.Core.Services.Admin
 
         public async Task<IEnumerable<UserServiceModel>> All()
         {
-            // 1. Get the Administrator Role ID
+            // Resolve the Administrator role ID so we can exclude admins from the list.
+            // Admins are managed separately and should never appear in the user management UI.
             var adminRole = await repo.AllReadonly<IdentityRole>()
                 .FirstOrDefaultAsync(r => r.Name == AdminRoleName);
 
             var adminRoleId = adminRole?.Id ?? string.Empty;
 
-            // 2. Look directly into the join table to get the IDs of all Admins
             var adminUserIds = await repo.AllReadonly<IdentityUserRole<string>>()
                 .Where(ur => ur.RoleId == adminRoleId)
                 .Select(ur => ur.UserId)
                 .ToListAsync();
 
-            // 3. Return all users EXCEPT those whose IDs are in the adminUserIds list
             return await repo.AllReadonly<User>()
                 .Where(u => !adminUserIds.Contains(u.Id))
                 .Select(u => new UserServiceModel()
@@ -46,11 +45,6 @@ namespace MedShop.Core.Services.Admin
                 .ToListAsync();
         }
 
-        /// <summary>
-        /// Bans user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
         public async Task BanUserAsync(User user)
         {
             user.IsActive = false;
@@ -58,11 +52,6 @@ namespace MedShop.Core.Services.Admin
             await repo.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Unbans user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
         public async Task UnbanUserAsync(User user)
         {
             user.IsActive = true;

@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MedShop.Infrastructure.Data.Models
 {
+    /// <summary>
+    /// Join entity for the many-to-many relationship between <see cref="User"/> (acting as seller)
+    /// and <see cref="Product"/>.  The composite primary key (UserId + ProductId) is configured in
+    /// <c>ApplicationDbContext.OnModelCreating</c>.
+    /// </summary>
     public class UserProduct
     {
         [Required]

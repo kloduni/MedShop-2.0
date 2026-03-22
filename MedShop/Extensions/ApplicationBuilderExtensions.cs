@@ -6,26 +6,27 @@ namespace MedShop.Extensions
 {
     public static class ApplicationBuilderExtensions
     {
+        /// <summary>
+        /// Ensures the Administrator role exists and the configured admin user is assigned to it.
+        /// Called once at startup; subsequent calls are safe no-ops because existence checks are
+        /// performed before any create/assign operations.
+        /// </summary>
         public static async Task SeedAdminAsync(this IApplicationBuilder app)
         {
-            // Create a scope to get our scoped Identity services
             using var scope = app.ApplicationServices.CreateScope();
             var services = scope.ServiceProvider;
 
             var userManager = services.GetRequiredService<UserManager<User>>();
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-            
             string adminRoleName = AdminRoleName;
             string adminEmail = AdminEmail;
 
-            // 1. Check if the Admin role exists, create it if not
             if (await roleManager.RoleExistsAsync(adminRoleName) == false)
             {
                 await roleManager.CreateAsync(new IdentityRole(adminRoleName));
             }
 
-            // 2. Find the Admin user
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (adminUser != null)

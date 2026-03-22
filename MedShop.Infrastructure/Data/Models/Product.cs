@@ -30,6 +30,9 @@ namespace MedShop.Infrastructure.Data.Models
         public int CategoryId { get; set; }
         public Category Category { get; set; } = null!;
 
+        // Soft-delete flag: products are never physically removed so that historical
+        // order records can still reference them.  Inactive products are hidden from the
+        // shop but remain visible in the admin "deleted products" view for restoration.
         public bool IsActive { get; set; } = true;
 
         public ICollection<UserProduct> UsersProducts { get; set; } = new List<UserProduct>();

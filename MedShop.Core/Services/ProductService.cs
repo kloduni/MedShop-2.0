@@ -23,14 +23,10 @@ namespace MedShop.Core.Services
         }
 
         /// <summary>
-        /// Gets all products according to filters
+        /// Returns a paginated, filtered, and sorted page of active products.
+        /// Filtering by category and/or a full-text search term is applied before sorting,
+        /// then results are sliced with skip/take to support pagination.
         /// </summary>
-        /// <param name="category"></param>
-        /// <param name="searchTerm"></param>
-        /// <param name="sorting"></param>
-        /// <param name="currentPage"></param>
-        /// <param name="productsPerPage"></param>
-        /// <returns></returns>
         public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 8)
         {
             var result = new ProductQueryModel();
@@ -80,10 +76,6 @@ namespace MedShop.Core.Services
             return result;
         }
 
-        /// <summary>
-        /// Gets all products for carousel
-        /// </summary>
-        /// <returns></returns>
         public async Task<IEnumerable<ProductServiceModel>> AllCarousel()
         {
             return await repo.AllReadonly<Product>()
@@ -97,10 +89,6 @@ namespace MedShop.Core.Services
                 .ToListAsync();
         }
 
-        /// <summary>
-        /// Gets all category names
-        /// </summary>
-        /// <returns></returns>
         public async Task<IEnumerable<string>> AllCategoriesNamesAsync()
         {
             return await repo.AllReadonly<Category>()
@@ -108,10 +96,6 @@ namespace MedShop.Core.Services
                 .ToListAsync();
         }
 
-        /// <summary>
-        /// Gets all categories
-        /// </summary>
-        /// <returns></returns>
         public async Task<IEnumerable<ProductCategoryModel>> AllCategoriesAsync()
         {
             return await repo.AllReadonly<Category>()
@@ -124,11 +108,6 @@ namespace MedShop.Core.Services
                 .ToListAsync();
         }
 
-        /// <summary>
-        /// Checks if category exists by category Id
-        /// </summary>
-        /// <param name="categoryId"></param>
-        /// <returns></returns>
         public async Task<bool> CategoryExistsAsync(int categoryId)
         {
             return await repo.AllReadonly<Category>()
@@ -136,12 +115,6 @@ namespace MedShop.Core.Services
 
         }
 
-        /// <summary>
-        /// Creates new product
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="userId"></param>
-        /// <returns></returns>
         public async Task<int> CreateAsync(ProductBaseModel model, string userId)
         {
             var product = new Product()
@@ -175,22 +148,12 @@ namespace MedShop.Core.Services
             return product.Id;
         }
 
-        /// <summary>
-        /// Checks if product exists
-        /// </summary>
-        /// <param name="productId"></param>
-        /// <returns></returns>
         public async Task<bool> ExistsAsync(int productId)
         {
             return await repo.AllReadonly<Product>()
                 .AnyAsync(p => p.Id == productId);
         }
 
-        /// <summary>
-        /// Gets product details by product Id
-        /// </summary>
-        /// <param name="productId"></param>
-        /// <returns></returns>
         public async Task<ProductServiceModel> ProductDetailsByIdAsync(int productId)
         {
             return await repo.AllReadonly<Product>()
@@ -210,11 +173,6 @@ namespace MedShop.Core.Services
                 .FirstAsync();
         }
 
-        /// <summary>
-        /// Gets all user products by user Id
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
         public async Task<IEnumerable<ProductServiceModel>> AllProductsByUserIdAsync(string userId)
         {
             return await repo.AllReadonly<Product>()
@@ -235,11 +193,10 @@ namespace MedShop.Core.Services
         }
 
         /// <summary>
-        /// Checks if product has user by user Id
+        /// Returns <c>true</c> if <paramref name="currentUserId"/> is the seller of the given
+        /// product.  Used to prevent sellers from purchasing their own listings and to gate
+        /// edit/delete access to the product owner.
         /// </summary>
-        /// <param name="productId"></param>
-        /// <param name="currentUserId"></param>
-        /// <returns></returns>
         public async Task<bool> HasUserWithIdAsync(int productId, string currentUserId)
         {
             bool result = false;
@@ -257,11 +214,6 @@ namespace MedShop.Core.Services
             return result;
         }
 
-        /// <summary>
-        /// Gets product category Id
-        /// </summary>
-        /// <param name="productId"></param>
-        /// <returns></returns>
         public async Task<int> GetProductCategoryIdAsync(int productId)
         {
             return (await repo.GetByIdAsync<Product>(productId)).CategoryId;
@@ -283,10 +235,9 @@ namespace MedShop.Core.Services
         }
 
         /// <summary>
-        /// Marks product as inactive in Db
+        /// Soft-deletes the product by setting <c>IsActive = false</c> rather than removing the
+        /// row, preserving historical order data that references this product.
         /// </summary>
-        /// <param name="productId"></param>
-        /// <returns></returns>
         public async Task DeleteAsync(int productId)
         {
             var product = await repo.GetByIdAsync<Product>(productId);
@@ -296,11 +247,6 @@ namespace MedShop.Core.Services
             await repo.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Gets product by product Id
-        /// </summary>
-        /// <param name="productId"></param>
-        /// <returns></returns>
         public async Task<Product> GetProductByIdAsync(int productId)
         {
             return await repo.All<Product>()
@@ -309,14 +255,9 @@ namespace MedShop.Core.Services
         }
 
         /// <summary>
-        /// Gets all deleted products by given filters
+        /// Same filtering/sorting/pagination pipeline as <see cref="All"/>, but operates on
+        /// soft-deleted (inactive) products for the admin "recycle bin" view.
         /// </summary>
-        /// <param name="category"></param>
-        /// <param name="searchTerm"></param>
-        /// <param name="sorting"></param>
-        /// <param name="currentPage"></param>
-        /// <param name="productsPerPage"></param>
-        /// <returns></returns>
         public async Task<ProductQueryModel> AllDeletedProducts(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 8)
         {
 
@@ -369,11 +310,6 @@ namespace MedShop.Core.Services
 
         }
 
-        /// <summary>
-        /// Restores product active status in Db
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
         public async Task RestoreProductAsync(int id)
         {
             var product = await repo.GetByIdAsync<Product>(id);
@@ -383,11 +319,6 @@ namespace MedShop.Core.Services
             await repo.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Reduces product amount by amount in cart items
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns></returns>
         public async Task ReduceProductAmount(ICollection<ShoppingCartItem> items)
         {
             foreach (var item in items)

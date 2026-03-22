@@ -15,13 +15,6 @@ namespace MedShop.Core.Services
             repo = _repo;
         }
 
-        /// <summary>
-        /// Stores user order with items in Db
-        /// </summary>
-        /// <param name="items"></param>
-        /// <param name="userId"></param>
-        /// <param name="userEmailAddress"></param>
-        /// <returns></returns>
         public async Task StoreOrderAsync(ICollection<ShoppingCartItem> items, string userId, string userEmailAddress)
         {
             var order = new Order()
@@ -49,12 +42,13 @@ namespace MedShop.Core.Services
         }
 
         /// <summary>
-        /// Gets ALL orders globally for Admins
+        /// Returns all orders across all users, ordered newest-first, for the admin orders view.
+        /// The email address is surfaced as the display name so admins can identify whose order it is.
         /// </summary>
         public async Task<ICollection<OrderServiceModel>> GetAllOrdersAsync()
         {
             return await repo.All<Order>()
-                .OrderByDescending(o => o.Id) // Show newest orders first
+                .OrderByDescending(o => o.Id)
                 .Select(o => new OrderServiceModel()
                 {
                     Id = o.Id,
@@ -68,18 +62,12 @@ namespace MedShop.Core.Services
                             ProductName = oi.Product.ProductName
                         })
                         .ToList(),
-                    // Show the email as username for admins, since they can see all orders
                     UserName = o.Email,
                     TotalPrice = o.OrderItems.Sum(oi => oi.Price * oi.Amount).ToString("f2")
                 })
                 .ToListAsync();
         }
 
-        /// <summary>
-        /// Gets orders by user Id
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
         public async Task<ICollection<OrderServiceModel>> GetOrdersByUserIdAsync(string userId)
         {
             return await repo.All<Order>()

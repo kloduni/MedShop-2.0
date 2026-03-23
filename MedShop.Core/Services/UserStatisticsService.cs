@@ -1,4 +1,5 @@
 ﻿using MedShop.Core.Contracts;
+using MedShop.Core.Models.Admin;
 using MedShop.Core.Models.User;
 using MedShop.Infrastructure.Data.Common;
 using MedShop.Infrastructure.Data.Models;
@@ -33,6 +34,19 @@ namespace MedShop.Core.Services
                 TotalProducts = totalProducts,
                 ActiveProducts = activeProducts
             };
+        }
+
+        public async Task<IEnumerable<CategoryStatModel>> GetProductsByCategory()
+        {
+            return await repo.AllReadonly<Product>()
+                .Where(p => p.IsActive) // Only count active products
+                .GroupBy(p => p.Category.Name) // Group by category name
+                .Select(g => new CategoryStatModel
+                {
+                    Category = g.Key ?? "Uncategorized",
+                    Count = g.Count()
+                })
+                .ToListAsync();
         }
     }
 }

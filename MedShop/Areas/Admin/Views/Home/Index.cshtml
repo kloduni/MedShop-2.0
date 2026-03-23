@@ -51,27 +51,76 @@
     </div>
 </div>
 
+<div id="chartContainer" class="hidden mt-8 max-w-2xl mx-auto bg-slate-900 p-6 rounded-xl shadow-lg border border-slate-700">
+    <h3 class="text-slate-300 text-lg font-bold mb-4 text-center">Active Products by Category</h3>
+    <div class="relative h-64 w-full">
+        <canvas id="categoryChart"></canvas>
+    </div>
+</div>
+
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         $('#statistics-button').on('click', ev => {
-            // Add a spinning icon while loading
-            const btnIcon = $(ev.currentTarget).find('i');
-            btnIcon.removeClass('bi-bar-chart-fill').addClass('bi-arrow-repeat animate-spin');
+        // Add a spinning icon while loading
+        const btnIcon = $(ev.currentTarget).find('i');
+        btnIcon.removeClass('bi-bar-chart-fill').addClass('bi-arrow-repeat animate-spin');
 
-            $.get('https://medshopapi.azurewebsites.net/api/usersstatisticsapi', (data) => {
-                $('#total-users').text(data.totalUsers);
-                $('#active-users').text(data.activeUsers);
-                $('#total-products').text(data.totalProducts);
-                $('#active-products').text(data.activeProducts);
+        // 1. Fetch the Number Blocks
+        $.get('https://localhost:7071/api/usersstatisticsapi', (data) => {
+        $('#total-users').text(data.totalUsers);
+        $('#active-users').text(data.activeUsers);
+        $('#total-products').text(data.totalProducts);
+        $('#active-products').text(data.activeProducts);
                 
-                // Smooth fade in instead of harsh display jump
-                $('#userStatistics').removeClass('hidden').hide().fadeIn(400);
-                $('#statistics-button').fadeOut(300);
-            }).fail(function() {
-                // Failsafe just in case the API is asleep
-                btnIcon.removeClass('bi-arrow-repeat animate-spin').addClass('bi-exclamation-triangle-fill text-red-400');
-                $('#statistics-button').text(' Failed to load data');
-            });
+        // Smooth fade in instead of harsh display jump
+        $('#userStatistics').removeClass('hidden').hide().fadeIn(400);
+        $('#statistics-button').fadeOut(300);
+        }).fail(function() {
+        // Failsafe just in case the API is asleep
+        btnIcon.removeClass('bi-arrow-repeat animate-spin').addClass('bi-exclamation-triangle-fill text-red-400');
+        $('#statistics-button').text(' Failed to load data');
+        });
+
+        // 2. Fetch the Chart Data and Draw It
+        $.get('https://localhost:7071/api/usersstatisticsapi/categories', (chartData) => {
+        $('#chartContainer').removeClass('hidden').hide().fadeIn(600);
+                
+        // Extract the labels and numbers from the JSON response
+        const labels = chartData.map(c => c.category);
+        const counts = chartData.map(c => c.count);
+
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+        labels: labels,
+        datasets: [{
+        data: counts,
+        backgroundColor: [
+        '#3b82f6', // blue-500
+        '#10b981', // emerald-500
+        '#f59e0b', // amber-500
+        '#8b5cf6', // violet-500
+        '#ef4444'  // red-500
+        ],
+        borderColor: '#0f172a', // slate-900 borders
+        borderWidth: 2
+        }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+        legend: {
+        position: 'right',
+        labels: { color: '#94a3b8' } // slate-400 text
+        }
+        }
+        }
+        });
+        });
         });
     </script>
 }

@@ -10,10 +10,11 @@ builder.Services.AddApplicationServices();
 builder.Services.AddMedShopDbContext(builder.Configuration);
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("all", opt =>
+    options.AddPolicy("MedShopAppOnly", opt =>
     {
-        opt.AllowAnyOrigin();
-        opt.AllowAnyMethod();
+        opt.WithOrigins("https://localhost:7209")
+           .AllowAnyHeader()
+           .AllowAnyMethod();
     });
 });
 
@@ -25,7 +26,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseCors("all");
+app.UseCors("MedShopAppOnly");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

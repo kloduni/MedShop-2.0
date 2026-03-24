@@ -27,12 +27,18 @@ namespace MedShop.Core.Services
         /// Filtering by category and/or a full-text search term is applied before sorting,
         /// then results are sliced with skip/take to support pagination.
         /// </summary>
-        public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 8)
+        public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 9, string? currentUserId = null)
         {
             var result = new ProductQueryModel();
 
             var products = repo.AllReadonly<Product>()
-                .Where(p => p.IsActive);
+                .Where(p => p.IsActive && p.IsVisible);
+
+            // If user is logged in, filter out products they are selling
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                products = products.Where(p => !p.UsersProducts.Any(up => up.UserId == currentUserId));
+            }
 
             if (string.IsNullOrEmpty(category) == false)
             {
@@ -54,6 +60,16 @@ namespace MedShop.Core.Services
                 _ => products.OrderByDescending(p => p.Id)
             };
 
+            //Fetch user's wishlist IDs for efficient checking
+            var userWishlistProductIds = new List<int>();
+            if (!string.IsNullOrEmpty(currentUserId))
+            {
+                userWishlistProductIds = await repo.AllReadonly<WishlistItem>()
+                    .Where(w => w.UserId == currentUserId)
+                    .Select(w => w.ProductId)
+                    .ToListAsync();
+            }
+
             result.Products = await products
                 .Skip((currentPage - 1) * productsPerPage)
                 .Take(productsPerPage)
@@ -67,7 +83,8 @@ namespace MedShop.Core.Services
                     Category = p.Category.Name,
                     Quantity = p.Quantity,
                     Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
-                    SellerId = p.UsersProducts.Select(up => up.UserId).First()
+                    SellerId = p.UsersProducts.Select(up => up.UserId).First(),
+                    IsInWishlist = userWishlistProductIds.Contains(p.Id)
                 })
                 .ToListAsync();
 
@@ -187,7 +204,8 @@ namespace MedShop.Core.Services
                     Category = p.Category.Name,
                     Quantity = p.Quantity,
                     Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
-                    SellerId = p.UsersProducts.Select(up => up.UserId).First()
+                    SellerId = p.UsersProducts.Select(up => up.UserId).First(),
+                    IsVisible = p.IsVisible
                 })
                 .ToListAsync();
         }
@@ -258,7 +276,7 @@ namespace MedShop.Core.Services
         /// Same filtering/sorting/pagination pipeline as <see cref="All"/>, but operates on
         /// soft-deleted (inactive) products for the admin "recycle bin" view.
         /// </summary>
-        public async Task<ProductQueryModel> AllDeletedProducts(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 8)
+        public async Task<ProductQueryModel> AllDeletedProducts(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 9)
         {
 
             var result = new ProductQueryModel();
@@ -330,6 +348,17 @@ namespace MedShop.Core.Services
 
             }
             await repo.SaveChangesAsync();
+        }
+
+        public async Task<bool> ToggleVisibilityAsync(int productId)
+        {
+            var product = await repo.GetByIdAsync<Product>(productId);
+            if (product == null) return false;
+
+            product.IsVisible = !product.IsVisible;
+            await repo.SaveChangesAsync();
+
+            return product.IsVisible;
         }
     }
 }

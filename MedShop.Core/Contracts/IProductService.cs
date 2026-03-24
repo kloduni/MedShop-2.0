@@ -11,7 +11,8 @@ namespace MedShop.Core.Contracts
             string? searchTerm = null,
             ProductSorting sorting = ProductSorting.Newest,
             int currentPage = 1,
-            int productsPerPage = 8);
+            int productsPerPage = 9,
+            string? currentUserId = null);
 
         Task<IEnumerable<ProductServiceModel>> AllCarousel();
         Task<IEnumerable<string>> AllCategoriesNamesAsync();
@@ -34,5 +35,7 @@ namespace MedShop.Core.Contracts
 
         Task RestoreProductAsync(int id);
         Task ReduceProductAmount(ICollection<ShoppingCartItem> items);
+
+        Task<bool> ToggleVisibilityAsync(int productId);
     }
 }

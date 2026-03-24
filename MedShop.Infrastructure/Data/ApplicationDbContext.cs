@@ -26,6 +26,7 @@ namespace MedShop.Infrastructure.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+        public DbSet<WishlistItem> WishlistItems { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -34,6 +35,9 @@ namespace MedShop.Infrastructure.Data
             // between users (sellers) and products.
             builder.Entity<UserProduct>()
                 .HasKey(up => new {up.UserId, up.ProductId});
+            // WishlistItem uses a composite primary key so a user can only favorite a specific item once
+            builder.Entity<WishlistItem>()
+                .HasKey(w => new { w.UserId, w.ProductId });
 
             if (seedDb)
             {

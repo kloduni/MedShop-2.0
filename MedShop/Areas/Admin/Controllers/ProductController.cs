@@ -19,6 +19,12 @@ namespace MedShop.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> DeletedProducts([FromQuery] AllProductsQueryModel query)
         {
+            if (!ModelState.IsValid)
+            {
+                // If the URL parameters are garbage, just return the default view
+                return View(new AllProductsQueryModel());
+            }
+
             var result = await productService.AllDeletedProducts(
                 query.Category,
                 query.SearchTerm,
@@ -33,6 +39,7 @@ namespace MedShop.Areas.Admin.Controllers
             return View(query);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Restore(int id)
         {
             if ((await productService.ExistsAsync(id)) == false)

@@ -4,63 +4,144 @@
 
 @{
     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var isOwnerOrAdmin = User.Identity?.IsAuthenticated == true && (Model.SellerId == currentUserId || User.IsInRole(AdminRoleName));
+    var isAdmin = User.IsInRole(AdminRoleName);
+    var isOwner = Model.SellerId == currentUserId;
+    var isOwnerOrAdmin = User.Identity?.IsAuthenticated == true && (isOwner || isAdmin);
+    
+    var isMyProductsPage = ViewData["IsMyProducts"] as bool? == true;
+    var showVisibilityToggle = isAdmin || (isOwner && isMyProductsPage);
+    var removeOnHide = !isMyProductsPage ? "true" : "false";
 }
 
-<div class="group bg-slate-900 rounded-2xl shadow-xl overflow-hidden flex flex-col h-full border border-slate-700/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-[0_10px_20px_rgba(0,0,0,0.4)] hover:border-blue-500/30 relative">
+<div class="group bg-slate-900 rounded-2xl border border-slate-700/60 overflow-hidden flex flex-col h-full hover:shadow-2xl hover:-translate-y-1 hover:border-blue-500/40 transition-all duration-300 relative">
     
     <a asp-controller="Product" asp-action="Details" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()" class="absolute inset-0 z-10" aria-label="View details for @Model.ProductName"></a>
 
-    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-600 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0"></div>
 
-    <div class="aspect-[4/3] p-6 bg-slate-950/50 relative overflow-hidden flex items-center justify-center">
-        <img class="max-h-40 object-contain transition-transform duration-500 group-hover:scale-110 drop-shadow-lg" src="@Model.ImageUrl" alt="@Model.ProductName">
-        <div class="absolute top-3 left-3 px-3 py-1 bg-blue-600/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest rounded-full border border-blue-600/30 backdrop-blur-sm">
+    <div class="relative h-72 w-full bg-slate-800/40 p-4 flex items-center justify-center overflow-hidden border-b border-slate-800">
+        <img src="@Model.ImageUrl" alt="@Model.ProductName"
+             class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 drop-shadow-md" />
+        
+        <span class="absolute top-4 left-4 px-3 py-1 bg-slate-900/95 backdrop-blur-sm text-slate-300 text-[11px] font-semibold tracking-wider uppercase rounded-md border border-slate-700/80 shadow-sm z-20">
             @Model.Category
-        </div>
+        </span>
+
+        @if (User.Identity?.IsAuthenticated == true && !isOwner)
+        {
+            <button data-id="@Model.Id" title="Quick Add to Cart"
+                    class="add-to-cart-btn absolute top-4 right-4 z-20 h-12 w-12 bg-slate-900/80 backdrop-blur-md hover:bg-blue-600 text-slate-300 hover:text-white rounded-full flex items-center justify-center border border-slate-700/80 shadow-lg transition-all duration-200 hover:scale-110 active:scale-95">
+                <i class="bi bi-cart-plus text-xl"></i>
+            </button>
+        }
     </div>
     
-    <div class="p-5 flex-grow bg-slate-900 border-t border-slate-800 flex flex-col justify-between">
-        <div>
-            <h3 class="text-lg font-black text-white capitalize truncate mb-1 group-hover:text-blue-400 transition-colors">@Model.ProductName</h3>
-            <p class="text-xs text-slate-500 flex items-center gap-1 mb-4">
-                <i class="bi bi-person text-blue-500"></i> @Model.Seller
-            </p>
-            
-            <div class="flex justify-between items-center mb-6">
-                <span class="text-2xl font-black text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.2)]">$@Model.Price.ToString("F2")</span>
-                <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-800 px-2 py-1 rounded-md border border-slate-700">Qty: @Model.Quantity</span>
+    <div class="flex flex-col flex-grow p-6">
+        
+        <div class="mb-4">
+            <div class="text-xs text-slate-400 mb-2 font-medium flex items-center gap-1.5">
+                <i class="bi bi-person-badge text-blue-500"></i> @Model.Seller
             </div>
+            <h3 class="text-2xl font-bold text-slate-100 leading-snug group-hover:text-blue-400 transition-colors line-clamp-2">
+                @Model.ProductName
+            </h3>
         </div>
         
-        <div class="space-y-3 mt-auto relative z-20">
-            @if (User.Identity?.IsAuthenticated == true)
+        <div class="mt-auto space-y-4 z-20">
+            
+            <div class="flex items-end justify-between pt-4 border-t border-slate-800/50">
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-1">Price</span>
+                    <div class="flex items-start text-white">
+                        <span class="text-lg font-bold mt-1 mr-0.5 text-slate-400">$</span>
+                        <span class="text-3xl font-black tracking-tight">@Model.Price.ToString("0.00")</span>
+                    </div>
+                </div>
+                
+                <div class="mb-1">
+                    @if (Model.Quantity > 0)
+                    {
+                        <span class="inline-flex items-center gap-1.5 px-3 py-2 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-xl text-sm font-bold">
+                            <i class="bi bi-box-seam"></i> @Model.Quantity in stock
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="inline-flex items-center gap-1.5 px-3 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-xl text-sm font-bold">
+                            <i class="bi bi-x-circle"></i> Out of stock
+                        </span>
+                    }
+                </div>
+            </div>
+
+            @if (!isOwner)
             {
-                <button data-id="@Model.Id"
-                        class="add-to-cart-btn w-full flex justify-center items-center gap-2 py-3 bg-blue-600 hover:bg-blue-500 text-white text-xs font-black uppercase tracking-wider rounded-xl transition-all duration-200 active:scale-95 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)] hover:-translate-y-1">
-                    <i class="bi bi-cart-plus-fill text-lg"></i> Add to Cart
-                </button>
-            }
-            else
-            {
-                <a asp-area="Identity" asp-page="/Account/Login"
-                       class="w-full flex justify-center items-center gap-2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-xs font-bold uppercase tracking-wider rounded-xl border border-slate-700 transition-all duration-200 active:scale-95">
-                    <i class="bi bi-lock-fill"></i> Sign in to buy
-                </a>
+                <div class="flex flex-col gap-2 relative z-30">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <button data-id="@Model.Id"
+                                class="buy-now-btn w-full flex justify-center items-center gap-2 py-3.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl transition-all duration-200 active:scale-95 shadow-[0_4px_15px_rgba(37,99,235,0.3)]">
+                            <i class="bi bi-bag-check-fill text-lg"></i> Buy Now
+                        </button>
+                        
+                        <button data-id="@Model.Id"
+                                class="wishlist-btn w-full flex justify-center items-center gap-2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-pink-400 text-sm font-bold rounded-xl border border-slate-700 transition-all duration-200 active:scale-95">
+                            
+                            @if (Model.IsInWishlist)
+                            {
+                                <i class="bi bi-heart-fill text-pink-500 text-base transition-colors duration-300"></i>
+                            }
+                            else
+                            {
+                                <i class="bi bi-heart text-base transition-colors duration-300"></i>
+                            }
+                            
+                            Add to Wishlist
+                        </button>
+                    }
+                    else
+                    {
+                        <a asp-area="" asp-controller="User" asp-action="Login"
+                               class="w-full flex justify-center items-center gap-2 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm font-bold rounded-xl border border-slate-700 transition-all duration-200 active:scale-95">
+                            <i class="bi bi-lock-fill"></i> Sign in to buy
+                        </a>
+                    }
+                </div>
             }
 
             @if (isOwnerOrAdmin)
             {
-                <div class="flex gap-2 pt-3 mt-3 border-t border-slate-800/80">
-                    <a asp-area="" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
-                           class="flex-1 text-center py-2 bg-amber-600/10 text-amber-500 border border-amber-600/30 hover:bg-amber-600 hover:text-white font-bold rounded-lg text-xs transition-all duration-200 active:scale-95 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(245,158,11,0.4)]">
-                        <i class="bi bi-pencil-square"></i> Edit
-                    </a>
-                    
-                    <a asp-area="" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
-                           class="flex-1 text-center py-2 bg-red-600/10 text-red-500 border border-red-600/30 hover:bg-red-600 hover:text-white font-bold rounded-lg text-xs transition-all duration-200 active:scale-95 hover:-translate-y-1 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)]">
-                        <i class="bi bi-trash-fill"></i> Delete
-                    </a>
+                <div class="flex flex-col gap-3 pt-4 border-t border-slate-800">
+                    @if (showVisibilityToggle)
+                    {
+                        <button type="button"
+                                data-remove-on-hide="@removeOnHide"
+                                onclick="toggleProductVisibility(event, @Model.Id, this)"
+                                class="w-full flex justify-between items-center px-4 py-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 font-bold rounded-xl text-xs uppercase tracking-widest transition-all">
+                            <span>Storefront Visibility</span>
+                            @if (Model.IsVisible)
+                            {
+                                <span class="status-badge px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20 font-black">Visible</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge px-3 py-1 bg-slate-700 text-slate-400 rounded-lg border border-slate-600 font-black">Hidden</span>
+                            }
+                        </button>
+                    }
+
+                    <div class="flex gap-3">
+                        <a asp-area="" asp-controller="Product" asp-action="Edit" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
+                               class="flex-1 flex justify-center items-center gap-2 py-2.5 bg-slate-700/50 hover:bg-slate-600 text-slate-200 font-bold rounded-xl text-xs uppercase tracking-widest transition-all">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                        
+                        <a onclick="return confirm('Are you sure?');"
+                               asp-area="" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
+                               class="flex-1 flex justify-center items-center gap-2 py-2.5 bg-red-500/10 hover:bg-red-600 hover:text-white text-red-400 font-bold rounded-xl border border-red-500/20 text-xs uppercase tracking-widest transition-all">
+                            <i class="bi bi-trash"></i> Delete
+                        </a>
+                    </div>
                 </div>
             }
         </div>

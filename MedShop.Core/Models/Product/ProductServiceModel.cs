@@ -23,5 +23,8 @@ namespace MedShop.Core.Models.Product
         public string Seller { get; set; } = null!;
 
         public string SellerId { get; set; } = string.Empty;
+
+        public bool IsVisible { get; set; }
+        public bool IsInWishlist { get; set; }
     }
 }

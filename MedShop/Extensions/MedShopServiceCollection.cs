@@ -19,6 +19,7 @@ namespace MedShop.Extensions
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IWishlistService, WishlistService>();
 
             return services;
         }

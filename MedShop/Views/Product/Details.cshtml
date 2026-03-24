@@ -5,7 +5,8 @@
 @{
     ViewBag.Title = "Product Details";
     var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    var isOwnerOrAdmin = User.Identity?.IsAuthenticated == true && (Model.SellerId == currentUserId || User.IsInRole(AdminRoleName));
+    var isOwner = Model.SellerId == currentUserId;
+    var isOwnerOrAdmin = User.Identity?.IsAuthenticated == true && (isOwner || User.IsInRole(AdminRoleName));
 }
 
 <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -91,16 +92,35 @@
                     </div>
 
                     <div class="flex flex-col gap-4">
-                        @if (User.Identity?.IsAuthenticated == true)
+                        
+                        @if (!isOwner)
                         {
-                            <button data-id="@Model.Id"
-                                    class="add-to-cart-btn group relative flex justify-center items-center gap-3 px-8 py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-[0_15px_30px_rgba(16,185,129,0.2)] transition-all active:scale-95 overflow-hidden w-full sm:w-auto">
-                                
-                                <div class="absolute inset-0 w-1/4 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-[45deg] -translate-x-[200%] group-hover:translate-x-[400%] transition-transform duration-1000"></div>
-                                
-                                <i class="bi bi-cart-plus-fill text-2xl"></i>
-                                <span class="uppercase tracking-widest text-sm">Add To Order</span>
-                            </button>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <button data-id="@Model.Id"
+                                        class="add-to-cart-btn group relative flex justify-center items-center gap-3 px-8 py-5 bg-emerald-600 hover:bg-emerald-500 text-white font-black rounded-2xl shadow-[0_15px_30px_rgba(16,185,129,0.2)] transition-all active:scale-95 overflow-hidden w-full sm:w-auto">
+                                    
+                                    <div class="absolute inset-0 w-1/4 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-[45deg] -translate-x-[200%] group-hover:translate-x-[400%] transition-transform duration-1000"></div>
+                                    
+                                    <i class="bi bi-cart-plus-fill text-2xl"></i>
+                                    <span class="uppercase tracking-widest text-sm">Add To Order</span>
+                                </button>
+                            }
+                            else
+                            {
+                                <a asp-area="Identity" asp-page="/Account/Login"
+                                       class="group relative flex justify-center items-center gap-3 px-8 py-5 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-white font-black rounded-2xl transition-all active:scale-95 overflow-hidden w-full sm:w-auto">
+                                    <i class="bi bi-lock-fill text-2xl text-slate-400 group-hover:text-white transition-colors"></i>
+                                    <span class="uppercase tracking-widest text-sm text-slate-300 group-hover:text-white transition-colors">Sign In To Buy</span>
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            <div class="bg-blue-500/10 border border-blue-500/20 rounded-2xl p-4 mb-2 flex items-center justify-center gap-3 text-blue-400">
+                                <i class="bi bi-info-circle-fill text-lg"></i>
+                                <span class="font-bold uppercase tracking-widest text-xs">This is your listing</span>
+                            </div>
                         }
 
                         @if (isOwnerOrAdmin)

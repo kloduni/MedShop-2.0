@@ -60,7 +60,7 @@
                     <select asp-for="ProductsPerPage" class="w-full bg-slate-800 border border-slate-600 hover:border-blue-500/50 hover:bg-slate-700/50 text-white rounded-xl appearance-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 py-3 px-4 pr-10 transition-all outline-none cursor-pointer">
                         <option value="4">4 Items</option>
                         <option value="6">6 Items (Best for Tablets)</option>
-                        <option value="8">8 Items (Default)</option>
+                        <option value="9">9 Items (Default)</option>
                         <option value="12">12 Items</option>
                         <option value="16">16 Items</option>
                     </select>
@@ -76,7 +76,7 @@
         </div>
     </form>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
         @if (!Model.Products.Any())
         {
             <div class="col-span-full py-16 text-center bg-slate-900 rounded-2xl border border-slate-700/50 shadow-lg">

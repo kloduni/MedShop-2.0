@@ -24,6 +24,7 @@ namespace MedShop.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Ban(string userId)
         {
             var user = await userManager.FindByIdAsync(userId);
@@ -54,6 +55,7 @@ namespace MedShop.Areas.Admin.Controllers
             return RedirectToAction(nameof(All));
         }
 
+        [HttpPost]
         public async Task<IActionResult> Unban(string userId)
         {
             var user = await userManager.FindByIdAsync(userId);

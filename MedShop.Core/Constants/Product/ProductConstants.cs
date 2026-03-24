@@ -9,5 +9,6 @@
         public const string ProductDoesNotBelongToUser = "Product does not belong to this user!";
         public const string ProductBelongsToUser = "You own this product!";
         public const string ProductQuantityDepleted = "No quantity available!";
+        public const string InvalidProductData = "Invalid product data provided.";
     }
 }

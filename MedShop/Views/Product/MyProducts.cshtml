@@ -1,7 +1,13 @@
-﻿@model IEnumerable<MedShop.Core.Models.Product.ProductServiceModel>
+﻿@using System.Linq
+@model IEnumerable<MedShop.Core.Models.Product.ProductServiceModel>
 
 @{
     ViewBag.Title = "My Products";
+    // Calculate real-time seller stats using LINQ
+    var totalListings = Model.Count();
+    var totalUnitsInStock = Model.Sum(p => p.Quantity);
+    var lowStockCount = Model.Count(p => p.Quantity > 0 && p.Quantity <= 5);
+    var outOfStockCount = Model.Count(p => p.Quantity == 0);
 }
 
 <div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,12 +30,10 @@
             <div class="h-24 w-24 bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-inner border border-slate-700">
                 <i class="bi bi-tags text-5xl text-slate-500"></i>
             </div>
-
             <h2 class="text-2xl font-bold text-white mb-2">No Products Listed</h2>
             <p class="text-slate-400 text-center max-w-md mb-8 text-lg">
                 You haven't added any products to the catalog yet. Start selling your medical supplies today.
             </p>
-            
             <a asp-controller="Product" asp-action="Add" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-bold rounded-xl transition-all hover:bg-blue-500 hover:-translate-y-1 hover:shadow-[0_0_20px_rgba(37,99,235,0.5)] active:scale-95">
                 <i class="bi bi-plus-lg mr-2"></i> Create Your First Listing
             </a>
@@ -37,10 +41,44 @@
     }
     else
     {
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div class="bg-slate-900 border border-slate-700 p-5 rounded-xl shadow-lg flex items-center gap-4">
+                <div class="h-12 w-12 rounded-lg bg-blue-500/20 flex items-center justify-center border border-blue-500/30 text-blue-400 text-xl"><i class="bi bi-box-seam"></i></div>
+                <div>
+                    <p class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Total Listings</p>
+                    <p class="text-2xl font-bold text-white">@totalListings</p>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 p-5 rounded-xl shadow-lg flex items-center gap-4">
+                <div class="h-12 w-12 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30 text-emerald-400 text-xl"><i class="bi bi-layers"></i></div>
+                <div>
+                    <p class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Units in Stock</p>
+                    <p class="text-2xl font-bold text-white">@totalUnitsInStock</p>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 p-5 rounded-xl shadow-lg flex items-center gap-4">
+                <div class="h-12 w-12 rounded-lg bg-amber-500/20 flex items-center justify-center border border-amber-500/30 text-amber-400 text-xl"><i class="bi bi-exclamation-triangle"></i></div>
+                <div>
+                    <p class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Low Stock (≤ 5)</p>
+                    <p class="text-2xl font-bold text-white">@lowStockCount</p>
+                </div>
+            </div>
+            <div class="bg-slate-900 border border-slate-700 p-5 rounded-xl shadow-lg flex items-center gap-4">
+                <div class="h-12 w-12 rounded-lg bg-red-500/20 flex items-center justify-center border border-red-500/30 text-red-400 text-xl"><i class="bi bi-x-octagon"></i></div>
+                <div>
+                    <p class="text-slate-400 text-sm font-semibold uppercase tracking-wider">Out of Stock</p>
+                    <p class="text-2xl font-bold text-white">@outOfStockCount</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-10">
+            @{
+                ViewData["IsMyProducts"] = true;
+            }
             @foreach (var product in Model)
             {
-                <partial name="_ProductPartial" model="@product" />
+                <partial name="_ProductPartial" model="@product" view-data="ViewData" />
             }
         </div>
     }

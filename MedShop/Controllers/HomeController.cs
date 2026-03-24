@@ -42,7 +42,7 @@ namespace MedShop.Controllers
         {
             var feature = HttpContext.Features.Get<IExceptionHandlerFeature>();
 
-            logger.LogError(feature.Error, "TraceIdentifier: {0}", Activity.Current?.Id ?? HttpContext.TraceIdentifier);
+            logger.LogError(feature.Error, "TraceIdentifier: {TraceIdentifier}", Activity.Current?.Id ?? HttpContext.TraceIdentifier);
 
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }

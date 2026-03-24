@@ -24,12 +24,26 @@ namespace MedShop.Controllers
         [HttpGet]
         public async Task<IActionResult> All([FromQuery] AllProductsQueryModel query)
         {
+
+            if (!ModelState.IsValid)
+            {
+                return View(new AllProductsQueryModel());
+            }
+            // Get the User ID only if the user is actually logged in
+            string? userId = null;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                userId = User.Id();
+            }
+
+            // Pass the userId down to the service so it can check the wishlist
             var result = await productService.All(
                 query.Category,
                 query.SearchTerm,
                 query.Sorting,
                 query.CurrentPage,
-                query.ProductsPerPage);
+                query.ProductsPerPage,
+                userId);
 
             query.TotalProductsCount = result.TotalProductsCount;
             query.Categories = await productService.AllCategoriesNamesAsync();
@@ -77,6 +91,11 @@ namespace MedShop.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id, string information)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(All));
+            }
+
             if (await productService.ExistsAsync(id) == false)
             {
                 return RedirectToAction(nameof(All));
@@ -107,6 +126,11 @@ namespace MedShop.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(All));
+            }
+
             if ((await productService.ExistsAsync(id)) == false)
             {
                 TempData[ErrorMessage] = ProductDoesNotExist;
@@ -189,6 +213,11 @@ namespace MedShop.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction(nameof(All));
+            }
+
             if ((await productService.ExistsAsync(id)) == false)
             {
                 TempData[ErrorMessage] = ProductDoesNotExist;
@@ -222,6 +251,12 @@ namespace MedShop.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete(ProductServiceModel model, string information)
         {
+            if (!ModelState.IsValid)
+            {
+                TempData[ErrorMessage] = InvalidProductData;
+                return RedirectToAction(nameof(All));
+            }
+
             if ((await productService.ExistsAsync(model.Id)) == false)
             {
                 TempData[ErrorMessage] = ProductDoesNotExist;
@@ -246,6 +281,25 @@ namespace MedShop.Controllers
             TempData[SuccessMessage] = ProductDeleted;
 
             return RedirectToAction(nameof(All));
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> ToggleVisibility(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            if ((await productService.HasUserWithIdAsync(id, User.Id())) == false && User.IsInRole(AdminRoleName) == false)
+            {
+                return Unauthorized();
+            }
+
+            var isNowVisible = await productService.ToggleVisibilityAsync(id);
+
+            return Json(new { success = true, isVisible = isNowVisible });
         }
     }
 }

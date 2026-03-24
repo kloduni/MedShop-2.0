@@ -32,10 +32,10 @@ Before you start, make sure you have the following installed:
 ### Step-by-Step Installation
 
 **1. Clone the repository**
-\`\`\`bash
+```bash
 git clone https://github.com/YourUsername/MedShop.git
 cd MedShop
-\`\`\`
+```
 
 **2. Configure the Database**
 * Open `appsettings.json`.
@@ -45,22 +45,22 @@ cd MedShop
 Because this project uses Tailwind CSS, you need to install the Node packages and compile the stylesheet before running the app.
 * Open a terminal in the root project folder (where `package.json` is located).
 * Run the following commands:
-\`\`\`bash
+```bash
 npm install
 npm run build:css
-\`\`\`
+```
 *(Note: If you plan on editing the CSS or HTML classes, you can run `npm run watch:css` to recompile the stylesheet automatically as you save files).*
 
 **4. Initialize the Database**
 You need to create the SQL tables and apply the initial seed data.
 * **If using Visual Studio:** Open the **Package Manager Console** (`Tools > NuGet Package Manager`) and run:
-  \`\`\`powershell
+  ```powershell
   Update-Database
-  \`\`\`
+  ```
 * **If using the .NET CLI:** Open your terminal and run:
-  \`\`\`bash
+  ```bash
   dotnet ef database update
-  \`\`\`
+  ```
 
 **5. Run the Application**
 Launch the project via Visual Studio (F5) or the CLI (`dotnet run`). 

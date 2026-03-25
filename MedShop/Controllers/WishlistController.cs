@@ -1,4 +1,5 @@
 ﻿using MedShop.Core.Contracts;
+using MedShop.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -6,13 +7,24 @@ using System.Security.Claims;
 namespace MedShop.Controllers
 {
     [Authorize]
-    public class WishlistController : Controller
+    public class WishlistController : BaseController
     {
         private readonly IWishlistService _wishlistService;
 
         public WishlistController(IWishlistService wishlistService)
         {
             _wishlistService = wishlistService;
+        }
+
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Wishlist()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var model = await _wishlistService.GetUserWishlistAsync(userId);
+
+            return View(model);
         }
 
         [HttpPost]

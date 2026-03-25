@@ -88,7 +88,7 @@
                         
                         <button data-id="@Model.Id"
                                 class="wishlist-btn w-full flex justify-center items-center gap-2 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-pink-400 text-sm font-bold rounded-xl border border-slate-700 transition-all duration-200 active:scale-95">
-                            
+    
                             @if (Model.IsInWishlist)
                             {
                                 <i class="bi bi-heart-fill text-pink-500 text-base transition-colors duration-300"></i>
@@ -97,8 +97,7 @@
                             {
                                 <i class="bi bi-heart text-base transition-colors duration-300"></i>
                             }
-                            
-                            Add to Wishlist
+                            <span>Wishlist</span>
                         </button>
                     }
                     else

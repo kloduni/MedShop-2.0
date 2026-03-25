@@ -156,6 +156,26 @@
                             icon.classList.remove('bi-heart-fill', 'text-pink-500');
                             icon.classList.add('bi-heart');
                             toastr.info('Removed from your wishlist.', 'Updated');
+
+                            // --- NEW FADE OUT MAGIC ---
+                            // Check if we are on the Wishlist page by looking for the wrapper ID
+                            const cardElement = document.getElementById(`wishlist-card-${productId}`);
+                            if (cardElement) {
+                                // Add Tailwind classes to shrink and fade
+                                cardElement.classList.add('opacity-0', 'scale-95');
+                                
+                                // Wait 300ms for the animation, then wipe it from the DOM
+                                setTimeout(() => {
+                                    cardElement.remove();
+                                    
+                                    // Pro-move: If that was the last item, reload to show the "Empty" screen
+                                    const remainingCards = document.querySelectorAll('[id^="wishlist-card-"]');
+                                    if (remainingCards.length === 0) {
+                                        window.location.reload();
+                                    }
+                                }, 300);
+                            }
+                            // --------------------------
                         }
                     } else {
                         toastr.error(data.message || 'Could not update wishlist.', 'Oops!');

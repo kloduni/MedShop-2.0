@@ -1,10 +1,9 @@
 ﻿using MedShop.Core.Cart;
 using MedShop.Core.Contracts;
 using MedShop.Extensions;
+using MedShop.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static MedShop.Core.Constants.Cart.ShoppingCartConstants;
-using static MedShop.Core.Constants.MessageConstants;
 
 namespace MedShop.Controllers
 {
@@ -33,22 +32,16 @@ namespace MedShop.Controllers
         {
             string userId = User.Id();
 
-            if (HttpContext.Session.GetString("UserId") != userId)
-            {
-                TempData[ErrorMessage] = WrongAccount;
-                return RedirectToAction("Logout", "User");
-            }
-
             var items = shoppingCart.GetShoppingCartItems();
 
-            // Capture the last item's details before clearing the cart
-            var lastItem = items.LastOrDefault();
-            if (lastItem != null)
-            {
-                ViewBag.ProductId = lastItem.Product.Id;
+            // Capture ALL items before clearing the cart for the review list
+            var reviewItems = items.Select(i => (
+                Id: i.Product.Id,
+                Name: i.Product.ProductName,
+                Slug: ModelExtensions.GetInformationFromId(i.Product.Id)
+            )).ToList();
 
-                ViewBag.Information = lastItem.Product.ProductName.Replace(" ", "-").ToLower();
-            }
+            ViewBag.ReviewItems = reviewItems;
 
             string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
 

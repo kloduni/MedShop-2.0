@@ -36,16 +36,22 @@ namespace MedShop.Controllers
             if (HttpContext.Session.GetString("UserId") != userId)
             {
                 TempData[ErrorMessage] = WrongAccount;
-
                 return RedirectToAction("Logout", "User");
             }
 
             var items = shoppingCart.GetShoppingCartItems();
 
+            // Capture the last item's details before clearing the cart
+            var lastItem = items.LastOrDefault();
+            if (lastItem != null)
+            {
+                ViewBag.ProductId = lastItem.Product.Id;
+
+                ViewBag.Information = lastItem.Product.ProductName.Replace(" ", "-").ToLower();
+            }
+
             string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
 
-            // Reduce stock quantities, persist the order, then clear the cart so it is
-            // empty for the next purchase session.
             await productService.ReduceProductAmount(items);
             await orderService.StoreOrderAsync(items, userId, userEmailAddress);
             await shoppingCart.ClearShoppingCartAsync();

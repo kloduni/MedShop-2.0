@@ -37,5 +37,7 @@ namespace MedShop.Core.Contracts
         Task ReduceProductAmount(ICollection<ShoppingCartItem> items);
 
         Task<bool> ToggleVisibilityAsync(int productId);
+        Task AddReviewAsync(int productId, string userId, string title, string description, int rating);
+        Task<bool> HasUserPurchasedProductAsync(int productId, string userId);
     }
 }

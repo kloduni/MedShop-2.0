@@ -28,6 +28,7 @@ namespace MedShop.Infrastructure.Data.Models
         [Required]
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
+
         public Category Category { get; set; } = null!;
 
         public bool IsActive { get; set; } = true;
@@ -35,5 +36,7 @@ namespace MedShop.Infrastructure.Data.Models
         public bool IsVisible { get; set; } = true;
 
         public ICollection<UserProduct> UsersProducts { get; set; } = new List<UserProduct>();
+
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
     }
 }

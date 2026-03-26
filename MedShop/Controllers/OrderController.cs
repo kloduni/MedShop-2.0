@@ -1,10 +1,9 @@
 ﻿using MedShop.Core.Cart;
 using MedShop.Core.Contracts;
 using MedShop.Extensions;
+using MedShop.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using static MedShop.Core.Constants.Cart.ShoppingCartConstants;
-using static MedShop.Core.Constants.MessageConstants;
 
 namespace MedShop.Controllers
 {
@@ -33,19 +32,19 @@ namespace MedShop.Controllers
         {
             string userId = User.Id();
 
-            if (HttpContext.Session.GetString("UserId") != userId)
-            {
-                TempData[ErrorMessage] = WrongAccount;
-
-                return RedirectToAction("Logout", "User");
-            }
-
             var items = shoppingCart.GetShoppingCartItems();
+
+            // Capture ALL items before clearing the cart for the review list
+            var reviewItems = items.Select(i => (
+                Id: i.Product.Id,
+                Name: i.Product.ProductName,
+                Slug: ModelExtensions.GetInformationFromId(i.Product.Id)
+            )).ToList();
+
+            ViewBag.ReviewItems = reviewItems;
 
             string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
 
-            // Reduce stock quantities, persist the order, then clear the cart so it is
-            // empty for the next purchase session.
             await productService.ReduceProductAmount(items);
             await orderService.StoreOrderAsync(items, userId, userEmailAddress);
             await shoppingCart.ClearShoppingCartAsync();

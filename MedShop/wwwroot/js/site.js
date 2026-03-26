@@ -2,7 +2,7 @@
 
     // Function to re-bind event listeners after DOM replacement
     const bindDynamicListeners = () => {
-        // --- Add to Cart Logic ---
+        // Add to Cart Logic
         const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
         addToCartButtons.forEach(button => {
             // Remove old listener to prevent duplicates if function runs twice
@@ -69,7 +69,7 @@
             });
         });
 
-        // --- Buy Now Logic ---
+        // Buy Now Logic
         const buyNowButtons = document.querySelectorAll('.buy-now-btn');
         buyNowButtons.forEach(button => {
             const newButton = button.cloneNode(true);
@@ -108,7 +108,7 @@
             });
         });
 
-        // --- Wishlist Toggle Logic ---
+        // Wishlist Toggle Logic
         const wishlistButtons = document.querySelectorAll('.wishlist-btn');
         wishlistButtons.forEach(button => {
             const newButton = button.cloneNode(true);
@@ -198,7 +198,7 @@
                     gridContainer.innerHTML = newGrid.innerHTML;
                     window.history.pushState({}, '', url);
 
-                    // Critical: Re-bind all cart/wishlist buttons inside the HTML!
+                    // Re-bind all cart/wishlist buttons inside the HTML
                     bindDynamicListeners();
                 }
             } catch (error) {
@@ -212,7 +212,7 @@
 
         filterInputs.forEach(input => {
             if (input.type === 'text' || input.type === 'search') {
-                input.addEventListener('input', () => { // Changed keyup to input for better mobile support
+                input.addEventListener('input', () => {
                     clearTimeout(debounceTimer);
                     debounceTimer = setTimeout(() => fetchResults(), 500);
                 });
@@ -233,6 +233,40 @@
                 });
             }
         });
+    }
+
+    // Interactive Star Rating Logic
+    const starContainer = document.querySelector('.star-rating-input');
+    const ratingInput = document.getElementById('review-rating-value');
+
+    if (starContainer && ratingInput) {
+        const stars = starContainer.querySelectorAll('i');
+
+        stars.forEach(star => {
+            star.addEventListener('click', (e) => {
+                const clickedValue = parseInt(e.target.getAttribute('data-value'));
+
+                // Update the hidden input that gets sent to the server
+                ratingInput.value = clickedValue;
+
+                // Update the visuals: Fill stars up to the clicked value, hollow out the rest
+                stars.forEach(s => {
+                    const starVal = parseInt(s.getAttribute('data-value'));
+                    if (starVal <= clickedValue) {
+                        s.classList.remove('bi-star', 'text-slate-600');
+                        s.classList.add('bi-star-fill', 'text-amber-400');
+                    } else {
+                        s.classList.remove('bi-star-fill', 'text-amber-400');
+                        s.classList.add('bi-star', 'text-slate-600');
+                    }
+                });
+            });
+        });
+
+        // Initialize default UI state (5 stars)
+        if (stars.length >= 5) {
+            stars[4].click();
+        }
     }
 
 });

@@ -84,7 +84,8 @@ namespace MedShop.Core.Services
                     Quantity = p.Quantity,
                     Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
                     SellerId = p.UsersProducts.Select(up => up.UserId).First(),
-                    IsInWishlist = userWishlistProductIds.Contains(p.Id)
+                    IsInWishlist = userWishlistProductIds.Contains(p.Id),
+                    AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => (double)r.Rating) : 0.0
                 })
                 .ToListAsync();
 
@@ -185,7 +186,21 @@ namespace MedShop.Core.Services
                     Category = p.Category.Name,
                     Quantity = p.Quantity,
                     Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
-                    SellerId = p.UsersProducts.Select(up => up.UserId).First()
+                    SellerId = p.UsersProducts.Select(up => up.UserId).First(),
+
+                    AverageRating = p.Reviews.Any() ? p.Reviews.Average(r => (double)r.Rating) : 0.0,
+
+                    Reviews = p.Reviews
+                        .OrderByDescending(r => r.CreatedOn)
+                        .Select(r => new ReviewServiceModel()
+                        {
+                            Id = r.Id,
+                            Title = r.Title,
+                            Description = r.Description,
+                            Rating = r.Rating,
+                            ReviewerName = r.User.UserName,
+                            CreatedOn = r.CreatedOn.ToString("dd/MM/yyyy")
+                        }).ToList()
                 })
                 .FirstAsync();
         }
@@ -359,6 +374,33 @@ namespace MedShop.Core.Services
             await repo.SaveChangesAsync();
 
             return product.IsVisible;
+        }
+
+        public async Task AddReviewAsync(int productId, string userId, string title, string description, int rating)
+        {
+            // Security Check: Make sure the product actually exists
+            var productExists = await ExistsAsync(productId);
+            guard.AgainstNull(productExists ? new object() : null, "Product not found!");
+
+            var review = new Review()
+            {
+                ProductId = productId,
+                UserId = userId,
+                Title = title,
+                Description = description,
+                Rating = rating,
+                CreatedOn = DateTime.UtcNow
+            };
+
+            await repo.AddAsync(review);
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task<bool> HasUserPurchasedProductAsync(int productId, string userId)
+        {
+            // Check the Orders table for any order belonging to the user that contains an OrderItem matching the ProductId
+            return await repo.AllReadonly<Order>()
+                .AnyAsync(o => o.UserId == userId && o.OrderItems.Any(oi => oi.ProductId == productId));
         }
     }
 }

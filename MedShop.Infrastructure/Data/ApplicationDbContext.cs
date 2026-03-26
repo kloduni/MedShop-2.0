@@ -27,6 +27,7 @@ namespace MedShop.Infrastructure.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
         public DbSet<WishlistItem> WishlistItems { get; set; }
+        public DbSet<Review> Reviews { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -35,9 +36,24 @@ namespace MedShop.Infrastructure.Data
             // between users (sellers) and products.
             builder.Entity<UserProduct>()
                 .HasKey(up => new {up.UserId, up.ProductId});
+
             // WishlistItem uses a composite primary key so a user can only favorite a specific item once
             builder.Entity<WishlistItem>()
                 .HasKey(w => new { w.UserId, w.ProductId });
+
+            // Review -> User (No Cascade Delete)
+            builder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany()
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Review -> Product (Cascade Delete allowed)
+            builder.Entity<Review>()
+                .HasOne(r => r.Product)
+                .WithMany(p => p.Reviews)
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             if (seedDb)
             {

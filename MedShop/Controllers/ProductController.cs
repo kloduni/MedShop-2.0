@@ -91,23 +91,26 @@ namespace MedShop.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id, string information)
         {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction(nameof(All));
-            }
-
-            if (await productService.ExistsAsync(id) == false)
-            {
-                return RedirectToAction(nameof(All));
-            }
-
             var model = await productService.ProductDetailsByIdAsync(id);
 
+            // If model is null, the product doesn't exist
+            if (model == null)
+            {
+                return RedirectToAction(nameof(All));
+            }
+
+            // SEO Slug Check
             if (information != model.GetInformation())
             {
                 TempData[ErrorMessage] = NoExperiments;
-
                 return RedirectToAction(nameof(All));
+            }
+
+            // Check purchase status if the user is logged in
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                string userId = User.Id(); // Using your .Id() extension
+                model.HasPurchased = await productService.HasUserPurchasedProductAsync(id, userId);
             }
 
             return View(model);
@@ -281,6 +284,43 @@ namespace MedShop.Controllers
             TempData[SuccessMessage] = ProductDeleted;
 
             return RedirectToAction(nameof(All));
+        }
+
+        [HttpPost]
+        [Authorize]
+        [IgnoreAntiforgeryToken]
+        public async Task<IActionResult> AddReview(ReviewFormModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData[ErrorMessage] = "Invalid review submission. Please check your inputs.";
+                return RedirectToAction(nameof(Details), new { id = model.ProductId, information = model.Title }); // Fallback info string
+            }
+
+            try
+            {
+                var userId = User.Id();
+
+                // Prevent the seller from reviewing their own product
+                if (await productService.HasUserWithIdAsync(model.ProductId, userId))
+                {
+                    TempData[ErrorMessage] = "You cannot review your own product.";
+                    return RedirectToAction(nameof(Details), new { id = model.ProductId, information = model.Title });
+                }
+
+                await productService.AddReviewAsync(model.ProductId, userId, model.Title, model.Description, model.Rating);
+
+                TempData[SuccessMessage] = "Thank you! Your review has been posted.";
+            }
+            catch (Exception)
+            {
+                TempData[ErrorMessage] = "An unexpected error occurred while posting your review.";
+            }
+
+            // In order to redirect to Details cleanly, we need to fetch the product to get the valid 'information' string
+            var product = await productService.ProductDetailsByIdAsync(model.ProductId);
+
+            return RedirectToAction(nameof(Details), new { id = model.ProductId, information = product.GetInformation() });
         }
 
         [HttpPost]

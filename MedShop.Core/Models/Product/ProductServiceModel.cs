@@ -26,5 +26,8 @@ namespace MedShop.Core.Models.Product
 
         public bool IsVisible { get; set; }
         public bool IsInWishlist { get; set; }
+        public double AverageRating { get; set; }
+        public IEnumerable<ReviewServiceModel> Reviews { get; set; } = new List<ReviewServiceModel>();
+        public bool HasPurchased { get; set; }
     }
 }

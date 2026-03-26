@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Order Complete";
+    var reviewItems = ViewBag.ReviewItems as List<(int Id, string Name, string Slug)>;
 }
 
 <div class="max-w-2xl mx-auto mt-16 px-4 sm:px-6">
@@ -15,16 +16,50 @@
             <h2 class="text-3xl font-bold text-white mb-4">Order Completed Successfully!</h2>
             <p class="text-slate-400 text-lg mb-8">Your payment has been processed and your items are confirmed.</p>
             
-            <div class="flex items-center justify-center gap-4">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                 <a asp-controller="Order" asp-action="All"
-                       class="px-6 py-3 bg-transparent border border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white text-sm font-bold rounded-xl transition-all">
+                       class="w-full sm:w-auto px-6 py-3 bg-transparent border border-slate-600 hover:bg-slate-800 text-slate-300 hover:text-white text-sm font-bold rounded-xl transition-all">
                     View My Orders
                 </a>
+                
                 <a asp-controller="Product" asp-action="All"
-                       class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl transition-all active:scale-95 shadow-[0_0_15px_rgba(37,99,235,0.4)] hover:shadow-[0_0_25px_rgba(37,99,235,0.6)]">
+                       class="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-xl transition-all active:scale-95 shadow-[0_0_15px_rgba(37,99,235,0.4)]">
                     Continue Shopping
                 </a>
             </div>
+
+            @if (reviewItems != null && reviewItems.Any())
+            {
+                <div class="bg-slate-800/50 rounded-xl p-6 border border-slate-700 text-left">
+                    <h3 class="text-sm font-bold text-slate-300 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i class="bi bi-star-fill text-amber-400"></i> Review Your Purchases
+                    </h3>
+                    
+                    <div class="flex flex-col gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                        @foreach (var item in reviewItems)
+                        {
+                            <div class="flex items-center justify-between bg-slate-900/80 p-4 rounded-xl border border-slate-700/50 hover:border-indigo-500/50 transition-colors">
+                                <span class="text-white font-medium truncate mr-4">@item.Name</span>
+                                <a asp-controller="Product" asp-action="Details"
+                                       asp-route-id="@item.Id"
+                                       asp-route-information="@item.Slug"
+                                       asp-fragment="review-section"
+                                       class="shrink-0 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-lg transition-all shadow-md active:scale-95">
+                                    Write Review
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
+
+<style>
+    /* Custom scrollbar for the review list if it gets too long */
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+</style>

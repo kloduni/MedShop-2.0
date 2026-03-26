@@ -42,11 +42,17 @@
                     
                     <div class="flex items-center gap-4 mb-6">
                         <div class="flex text-amber-400 gap-1">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= Math.Round(Model.AverageRating))
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star text-slate-700"></i>
+                                }
+                            }
                         </div>
                         <span class="text-slate-500 text-sm font-medium border-l border-slate-800 pl-4">Verified Professional Grade</span>
                     </div>
@@ -146,4 +152,176 @@
             </div>
         </div>
     </div>
+
+    <div id="review-section" class="scroll-mt-24 mt-16 bg-slate-900 rounded-[2.5rem] p-8 lg:p-12 border border-slate-700/50 shadow-2xl relative overflow-hidden">
+        
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 pb-6 border-b border-slate-800">
+            <div>
+                <h3 class="text-3xl font-black text-white flex items-center gap-3">
+                    <i class="bi bi-chat-square-quote-fill text-blue-500"></i> Product Reviews
+                </h3>
+                <p class="text-slate-400 mt-2 font-medium">Read what other professionals are saying.</p>
+            </div>
+            
+            <div class="mt-4 lg:mt-0 bg-slate-950/50 px-6 py-4 rounded-2xl border border-slate-800 flex items-center gap-4">
+                <div class="flex text-amber-400 text-xl drop-shadow-[0_0_10px_rgba(251,191,36,0.3)]">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        if (i <= Math.Round(Model.AverageRating))
+                        {
+                            <i class="bi bi-star-fill"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-star text-slate-700"></i>
+                        }
+                    }
+                </div>
+                <div class="text-white font-black text-2xl">
+                    @(Model.AverageRating > 0 ? Model.AverageRating.ToString("F1") : "0.0") <span class="text-slate-500 text-sm font-bold uppercase tracking-widest">/ 5.0</span>
+                </div>
+                <div class="text-slate-500 text-xs font-bold ml-2 border-l border-slate-700 pl-4">
+                    @Model.Reviews.Count() Reviews
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            
+            <div class="lg:col-span-1">
+                @if (User.Identity?.IsAuthenticated == true && !isOwner && Model.HasPurchased)
+                {
+                    <div class="bg-slate-800/40 rounded-3xl p-6 border border-slate-700/50 sticky top-8">
+                        <h4 class="text-white font-bold text-xl mb-6">Write a Review</h4>
+                        
+                        <form asp-controller="Product" asp-action="AddReview" method="post">
+                            <input type="hidden" name="ProductId" value="@Model.Id" />
+                            
+                            <div class="mb-6">
+                                <label class="block text-sm font-bold text-slate-300 mb-2 uppercase tracking-widest">Your Rating</label>
+                                <div class="flex gap-2 text-2xl text-slate-600 star-rating-input cursor-pointer">
+                                    <i class="bi bi-star-fill hover:text-amber-400 transition-colors" data-value="1"></i>
+                                    <i class="bi bi-star-fill hover:text-amber-400 transition-colors" data-value="2"></i>
+                                    <i class="bi bi-star-fill hover:text-amber-400 transition-colors" data-value="3"></i>
+                                    <i class="bi bi-star-fill hover:text-amber-400 transition-colors" data-value="4"></i>
+                                    <i class="bi bi-star-fill hover:text-amber-400 transition-colors" data-value="5"></i>
+                                </div>
+                                <input type="hidden" name="Rating" id="review-rating-value" value="5" />
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold text-slate-300 mb-2 uppercase tracking-widest">Title</label>
+                                <input type="text" name="Title" required minlength="2" maxlength="50" placeholder="Summarize your experience..."
+                                       class="w-full bg-slate-900 border border-slate-600 hover:border-blue-500/50 focus:border-blue-500 text-white rounded-xl py-3 px-4 transition-all outline-none focus:ring-2 focus:ring-blue-500/50" />
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-bold text-slate-300 mb-2 uppercase tracking-widest">Details</label>
+                                <textarea name="Description" required minlength="10" maxlength="500" rows="4" placeholder="What did you like or dislike?"
+                                          class="w-full bg-slate-900 border border-slate-600 hover:border-blue-500/50 focus:border-blue-500 text-white rounded-xl py-3 px-4 transition-all outline-none focus:ring-2 focus:ring-blue-500/50 resize-none"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full flex justify-center items-center gap-2 py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-xl shadow-[0_10px_20px_rgba(37,99,235,0.2)] transition-all active:scale-95">
+                                <i class="bi bi-send-fill"></i> Submit Review
+                            </button>
+                        </form>
+                    </div>
+                }
+                else if (User.Identity?.IsAuthenticated == true && !isOwner && !Model.HasPurchased)
+                {
+                    <div class="bg-slate-800/40 rounded-3xl p-8 border border-slate-700/50 text-center">
+                        <i class="bi bi-cart-check text-4xl text-blue-500 mb-4 block"></i>
+                        <h4 class="text-white font-bold text-lg mb-2">Verified Purchase Required</h4>
+                        <p class="text-slate-400 text-sm">To ensure the quality of our reviews, only customers who have purchased this product can leave feedback.</p>
+                    </div>
+                }
+                else if (isOwner)
+                {
+                    <div class="bg-slate-800/40 rounded-3xl p-8 border border-slate-700/50 text-center">
+                        <i class="bi bi-shield-lock text-4xl text-slate-500 mb-4 block"></i>
+                        <h4 class="text-white font-bold text-lg mb-2">Seller Account</h4>
+                        <p class="text-slate-400 text-sm">You cannot review your own product listings.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="bg-slate-800/40 rounded-3xl p-8 border border-slate-700/50 text-center">
+                        <i class="bi bi-person-lock text-4xl text-slate-500 mb-4 block"></i>
+                        <h4 class="text-white font-bold text-lg mb-2">Login Required</h4>
+                        <p class="text-slate-400 text-sm mb-6">You must be logged in to write a review.</p>
+                        <a asp-controller="User" asp-action="Login" class="inline-flex justify-center items-center gap-2 px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl transition-all">
+                            Sign In Now
+                        </a>
+                    </div>
+                }
+            </div>
+
+            <div class="lg:col-span-2 flex flex-col gap-6">
+                @if (!Model.Reviews.Any())
+                {
+                    <div class="bg-slate-950/30 rounded-3xl p-12 border border-slate-800/50 text-center h-full flex flex-col items-center justify-center">
+                        <i class="bi bi-stars text-5xl text-slate-600 mb-4"></i>
+                        <h4 class="text-white font-bold text-xl mb-2">No Reviews Yet</h4>
+                        <p class="text-slate-400">Be the first to share your thoughts on this product!</p>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <div class="bg-slate-800/30 rounded-3xl p-6 border border-slate-700/30 transition-all hover:bg-slate-800/50">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-emerald-500 flex items-center justify-center text-white font-black shadow-lg">
+                                        @review.ReviewerName.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <span class="text-white font-bold block">@review.ReviewerName</span>
+                                        <span class="text-slate-500 text-xs font-medium">@review.CreatedOn</span>
+                                    </div>
+                                </div>
+                                <div class="flex text-amber-400 text-sm drop-shadow-[0_0_5px_rgba(251,191,36,0.3)] gap-1">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        if (i <= review.Rating)
+                                        {
+                                            <i class="bi bi-star-fill"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-star text-slate-700"></i>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <h5 class="text-white font-bold text-lg mb-2">@review.Title</h5>
+                            <p class="text-slate-300 leading-relaxed text-sm">@review.Description</p>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Star Rating Selection Logic
+        document.querySelectorAll('.star-rating-input i').forEach(star => {
+            star.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                document.getElementById('review-rating-value').value = value;
+                
+                // Visual feedback
+                const stars = this.parentElement.querySelectorAll('i');
+                stars.forEach(s => {
+                    if (s.getAttribute('data-value') <= value) {
+                        s.classList.replace('text-slate-600', 'text-amber-400');
+                    } else {
+                        s.classList.replace('text-amber-400', 'text-slate-600');
+                    }
+                });
+            });
+        });
+    </script>
+}

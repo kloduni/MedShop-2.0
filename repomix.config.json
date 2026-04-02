@@ -1,0 +1,29 @@
+{
+  "output": {
+    "filePath": "medshop-architecture.xml",
+    "style": "xml",
+    "removeComments": false,
+    "removeEmptyLines": true,
+    "topFilesLength": 100,
+    "showLineNumbers": false
+  },
+  "ignore": {
+    "useGitignore": true,
+    "customPatterns": [
+      "**/bin/**",
+      "**/obj/**",
+      "**/Migrations/**",
+      "**/wwwroot/**",
+      "**/node_modules/**",
+      "**/.vs/**",
+      "**/.vscode/**",
+      "**/Properties/**",
+      "**/*.md",
+      "**/*.json",
+      "**/*.xml",
+      "**/*.html",
+      "**/*.css",
+      "**/*.js"
+    ]
+  }
+}

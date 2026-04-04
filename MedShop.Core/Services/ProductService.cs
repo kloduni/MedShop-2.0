@@ -1,4 +1,5 @@
-﻿using MedShop.Core.Contracts;
+﻿using static MedShop.Core.Constants.Product.ProductConstants;
+using MedShop.Core.Contracts;
 using MedShop.Core.Exceptions;
 using MedShop.Core.Models.Product;
 using MedShop.Core.Models.Product.ProductSortingEnum;
@@ -160,7 +161,7 @@ namespace MedShop.Core.Services
             catch (Exception e)
             {
                 logger.LogError(nameof(CreateAsync), e);
-                throw new ApplicationException("Failed to save in Db", e);
+                throw new ApplicationException(DbSaveError, e);
             }
 
             return product.Id;
@@ -255,7 +256,7 @@ namespace MedShop.Core.Services
         public async Task EditAsync(int productId, ProductBaseModel model)
         {
             var product = await repo.GetByIdAsync<Product>(productId);
-            guard.AgainstNull(product, "Product not found!");
+            guard.AgainstNull(product, ProductNotFound);
 
             product.ProductName = model.ProductName;
             product.Description = model.Description;
@@ -274,7 +275,7 @@ namespace MedShop.Core.Services
         public async Task DeleteAsync(int productId)
         {
             var product = await repo.GetByIdAsync<Product>(productId);
-            guard.AgainstNull(product, "Product not found!");
+            guard.AgainstNull(product, ProductNotFound);
             product.IsActive = false;
 
             await repo.SaveChangesAsync();
@@ -346,7 +347,7 @@ namespace MedShop.Core.Services
         public async Task RestoreProductAsync(int id)
         {
             var product = await repo.GetByIdAsync<Product>(id);
-            guard.AgainstNull(product, "Product not found!");
+            guard.AgainstNull(product, ProductNotFound);
             product.IsActive = true;
 
             await repo.SaveChangesAsync();
@@ -358,7 +359,7 @@ namespace MedShop.Core.Services
             {
                 var product = await repo.All<Product>()
                     .FirstAsync(p => p.Id == item.Product.Id);
-                guard.AgainstNull(product, "Product not found!");
+                guard.AgainstNull(product, ProductNotFound);
                 product.Quantity -= item.Amount;
 
             }
@@ -380,7 +381,7 @@ namespace MedShop.Core.Services
         {
             // Security Check: Make sure the product actually exists
             var productExists = await ExistsAsync(productId);
-            guard.AgainstNull(productExists ? new object() : null, "Product not found!");
+            guard.AgainstNull(productExists ? new object() : null, ProductNotFound);
 
             var review = new Review()
             {

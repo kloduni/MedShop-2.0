@@ -124,8 +124,8 @@ namespace MedShop.Controllers
                 }
             }
 
-            TempData[ErrorMessage] = "Invalid Login!";
-            ModelState.AddModelError("", "Invalid Login!");
+            TempData[ErrorMessage] = InvalidLogin;
+            ModelState.AddModelError("", InvalidLogin);
 
             return View(model);
         }
@@ -194,7 +194,7 @@ namespace MedShop.Controllers
             {
                 if (string.IsNullOrEmpty(model.CurrentPassword))
                 {
-                    ModelState.AddModelError(string.Empty, "Current password is required to set a new password.");
+                    ModelState.AddModelError(string.Empty, CurrentPasswordRequired);
                     return View(model);
                 }
 

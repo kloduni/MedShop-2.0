@@ -1,4 +1,5 @@
-﻿using MedShop.Core.Contracts;
+﻿using MedShop.Core.Constants.Product;
+using MedShop.Core.Contracts;
 using MedShop.Core.Extensions;
 using MedShop.Core.Models.Product;
 using MedShop.Extensions;
@@ -288,12 +289,12 @@ namespace MedShop.Controllers
 
         [HttpPost]
         [Authorize]
-        [IgnoreAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddReview(ReviewFormModel model)
         {
             if (!ModelState.IsValid)
             {
-                TempData[ErrorMessage] = "Invalid review submission. Please check your inputs.";
+                TempData[ErrorMessage] = InvalidReview;
                 return RedirectToAction(nameof(Details), new { id = model.ProductId, information = model.Title }); // Fallback info string
             }
 
@@ -304,20 +305,19 @@ namespace MedShop.Controllers
                 // Prevent the seller from reviewing their own product
                 if (await productService.HasUserWithIdAsync(model.ProductId, userId))
                 {
-                    TempData[ErrorMessage] = "You cannot review your own product.";
+                    TempData[ErrorMessage] = CannotReviewOwnProduct;
                     return RedirectToAction(nameof(Details), new { id = model.ProductId, information = model.Title });
                 }
 
                 await productService.AddReviewAsync(model.ProductId, userId, model.Title, model.Description, model.Rating);
 
-                TempData[SuccessMessage] = "Thank you! Your review has been posted.";
+                TempData[SuccessMessage] = ReviewPosted;
             }
             catch (Exception)
             {
-                TempData[ErrorMessage] = "An unexpected error occurred while posting your review.";
+                TempData[ErrorMessage] = ReviewPostError;
             }
 
-            // In order to redirect to Details cleanly, we need to fetch the product to get the valid 'information' string
             var product = await productService.ProductDetailsByIdAsync(model.ProductId);
 
             return RedirectToAction(nameof(Details), new { id = model.ProductId, information = product.GetInformation() });

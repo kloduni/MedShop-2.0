@@ -1,7 +1,8 @@
 ﻿using MedShop.Core.Cart;
+using MedShop.Core.Contracts;
 using MedShop.Infrastructure.Data;
+using MedShop.Core.Data.Models;
 using MedShop.Infrastructure.Data.Common;
-using MedShop.Infrastructure.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedShop.Tests.UnitTests

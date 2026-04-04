@@ -1,6 +1,6 @@
 using MedShop.Extensions;
 using MedShop.Infrastructure.Data;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using MedShop.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

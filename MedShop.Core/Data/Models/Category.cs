@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MedShop.Infrastructure.Data.Models
+namespace MedShop.Core.Data.Models
 {
     public class Category
     {

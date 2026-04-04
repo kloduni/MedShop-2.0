@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace MedShop.Infrastructure.Data.Models
+namespace MedShop.Core.Data.Models
 {
     public class Product
     {

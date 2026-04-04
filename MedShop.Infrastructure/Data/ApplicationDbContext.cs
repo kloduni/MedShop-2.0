@@ -1,5 +1,5 @@
 ﻿using MedShop.Infrastructure.Data.Configuration;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

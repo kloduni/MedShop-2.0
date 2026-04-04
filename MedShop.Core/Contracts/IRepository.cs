@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace MedShop.Infrastructure.Data.Common
+namespace MedShop.Core.Contracts
 {
     /// <summary>
     /// Abstraction of repository access methods

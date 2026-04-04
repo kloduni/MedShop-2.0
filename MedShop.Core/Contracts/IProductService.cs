@@ -1,6 +1,6 @@
 ﻿using MedShop.Core.Models.Product;
 using MedShop.Core.Models.Product.ProductSortingEnum;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 
 namespace MedShop.Core.Contracts
 {

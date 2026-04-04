@@ -32,6 +32,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\MedShop.Core\MedShop.Core.csproj" />
+		<ProjectReference Include="..\MedShop.Infrastructure\MedShop.Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>

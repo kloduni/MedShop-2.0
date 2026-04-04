@@ -1,5 +1,5 @@
 ﻿using MedShop.Core.Contracts.Admin;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using static MedShop.Core.Constants.MessageConstants;

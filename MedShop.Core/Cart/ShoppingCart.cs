@@ -1,7 +1,7 @@
-﻿using MedShop.Infrastructure.Data.Common;
-using MedShop.Infrastructure.Data.Models;
-using Microsoft.AspNetCore.Http;
+﻿using MedShop.Core.Contracts;
+using MedShop.Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MedShop.Core.Cart

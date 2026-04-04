@@ -1,7 +1,7 @@
-﻿using MedShop.Core.Contracts.Admin;
+﻿using MedShop.Core.Contracts;
+using MedShop.Core.Contracts.Admin;
 using MedShop.Core.Models.Admin;
-using MedShop.Infrastructure.Data.Common;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using static MedShop.Core.Constants.User.AdminConstants;

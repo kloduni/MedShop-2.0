@@ -3,8 +3,7 @@ using MedShop.Core.Contracts;
 using MedShop.Core.Exceptions;
 using MedShop.Core.Models.Product;
 using MedShop.Core.Models.Product.ProductSortingEnum;
-using MedShop.Infrastructure.Data.Common;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

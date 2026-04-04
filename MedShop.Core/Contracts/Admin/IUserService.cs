@@ -1,5 +1,5 @@
 ﻿using MedShop.Core.Models.Admin;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 
 namespace MedShop.Core.Contracts.Admin
 {

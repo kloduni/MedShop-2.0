@@ -1,8 +1,7 @@
 ﻿using MedShop.Core.Contracts;
 using MedShop.Core.Models.Admin;
 using MedShop.Core.Models.User;
-using MedShop.Infrastructure.Data.Common;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedShop.Core.Services

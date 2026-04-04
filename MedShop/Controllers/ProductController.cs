@@ -1,5 +1,4 @@
-﻿using MedShop.Core.Constants.Product;
-using MedShop.Core.Contracts;
+﻿using MedShop.Core.Contracts;
 using MedShop.Core.Extensions;
 using MedShop.Core.Models.Product;
 using MedShop.Extensions;

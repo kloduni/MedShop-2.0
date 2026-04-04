@@ -4,7 +4,7 @@ using MedShop.Core.Contracts.Admin;
 using MedShop.Core.Exceptions;
 using MedShop.Core.Services;
 using MedShop.Core.Services.Admin;
-using MedShop.Infrastructure.Data.Common;
+using MedShop.Infrastructure.Data;
 
 namespace MedShop.Extensions
 {
@@ -12,7 +12,7 @@ namespace MedShop.Extensions
     {
         public static IServiceCollection AddMedShopServices(this IServiceCollection services)
         {
-            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
             services.AddScoped<IGuard, Guard>();
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IOrderService, OrderService>();

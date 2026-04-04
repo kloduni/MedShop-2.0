@@ -11,30 +11,24 @@ namespace MedShop.Core.Services
 {
     public class ProductService : IProductService
     {
-        private readonly IRepository repo;
+        private readonly IApplicationDbContext context;
         private readonly ILogger logger;
         private readonly IGuard guard;
 
-        public ProductService(IRepository _repo, ILogger<ProductService> _logger, IGuard _guard)
+        public ProductService(IApplicationDbContext _context, ILogger<ProductService> _logger, IGuard _guard)
         {
-            repo = _repo;
+            context = _context;
             logger = _logger;
             guard = _guard;
         }
 
-        /// <summary>
-        /// Returns a paginated, filtered, and sorted page of active products.
-        /// Filtering by category and/or a full-text search term is applied before sorting,
-        /// then results are sliced with skip/take to support pagination.
-        /// </summary>
         public async Task<ProductQueryModel> All(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 9, string? currentUserId = null)
         {
             var result = new ProductQueryModel();
 
-            var products = repo.AllReadonly<Product>()
+            var products = context.Products.AsNoTracking()
                 .Where(p => p.IsActive && p.IsVisible);
 
-            // If user is logged in, filter out products they are selling
             if (!string.IsNullOrEmpty(currentUserId))
             {
                 products = products.Where(p => !p.UsersProducts.Any(up => up.UserId == currentUserId));
@@ -47,11 +41,11 @@ namespace MedShop.Core.Services
 
             if (string.IsNullOrEmpty(searchTerm) == false)
             {
-                searchTerm = $"%{searchTerm.ToLower()}%";
+                string term = searchTerm.ToLower();
                 products = products
-                    .Where(p => EF.Functions.Like(p.ProductName.ToLower(), searchTerm) ||
-                                EF.Functions.Like(p.Description.ToLower(), searchTerm) ||
-                                EF.Functions.Like(p.Category.Name.ToLower(), searchTerm));
+                    .Where(p => p.ProductName.ToLower().Contains(term) ||
+                                p.Description.ToLower().Contains(term) ||
+                                p.Category.Name.ToLower().Contains(term));
             }
 
             products = sorting switch
@@ -60,11 +54,10 @@ namespace MedShop.Core.Services
                 _ => products.OrderByDescending(p => p.Id)
             };
 
-            //Fetch user's wishlist IDs for efficient checking
             var userWishlistProductIds = new List<int>();
             if (!string.IsNullOrEmpty(currentUserId))
             {
-                userWishlistProductIds = await repo.AllReadonly<WishlistItem>()
+                userWishlistProductIds = await context.WishlistItems.AsNoTracking()
                     .Where(w => w.UserId == currentUserId)
                     .Select(w => w.ProductId)
                     .ToListAsync();
@@ -94,29 +87,16 @@ namespace MedShop.Core.Services
             return result;
         }
 
-        public async Task<IEnumerable<ProductServiceModel>> AllCarousel()
-        {
-            return await repo.AllReadonly<Product>()
-                .Where(p => p.IsActive)
-                .Select(p => new ProductServiceModel()
-                {
-                    Id = p.Id,
-                    ProductName = p.ProductName,
-                    ImageUrl = p.ImageUrl
-                })
-                .ToListAsync();
-        }
-
         public async Task<IEnumerable<string>> AllCategoriesNamesAsync()
         {
-            return await repo.AllReadonly<Category>()
+            return await context.Categories.AsNoTracking()
                 .Select(c => c.Name)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<ProductCategoryModel>> AllCategoriesAsync()
         {
-            return await repo.AllReadonly<Category>()
+            return await context.Categories.AsNoTracking()
                 .OrderBy(c => c.Name)
                 .Select(c => new ProductCategoryModel()
                 {
@@ -128,9 +108,8 @@ namespace MedShop.Core.Services
 
         public async Task<bool> CategoryExistsAsync(int categoryId)
         {
-            return await repo.AllReadonly<Category>()
+            return await context.Categories.AsNoTracking()
                 .AnyAsync(c => c.Id == categoryId);
-
         }
 
         public async Task<int> CreateAsync(ProductBaseModel model, string userId)
@@ -153,9 +132,9 @@ namespace MedShop.Core.Services
 
             try
             {
-                await repo.AddAsync(product);
-                await repo.AddAsync(userProduct);
-                await repo.SaveChangesAsync();
+                await context.Products.AddAsync(product);
+                await context.UsersProducts.AddAsync(userProduct);
+                await context.SaveChangesAsync();
             }
             catch (Exception e)
             {
@@ -168,13 +147,13 @@ namespace MedShop.Core.Services
 
         public async Task<bool> ExistsAsync(int productId)
         {
-            return await repo.AllReadonly<Product>()
+            return await context.Products.AsNoTracking()
                 .AnyAsync(p => p.Id == productId);
         }
 
         public async Task<ProductServiceModel> ProductDetailsByIdAsync(int productId)
         {
-            return await repo.AllReadonly<Product>()
+            return await context.Products.AsNoTracking()
                 .Where(p => p.IsActive && p.Id == productId)
                 .Select(p => new ProductServiceModel()
                 {
@@ -207,7 +186,7 @@ namespace MedShop.Core.Services
 
         public async Task<IEnumerable<ProductServiceModel>> AllProductsByUserIdAsync(string userId)
         {
-            return await repo.AllReadonly<Product>()
+            return await context.Products.AsNoTracking()
                 .Where(p => p.IsActive && p.UsersProducts.Select(up => up.UserId).First() == userId)
                 .Select(p => new ProductServiceModel()
                 {
@@ -225,16 +204,11 @@ namespace MedShop.Core.Services
                 .ToListAsync();
         }
 
-        /// <summary>
-        /// Returns <c>true</c> if <paramref name="currentUserId"/> is the seller of the given
-        /// product.  Used to prevent sellers from purchasing their own listings and to gate
-        /// edit/delete access to the product owner.
-        /// </summary>
         public async Task<bool> HasUserWithIdAsync(int productId, string currentUserId)
         {
             bool result = false;
 
-            var product = await repo.AllReadonly<Product>()
+            var product = await context.Products.AsNoTracking()
                 .Where(p => p.IsActive && p.Id == productId)
                 .Include(p => p.UsersProducts)
                 .FirstOrDefaultAsync();
@@ -249,12 +223,12 @@ namespace MedShop.Core.Services
 
         public async Task<int> GetProductCategoryIdAsync(int productId)
         {
-            return (await repo.GetByIdAsync<Product>(productId)).CategoryId;
+            return (await context.Products.FindAsync(productId)).CategoryId;
         }
 
         public async Task EditAsync(int productId, ProductBaseModel model)
         {
-            var product = await repo.GetByIdAsync<Product>(productId);
+            var product = await context.Products.FindAsync(productId);
             guard.AgainstNull(product, ProductNotFound);
 
             product.ProductName = model.ProductName;
@@ -264,39 +238,30 @@ namespace MedShop.Core.Services
             product.CategoryId = model.CategoryId;
             product.Quantity = model.Quantity;
 
-            await repo.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
-        /// <summary>
-        /// Soft-deletes the product by setting <c>IsActive = false</c> rather than removing the
-        /// row, preserving historical order data that references this product.
-        /// </summary>
         public async Task DeleteAsync(int productId)
         {
-            var product = await repo.GetByIdAsync<Product>(productId);
+            var product = await context.Products.FindAsync(productId);
             guard.AgainstNull(product, ProductNotFound);
             product.IsActive = false;
 
-            await repo.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(int productId)
         {
-            return await repo.All<Product>()
+            return await context.Products
                 .Include(p => p.UsersProducts)
                 .FirstAsync(p => p.Id == productId);
         }
 
-        /// <summary>
-        /// Same filtering/sorting/pagination pipeline as <see cref="All"/>, but operates on
-        /// soft-deleted (inactive) products for the admin "recycle bin" view.
-        /// </summary>
         public async Task<ProductQueryModel> AllDeletedProducts(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 9)
         {
-
             var result = new ProductQueryModel();
 
-            var products = repo.AllReadonly<Product>()
+            var products = context.Products.AsNoTracking()
                 .Include(p => p.Category)
                 .Where(p => p.IsActive == false);
 
@@ -307,11 +272,11 @@ namespace MedShop.Core.Services
 
             if (string.IsNullOrEmpty(searchTerm) == false)
             {
-                searchTerm = $"%{searchTerm.ToLower()}%";
+                string term = searchTerm.ToLower();
                 products = products
-                    .Where(p => EF.Functions.Like(p.ProductName.ToLower(), searchTerm) ||
-                                EF.Functions.Like(p.Description.ToLower(), searchTerm) ||
-                                EF.Functions.Like(p.Category.Name.ToLower(), searchTerm));
+                    .Where(p => p.ProductName.ToLower().Contains(term) ||
+                                p.Description.ToLower().Contains(term) ||
+                                p.Category.Name.ToLower().Contains(term));
             }
 
             products = sorting switch
@@ -340,45 +305,42 @@ namespace MedShop.Core.Services
             result.TotalProductsCount = await products.CountAsync();
 
             return result;
-
         }
 
         public async Task RestoreProductAsync(int id)
         {
-            var product = await repo.GetByIdAsync<Product>(id);
+            var product = await context.Products.FindAsync(id);
             guard.AgainstNull(product, ProductNotFound);
             product.IsActive = true;
 
-            await repo.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public async Task ReduceProductAmount(ICollection<ShoppingCartItem> items)
         {
             foreach (var item in items)
             {
-                var product = await repo.All<Product>()
+                var product = await context.Products
                     .FirstAsync(p => p.Id == item.Product.Id);
                 guard.AgainstNull(product, ProductNotFound);
                 product.Quantity -= item.Amount;
-
             }
-            await repo.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public async Task<bool> ToggleVisibilityAsync(int productId)
         {
-            var product = await repo.GetByIdAsync<Product>(productId);
+            var product = await context.Products.FindAsync(productId);
             if (product == null) return false;
 
             product.IsVisible = !product.IsVisible;
-            await repo.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return product.IsVisible;
         }
 
         public async Task AddReviewAsync(int productId, string userId, string title, string description, int rating)
         {
-            // Security Check: Make sure the product actually exists
             var productExists = await ExistsAsync(productId);
             guard.AgainstNull(productExists ? new object() : null, ProductNotFound);
 
@@ -392,14 +354,13 @@ namespace MedShop.Core.Services
                 CreatedOn = DateTime.UtcNow
             };
 
-            await repo.AddAsync(review);
-            await repo.SaveChangesAsync();
+            await context.Reviews.AddAsync(review);
+            await context.SaveChangesAsync();
         }
 
         public async Task<bool> HasUserPurchasedProductAsync(int productId, string userId)
         {
-            // Check the Orders table for any order belonging to the user that contains an OrderItem matching the ProductId
-            return await repo.AllReadonly<Order>()
+            return await context.Orders.AsNoTracking()
                 .AnyAsync(o => o.UserId == userId && o.OrderItems.Any(oi => oi.ProductId == productId));
         }
     }

@@ -8,24 +8,24 @@ namespace MedShop.Core.Services
 {
     public class WishlistService : IWishlistService
     {
-        private readonly IRepository repo;
+        private readonly IApplicationDbContext context;
         private readonly ILogger<WishlistService> logger;
 
-        public WishlistService(IRepository _repo, ILogger<WishlistService> _logger)
+        public WishlistService(IApplicationDbContext _context, ILogger<WishlistService> _logger)
         {
-            repo = _repo;
+            context = _context;
             logger = _logger;
         }
 
         public async Task<bool> ToggleWishlistAsync(int productId, string userId)
         {
-            var existingItem = await repo.All<WishlistItem>()
+            var existingItem = await context.WishlistItems
                 .FirstOrDefaultAsync(w => w.ProductId == productId && w.UserId == userId);
 
             if (existingItem != null)
             {
-                repo.Delete(existingItem);
-                await repo.SaveChangesAsync();
+                context.WishlistItems.Remove(existingItem);
+                await context.SaveChangesAsync();
                 return false;
             }
             else
@@ -36,21 +36,21 @@ namespace MedShop.Core.Services
                     UserId = userId
                 };
 
-                await repo.AddAsync(newItem);
-                await repo.SaveChangesAsync();
+                await context.WishlistItems.AddAsync(newItem);
+                await context.SaveChangesAsync();
                 return true;
             }
         }
 
         public async Task<bool> IsInWishlistAsync(int productId, string userId)
         {
-            return await repo.AllReadonly<WishlistItem>()
+            return await context.WishlistItems.AsNoTracking()
                 .AnyAsync(w => w.ProductId == productId && w.UserId == userId);
         }
 
         public async Task<IEnumerable<ProductServiceModel>> GetUserWishlistAsync(string userId)
         {
-            return await repo.AllReadonly<WishlistItem>()
+            return await context.WishlistItems.AsNoTracking()
                 .Where(w => w.UserId == userId && w.Product.IsActive)
                 .Select(w => new ProductServiceModel
                 {

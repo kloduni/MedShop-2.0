@@ -1,6 +1,6 @@
 ﻿using MedShop.Tests.Mocks;
 using MedShop.WebApi.Controllers;
-using NuGet.Protocol;
+using Newtonsoft.Json;
 
 namespace MedShop.Tests.IntegrationTests
 {
@@ -19,13 +19,11 @@ namespace MedShop.Tests.IntegrationTests
         public async Task UsersInfo_ShouldReturnCorrectValues()
         {
             var result = await statisticsController.GetUsersStatistics();
-
-            var value = result.ToJson();
+            var value = JsonConvert.SerializeObject(result);
 
             Assert.IsNotNull(result);
-
             Assert.That(value.Contains("TotalProducts\":5"), Is.True);
-            Assert.That(value.Contains("TotalUsers\":5"), Is.True);     
+            Assert.That(value.Contains("TotalUsers\":5"), Is.True);
             Assert.That(value.Contains("ActiveProducts\":3"), Is.True);
             Assert.That(value.Contains("ActiveUsers\":2"), Is.True);
         }

@@ -14,7 +14,6 @@ namespace MedShop.Core.Contracts
             int productsPerPage = 9,
             string? currentUserId = null);
 
-        Task<IEnumerable<ProductServiceModel>> AllCarousel();
         Task<IEnumerable<string>> AllCategoriesNamesAsync();
         Task<IEnumerable<ProductCategoryModel>> AllCategoriesAsync();
         Task<bool> CategoryExistsAsync(int categoryId);

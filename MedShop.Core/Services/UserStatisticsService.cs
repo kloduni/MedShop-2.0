@@ -1,29 +1,28 @@
 ﻿using MedShop.Core.Contracts;
 using MedShop.Core.Models.Admin;
 using MedShop.Core.Models.User;
-using MedShop.Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedShop.Core.Services
 {
     public class UserStatisticsService : IUserStatisticsService
     {
-        private readonly IRepository repo;
+        private readonly IApplicationDbContext context;
 
-        public UserStatisticsService(IRepository _repo)
+        public UserStatisticsService(IApplicationDbContext _context)
         {
-            repo = _repo;
+            context = _context;
         }
 
         public async Task<StatisticsViewModel> UsersInfo()
         {
-            int totalUsers = await repo.AllReadonly<User>()
+            int totalUsers = await context.Users.AsNoTracking()
                 .CountAsync(u => u.Id != null);
-            int activeUsers = await repo.AllReadonly<User>()
+            int activeUsers = await context.Users.AsNoTracking()
                 .CountAsync(u => u.IsActive);
-            int totalProducts = await repo.AllReadonly<Product>()
+            int totalProducts = await context.Products.AsNoTracking()
                 .CountAsync(p => p.Id != -1);
-            int activeProducts = await repo.AllReadonly<Product>()
+            int activeProducts = await context.Products.AsNoTracking()
                 .CountAsync(p => p.IsActive);
 
             return new StatisticsViewModel()
@@ -37,7 +36,7 @@ namespace MedShop.Core.Services
 
         public async Task<IEnumerable<CategoryStatModel>> GetProductsByCategory()
         {
-            return await repo.AllReadonly<Product>()
+            return await context.Products.AsNoTracking()
                 .Where(p => p.IsActive) // Only count active products
                 .GroupBy(p => p.Category.Name) // Group by category name
                 .Select(g => new CategoryStatModel

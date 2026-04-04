@@ -1,7 +1,6 @@
 ﻿using MedShop.Core.Contracts;
 using MedShop.Core.Services;
 using MedShop.Infrastructure.Data;
-using MedShop.Infrastructure.Data.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedShop.WebApi.Extensions
@@ -21,7 +20,7 @@ namespace MedShop.WebApi.Extensions
             var connectionString = config.GetConnectionString("DefaultConnection");
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(connectionString));
-            services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
 
             return services;
         }

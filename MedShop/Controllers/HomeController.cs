@@ -20,7 +20,7 @@ namespace MedShop.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             if (User.IsInRole(AdminRoleName))
             {
@@ -32,9 +32,7 @@ namespace MedShop.Controllers
                 return RedirectToAction("All", "Product");
             }
 
-            var model = await productService.AllCarousel();
-
-            return View(model);
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

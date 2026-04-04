@@ -31,11 +31,36 @@ namespace MedShop.Tests.UnitTests
         public async Task TestStatisticsUsersInfo_ReturnsCorrectValues()
         {
             userStatisticsService = new UserStatisticsService(context);
-            await context.Users.AddAsync(new User() { Id = "1", IsActive = true });
+
+            // Dynamically capture the base counts (to ignore any seeded data)
+            var baseTotalUsers = await context.Users.CountAsync();
+            var baseActiveUsers = await context.Users.CountAsync(u => u.IsActive);
+            var baseTotalProducts = await context.Products.CountAsync();
+            var baseActiveProducts = await context.Products.CountAsync(p => p.IsActive);
+
+            var category = new Category { Id = 99, Name = "TestCategory" };
+            await context.Categories.AddAsync(category);
+
+            await context.Users.AddRangeAsync(new List<User>()
+            {
+                new User() { Id = "test-u99", IsActive = true, UserName = "u1" },
+                new User() { Id = "test-u100", IsActive = false, UserName = "u2" }
+            });
+
+            await context.Products.AddRangeAsync(new List<Product>()
+            {
+                new Product() { Id = 99, CategoryId = 99, IsActive = true, ProductName = "p1", Description = "desc", ImageUrl = "img" },
+                new Product() { Id = 100, CategoryId = 99, IsActive = false, ProductName = "p2", Description = "desc", ImageUrl = "img" }
+            });
             await context.SaveChangesAsync();
 
-            var result = await userStatisticsService.UsersInfo();
-            Assert.That(result.TotalUsers, Is.EqualTo(1));
+            var model = await userStatisticsService.UsersInfo();
+
+            // Assert based on the offset of the data we just explicitly added
+            Assert.That(model.TotalUsers, Is.EqualTo(baseTotalUsers + 2));
+            Assert.That(model.ActiveUsers, Is.EqualTo(baseActiveUsers + 1));
+            Assert.That(model.TotalProducts, Is.EqualTo(baseTotalProducts + 2));
+            Assert.That(model.ActiveProducts, Is.EqualTo(baseActiveProducts + 1));
         }
 
         [TearDown]

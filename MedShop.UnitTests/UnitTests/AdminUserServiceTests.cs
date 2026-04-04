@@ -1,18 +1,18 @@
 ﻿using MedShop.Core.Contracts;
 using MedShop.Core.Contracts.Admin;
+using MedShop.Core.Data.Models;
 using MedShop.Core.Services.Admin;
 using MedShop.Infrastructure.Data;
-using MedShop.Core.Data.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace MedShop.Tests.UnitTests
 {
     [TestFixture]
     public class AdminUserServiceTests
     {
-        private ApplicationDbContext dbContext; // Used for DB setup/disposal
-        private IApplicationDbContext context;  // Used for service injection
+        private ApplicationDbContext dbContext;
+        private IApplicationDbContext context;
         private IUserService userService;
 
         [SetUp]
@@ -34,36 +34,20 @@ namespace MedShop.Tests.UnitTests
         {
             userService = new UserService(context);
 
-            await context.Roles.AddAsync(new IdentityRole()
-            {
-                Name = "Administrator",
-                NormalizedName = "ADMINISTRATOR"
-            });
+            var baseModel = await userService.All();
+            var baseUsersCount = baseModel.Count();
 
-            await context.Users.AddRangeAsync(new List<User>()
-            {
-                new User()
-                {
-                    Id = "3a45d2af-9dfa-4c52-87b8-780a0374b8ab",
-                    Email = "user@medshop.com",
-                    EmailConfirmed = true,
-                    IsActive = true,
-                    UserName = "user"
-                },
-                new User()
-                {
-                    Id = "63d65a50-2c24-4943-9d64-66da5aff20b3",
-                    Email = "user2@medshop.com",
-                    EmailConfirmed = true,
-                    IsActive = true,
-                    UserName = "user2"
-                }
-            });
+            var user1 = new User() { Id = "test-u99", Email = "u1@m.com", UserName = "u1", IsActive = true };
+            var user2 = new User() { Id = "test-u100", Email = "u2@m.com", UserName = "u2", IsActive = true };
+            await context.Users.AddRangeAsync(user1, user2);
             await context.SaveChangesAsync();
 
             var model = await userService.All();
 
-            Assert.That(model.Count(), Is.EqualTo(2));
+            Assert.That(model.Count(), Is.EqualTo(baseUsersCount + 2));
+
+            Assert.IsTrue(model.Any(u => u.UserId == "test-u99"));
+            Assert.IsTrue(model.Any(u => u.UserId == "test-u100"));
         }
 
         [Test]
@@ -71,13 +55,14 @@ namespace MedShop.Tests.UnitTests
         {
             userService = new UserService(context);
 
-            var user = new User() { Id = "2", IsActive = true, UserName = "u2" };
-            await context.Users.AddAsync(user);
+            await context.Users.AddAsync(new User() { Id = "test-ban-99", IsActive = true, UserName = "u2" });
             await context.SaveChangesAsync();
 
-            await userService.BanUserAsync(user.Id);
+            await userService.BanUserAsync("test-ban-99");
 
-            Assert.That(await context.Users.AsNoTracking().CountAsync(u => u.IsActive), Is.EqualTo(0));
+            var bannedUser = await context.Users.FindAsync("test-ban-99");
+            Assert.IsNotNull(bannedUser);
+            Assert.IsFalse(bannedUser.IsActive);
         }
 
         [Test]
@@ -85,13 +70,14 @@ namespace MedShop.Tests.UnitTests
         {
             userService = new UserService(context);
 
-            var user = new User() { Id = "2", IsActive = false, UserName = "u2" };
-            await context.Users.AddAsync(user);
+            await context.Users.AddAsync(new User() { Id = "test-unban-99", IsActive = false, UserName = "u2" });
             await context.SaveChangesAsync();
 
-            await userService.UnbanUserAsync(user.Id);
+            await userService.UnbanUserAsync("test-unban-99");
 
-            Assert.That(await context.Users.AsNoTracking().CountAsync(u => u.IsActive), Is.EqualTo(1));
+            var unbannedUser = await context.Users.FindAsync("test-unban-99");
+            Assert.IsNotNull(unbannedUser);
+            Assert.IsTrue(unbannedUser.IsActive);
         }
 
         [TearDown]

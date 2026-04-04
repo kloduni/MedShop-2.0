@@ -1,4 +1,4 @@
-﻿using MedShop.Infrastructure.Data.Models;
+﻿using MedShop.Core.Data.Models;
 using Microsoft.AspNetCore.Identity;
 using static MedShop.Core.Constants.User.AdminConstants;
 

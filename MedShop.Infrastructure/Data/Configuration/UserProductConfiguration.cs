@@ -1,4 +1,4 @@
-﻿using MedShop.Infrastructure.Data.Models;
+﻿using MedShop.Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

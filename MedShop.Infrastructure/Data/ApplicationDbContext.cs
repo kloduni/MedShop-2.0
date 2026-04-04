@@ -1,11 +1,12 @@
-﻿using MedShop.Infrastructure.Data.Configuration;
-using MedShop.Infrastructure.Data.Models;
+﻿using MedShop.Core.Contracts;
+using MedShop.Core.Data.Models;
+using MedShop.Infrastructure.Data.Configuration;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedShop.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<User>
+    public class ApplicationDbContext : IdentityDbContext<User>, IApplicationDbContext
     {
         private bool seedDb;
 

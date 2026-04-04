@@ -1,18 +1,17 @@
 ﻿using MedShop.Core.Contracts;
 using MedShop.Core.Models.Order;
-using MedShop.Infrastructure.Data.Common;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedShop.Core.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IRepository repo;
+        private readonly IApplicationDbContext context;
 
-        public OrderService(IRepository _repo)
+        public OrderService(IApplicationDbContext _context)
         {
-            repo = _repo;
+            context = _context;
         }
 
         public async Task StoreOrderAsync(ICollection<ShoppingCartItem> items, string userId, string userEmailAddress)
@@ -23,8 +22,8 @@ namespace MedShop.Core.Services
                 Email = userEmailAddress
             };
 
-            await repo.AddAsync(order);
-            await repo.SaveChangesAsync();
+            await context.Orders.AddAsync(order);
+            await context.SaveChangesAsync();
 
             foreach (var item in items)
             {
@@ -35,10 +34,10 @@ namespace MedShop.Core.Services
                     OrderId = order.Id,
                     Price = item.Product.Price
                 };
-                await repo.AddAsync(orderItem);
+                await context.OrderItems.AddAsync(orderItem);
             }
 
-            await repo.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         /// <summary>
@@ -47,12 +46,12 @@ namespace MedShop.Core.Services
         /// </summary>
         public async Task<ICollection<OrderServiceModel>> GetAllOrdersAsync()
         {
-            return await repo.All<Order>()
+            return await context.Orders
                 .OrderByDescending(o => o.Id)
                 .Select(o => new OrderServiceModel()
                 {
                     Id = o.Id,
-                    OrderItems = repo.All<OrderItem>()
+                    OrderItems = context.OrderItems
                         .Where(oi => oi.Order.Id == o.Id)
                         .Select(oi => new OrderItemServiceModel()
                         {
@@ -70,12 +69,12 @@ namespace MedShop.Core.Services
 
         public async Task<ICollection<OrderServiceModel>> GetOrdersByUserIdAsync(string userId)
         {
-            return await repo.All<Order>()
+            return await context.Orders
                 .Where(o => o.User.Id == userId)
                 .Select(o => new OrderServiceModel()
                 {
                     Id = o.Id,
-                    OrderItems = repo.All<OrderItem>()
+                    OrderItems = context.OrderItems
                         .Where(oi => oi.Order.Id == o.Id)
                         .Select(oi => new OrderItemServiceModel()
                         {

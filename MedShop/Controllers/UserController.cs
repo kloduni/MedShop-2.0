@@ -1,5 +1,5 @@
 ﻿using MedShop.Core.Models.User;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,5 @@
 ﻿using MedShop.Core.Contracts;
+using MedShop.Core.Models.Admin;
 using MedShop.Core.Models.User;
 using Moq;
 
@@ -20,6 +21,7 @@ namespace MedShop.Tests.Mocks
                         TotalUsers = 5,
                         ActiveUsers = 2
                     });
+
                 return userStatisticsServiceMock.Object;
             }
         }

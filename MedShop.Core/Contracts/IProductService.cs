@@ -1,6 +1,6 @@
 ﻿using MedShop.Core.Models.Product;
 using MedShop.Core.Models.Product.ProductSortingEnum;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 
 namespace MedShop.Core.Contracts
 {
@@ -14,7 +14,6 @@ namespace MedShop.Core.Contracts
             int productsPerPage = 9,
             string? currentUserId = null);
 
-        Task<IEnumerable<ProductServiceModel>> AllCarousel();
         Task<IEnumerable<string>> AllCategoriesNamesAsync();
         Task<IEnumerable<ProductCategoryModel>> AllCategoriesAsync();
         Task<bool> CategoryExistsAsync(int categoryId);

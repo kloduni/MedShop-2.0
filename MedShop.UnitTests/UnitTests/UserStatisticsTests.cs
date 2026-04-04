@@ -1,8 +1,7 @@
 ﻿using MedShop.Core.Contracts;
 using MedShop.Core.Services;
 using MedShop.Infrastructure.Data;
-using MedShop.Infrastructure.Data.Common;
-using MedShop.Infrastructure.Data.Models;
+using MedShop.Core.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MedShop.Tests.UnitTests
@@ -10,82 +9,64 @@ namespace MedShop.Tests.UnitTests
     [TestFixture]
     public class UserStatisticsTests
     {
-        private IRepository repo;
+        private ApplicationDbContext dbContext;
+        private IApplicationDbContext context;
         private IUserStatisticsService userStatisticsService;
-        private ApplicationDbContext context;
 
         [SetUp]
         public void SetUp()
         {
             var contextOptions = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase("MedShopTestDb")
+                .UseInMemoryDatabase(Guid.NewGuid().ToString())
                 .Options;
 
-            context = new ApplicationDbContext(contextOptions);
+            dbContext = new ApplicationDbContext(contextOptions);
+            context = dbContext;
 
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
         }
 
         [Test]
         public async Task TestStatisticsUsersInfo_ReturnsCorrectValues()
         {
-            var tRepo = new Repository(context);
-            userStatisticsService = new UserStatisticsService(tRepo);
+            userStatisticsService = new UserStatisticsService(context);
 
-            await tRepo.AddRangeAsync(new List<User>()
+            // Dynamically capture the base counts (to ignore any seeded data)
+            var baseTotalUsers = await context.Users.CountAsync();
+            var baseActiveUsers = await context.Users.CountAsync(u => u.IsActive);
+            var baseTotalProducts = await context.Products.CountAsync();
+            var baseActiveProducts = await context.Products.CountAsync(p => p.IsActive);
+
+            var category = new Category { Id = 99, Name = "TestCategory" };
+            await context.Categories.AddAsync(category);
+
+            await context.Users.AddRangeAsync(new List<User>()
             {
-                new User()
-                {
-                    Id = "3a45d2af-9dfa-4c52-87b8-780a0374b8ab",
-                    Email = "user@medshop.com",
-                    EmailConfirmed = true,
-                    IsActive = true,
-                    UserName = "user"
-                },
-                new User()
-                {
-                    Id = "63d65a50-2c24-4943-9d64-66da5aff20b3",
-                    Email = "user2@medshop.com",
-                    EmailConfirmed = true,
-                    IsActive = false,
-                    UserName = "user2"
-                }
+                new User() { Id = "test-u99", IsActive = true, UserName = "u1" },
+                new User() { Id = "test-u100", IsActive = false, UserName = "u2" }
             });
 
-            await tRepo.AddRangeAsync(new List<Product>()
+            await context.Products.AddRangeAsync(new List<Product>()
             {
-                new Product()
-                {
-                    Id = 1,
-                    Description = "",
-                    ImageUrl = "",
-                    ProductName = "product",
-                    IsActive = true,
-                },
-                new Product()
-                {
-                    Id = 2,
-                    Description = "",
-                    ImageUrl = "",
-                    ProductName = "product2",
-                    IsActive = false,
-                },
+                new Product() { Id = 99, CategoryId = 99, IsActive = true, ProductName = "p1", Description = "desc", ImageUrl = "img" },
+                new Product() { Id = 100, CategoryId = 99, IsActive = false, ProductName = "p2", Description = "desc", ImageUrl = "img" }
             });
-            await tRepo.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             var model = await userStatisticsService.UsersInfo();
 
-            Assert.That(model.TotalUsers, Is.EqualTo(2));
-            Assert.That(model.TotalProducts, Is.EqualTo(2));
-            Assert.That(model.ActiveUsers, Is.EqualTo(1));
-            Assert.That(model.ActiveProducts, Is.EqualTo(1));
+            // Assert based on the offset of the data we just explicitly added
+            Assert.That(model.TotalUsers, Is.EqualTo(baseTotalUsers + 2));
+            Assert.That(model.ActiveUsers, Is.EqualTo(baseActiveUsers + 1));
+            Assert.That(model.TotalProducts, Is.EqualTo(baseTotalProducts + 2));
+            Assert.That(model.ActiveProducts, Is.EqualTo(baseActiveProducts + 1));
         }
 
         [TearDown]
         public void TearDown()
         {
-            context.Dispose();
+            dbContext.Dispose();
         }
     }
 }

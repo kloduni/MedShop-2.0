@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MedShop.Infrastructure.Data.Models
+namespace MedShop.Core.Data.Models
 {
     public class Review
     {

@@ -1,6 +1,7 @@
+using MedShop.Core.Contracts;
+using MedShop.Core.Data.Models;
 using MedShop.Extensions;
 using MedShop.Infrastructure.Data;
-using MedShop.Infrastructure.Data.Models;
 using MedShop.ModelBinders;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Relaxed password policy — this is a demo/portfolio project, not a production store.

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace MedShop.Infrastructure.Data.Models
+namespace MedShop.Core.Data.Models
 {
     public class User : IdentityUser
     {

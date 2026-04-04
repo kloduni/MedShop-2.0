@@ -1,7 +1,6 @@
 ﻿using MedShop.Core.Contracts;
 using MedShop.Core.Models.Admin;
 using MedShop.Core.Models.User;
-using MedShop.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MedShop.WebApi.Controllers

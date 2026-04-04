@@ -1,5 +1,4 @@
 ﻿using MedShop.Core.Contracts;
-using MedShop.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

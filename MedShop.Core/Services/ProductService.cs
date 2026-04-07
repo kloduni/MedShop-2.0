@@ -87,6 +87,56 @@ namespace MedShop.Core.Services
             return result;
         }
 
+        public async Task<ProductQueryModel> AllHiddenProducts(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 9)
+        {
+            var result = new ProductQueryModel();
+
+            var products = context.Products.AsNoTracking()
+                .Include(p => p.Category)
+                .Where(p => p.IsActive && p.IsVisible == false);
+
+            if (string.IsNullOrEmpty(category) == false)
+            {
+                products = products.Where(p => p.Category.Name == category);
+            }
+
+            if (string.IsNullOrEmpty(searchTerm) == false)
+            {
+                string term = searchTerm.ToLower();
+                products = products
+                    .Where(p => p.ProductName.ToLower().Contains(term) ||
+                                p.Description.ToLower().Contains(term) ||
+                                p.Category.Name.ToLower().Contains(term));
+            }
+
+            products = sorting switch
+            {
+                ProductSorting.Price => products.OrderBy(p => p.Price),
+                _ => products.OrderByDescending(p => p.Id)
+            };
+
+            result.Products = await products
+                .Skip((currentPage - 1) * productsPerPage)
+                .Take(productsPerPage)
+                .Select(p => new ProductServiceModel()
+                {
+                    Id = p.Id,
+                    ProductName = p.ProductName,
+                    Description = p.Description,
+                    ImageUrl = p.ImageUrl,
+                    Price = p.Price,
+                    Category = p.Category.Name,
+                    Quantity = p.Quantity,
+                    Seller = p.UsersProducts.Select(up => up.User.UserName).First(),
+                    SellerId = p.UsersProducts.Select(up => up.UserId).First()
+                })
+                .ToListAsync();
+
+            result.TotalProductsCount = await products.CountAsync();
+
+            return result;
+        }
+
         public async Task<IEnumerable<string>> AllCategoriesNamesAsync()
         {
             return await context.Categories.AsNoTracking()

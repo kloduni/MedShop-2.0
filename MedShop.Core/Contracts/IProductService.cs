@@ -38,5 +38,6 @@ namespace MedShop.Core.Contracts
         Task<bool> ToggleVisibilityAsync(int productId);
         Task AddReviewAsync(int productId, string userId, string title, string description, int rating);
         Task<bool> HasUserPurchasedProductAsync(int productId, string userId);
+        Task<ProductQueryModel> AllHiddenProducts(string? category = null, string? searchTerm = null, ProductSorting sorting = ProductSorting.Newest, int currentPage = 1, int productsPerPage = 9);
     }
 }

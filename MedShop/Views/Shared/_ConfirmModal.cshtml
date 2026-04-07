@@ -1,0 +1,115 @@
+﻿<div id="globalConfirmModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+    <div id="globalConfirmModalContent" class="bg-slate-900 border border-slate-700/50 rounded-[2rem] shadow-2xl p-8 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300">
+        
+        <div id="confirmModalIconContainer" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border">
+            <i id="confirmModalIcon" class="text-3xl"></i>
+        </div>
+        
+        <h3 id="confirmModalTitle" class="text-2xl font-black text-white text-center mb-2"></h3>
+        <p id="confirmModalMessage" class="text-slate-400 text-center mb-6 leading-relaxed"></p>
+
+        <form id="confirmModalForm" method="post" action="">
+            <div class="flex gap-4">
+                <button type="button" onclick="window.closeConfirmModal()" class="flex-1 px-6 py-3 bg-slate-800 text-white font-bold rounded-xl border border-slate-700 hover:bg-slate-700 transition-all active:scale-95">
+                    Cancel
+                </button>
+                <button type="submit" id="confirmModalSubmitBtn" class="flex-1 px-6 py-3 font-bold rounded-xl text-white transition-all active:scale-95">
+                    Confirm
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const globalModal = document.getElementById('globalConfirmModal');
+    const globalModalContent = document.getElementById('globalConfirmModalContent');
+
+    const themes = {
+        danger: {
+            iconBg: 'bg-red-500/20',
+            iconBorder: 'border-red-500/30',
+            iconColor: 'text-red-400',
+            btnColor: 'bg-red-600 hover:bg-red-500 shadow-[0_4px_15px_rgba(220,38,38,0.3)]'
+        },
+        info: {
+            iconBg: 'bg-indigo-500/20',
+            iconBorder: 'border-indigo-500/30',
+            iconColor: 'text-indigo-400',
+            btnColor: 'bg-indigo-600 hover:bg-indigo-500 shadow-[0_4px_15px_rgba(79,70,229,0.3)]'
+        },
+        warning: {
+            iconBg: 'bg-amber-500/20',
+            iconBorder: 'border-amber-500/30',
+            iconColor: 'text-amber-400',
+            btnColor: 'bg-amber-600 hover:bg-amber-500 shadow-[0_4px_15px_rgba(217,119,6,0.3)]'
+        }
+    };
+
+    window.openConfirmModal = function(options) {
+        document.getElementById('confirmModalTitle').textContent = options.title;
+        document.getElementById('confirmModalMessage').innerHTML = options.message;
+        
+        document.getElementById('confirmModalForm').method = "post";
+        document.getElementById('confirmModalForm').action = options.actionUrl;
+        
+        const theme = themes[options.theme || 'danger'];
+        
+        const iconContainer = document.getElementById('confirmModalIconContainer');
+        iconContainer.className = `w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 border ${theme.iconBg} ${theme.iconBorder}`;
+        
+        const icon = document.getElementById('confirmModalIcon');
+        icon.className = `bi ${options.icon || 'bi-exclamation-triangle-fill'} text-3xl ${theme.iconColor}`;
+        
+        const submitBtn = document.getElementById('confirmModalSubmitBtn');
+        submitBtn.className = `flex-1 px-6 py-3 font-bold rounded-xl text-white transition-all active:scale-95 ${theme.btnColor}`;
+        submitBtn.textContent = options.confirmText || 'Confirm';
+
+        globalModal.classList.remove('pointer-events-none');
+        requestAnimationFrame(() => {
+            globalModal.classList.remove('opacity-0');
+            globalModalContent.classList.remove('scale-95');
+        });
+    };
+
+    window.closeConfirmModal = function() {
+        globalModal.classList.add('opacity-0');
+        globalModalContent.classList.add('scale-95');
+        setTimeout(() => {
+            globalModal.classList.add('pointer-events-none');
+            document.getElementById('confirmModalForm').action = '';
+        }, 300);
+    };
+
+    window.triggerDeleteModal = function(buttonElement) {
+        const productName = buttonElement.getAttribute('data-product-name');
+        const actionUrl = buttonElement.getAttribute('data-action-url');
+
+        window.openConfirmModal({
+            title: 'Delete Listing',
+            message: `Are you sure you want to permanently delete <span class="text-white font-bold">${productName}</span>? This cannot be undone.`,
+            actionUrl: actionUrl,
+            theme: 'danger',
+            icon: 'bi-trash-fill',
+            confirmText: 'Yes, Delete'
+        });
+    };
+
+    window.triggerRestoreModal = function(buttonElement) {
+        const productName = buttonElement.getAttribute('data-product-name');
+        const actionUrl = buttonElement.getAttribute('data-action-url');
+
+        window.openConfirmModal({
+            title: 'Restore Product',
+            message: `Are you sure you want to restore <span class="text-white font-bold">${productName}</span> to the active storefront?`,
+            actionUrl: actionUrl,
+            theme: 'info',
+            icon: 'bi-arrow-counterclockwise',
+            confirmText: 'Yes, Restore'
+        });
+    };
+
+    globalModal.addEventListener('click', (e) => {
+        if (e.target === globalModal) window.closeConfirmModal();
+    });
+</script>

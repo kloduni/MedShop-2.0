@@ -213,25 +213,18 @@ namespace MedShop.Controllers
             return RedirectToAction(nameof(All));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, string information)
         {
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction(nameof(All));
-            }
-
             if ((await productService.ExistsAsync(id)) == false)
             {
                 TempData[ErrorMessage] = ProductDoesNotExist;
-
                 return RedirectToAction(nameof(All));
             }
 
             if ((await productService.HasUserWithIdAsync(id, User.Id())) == false && User.IsInRole(AdminRoleName) == false)
             {
                 TempData[ErrorMessage] = ProductDoesNotBelongToUser;
-
                 return RedirectToAction(nameof(All));
             }
 
@@ -240,38 +233,8 @@ namespace MedShop.Controllers
             {
                 Id = product.Id,
                 ProductName = product.ProductName,
-                Description = product.Description,
-                Category = product.Category,
-                ImageUrl = product.ImageUrl,
-                Price = product.Price,
-                Quantity = product.Quantity,
-                Seller = product.Seller
+                Category = product.Category
             };
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Delete(ProductServiceModel model, string information)
-        {
-            if (!ModelState.IsValid)
-            {
-                TempData[ErrorMessage] = InvalidProductData;
-                return RedirectToAction(nameof(All));
-            }
-
-            if ((await productService.ExistsAsync(model.Id)) == false)
-            {
-                TempData[ErrorMessage] = ProductDoesNotExist;
-                return RedirectToAction(nameof(All));
-            }
-
-            if ((await productService.HasUserWithIdAsync(model.Id, User.Id())) == false && User.IsInRole(AdminRoleName) == false)
-            {
-                TempData[ErrorMessage] = ProductDoesNotBelongToUser;
-
-                return RedirectToAction(nameof(All));
-            }
 
             if (information != model.GetInformation())
             {
@@ -279,7 +242,7 @@ namespace MedShop.Controllers
                 return RedirectToAction(nameof(All));
             }
 
-            await productService.DeleteAsync(model.Id);
+            await productService.DeleteAsync(id);
 
             TempData[SuccessMessage] = ProductDeleted;
 

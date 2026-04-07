@@ -141,10 +141,20 @@
                                        class="flex-1 flex justify-center items-center gap-2 py-4 bg-amber-600/10 text-amber-500 border border-amber-600/30 hover:bg-amber-600 hover:text-white rounded-2xl font-bold transition-all active:scale-95">
                                     <i class="bi bi-pencil-square"></i> Edit Listing
                                 </a>
-                                <a asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
-                                       class="flex-1 flex justify-center items-center gap-2 py-4 bg-red-600/10 text-red-400 border border-red-600/30 hover:bg-red-600 hover:text-white rounded-2xl font-bold transition-all active:scale-95">
+                                
+                                <button type="button"
+                                        onclick="openConfirmModal({
+                                    title: 'Delete Listing' ,
+                                    message: 'Are you sure you want to permanently delete <span class=\' text-white font-bold\'>
+                                    @Html.Raw(Model.ProductName.Replace("'", "\\'"))</span>?',
+                                    actionUrl: '@Url.Action("Delete", "Product", new { id = Model.Id, information = Model.GetInformation() })',
+                                    theme: 'danger',
+                                    icon: 'bi-trash-fill',
+                                    confirmText: 'Yes, Delete'
+                                    })"
+                                        class="flex-1 flex justify-center items-center gap-2 py-4 bg-red-600/10 text-red-400 border border-red-600/30 hover:bg-red-600 hover:text-white rounded-2xl font-bold transition-all active:scale-95">
                                     <i class="bi bi-trash"></i> Delete
-                                </a>
+                                </button>
                             </div>
                         }
                     </div>

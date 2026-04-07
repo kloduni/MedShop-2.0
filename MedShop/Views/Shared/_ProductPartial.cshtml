@@ -157,11 +157,13 @@
                             <i class="bi bi-pencil-square"></i> Edit
                         </a>
                         
-                        <a onclick="return confirm('Are you sure?');"
-                               asp-area="" asp-controller="Product" asp-action="Delete" asp-route-id="@Model.Id" asp-route-information="@Model.GetInformation()"
-                               class="flex-1 flex justify-center items-center gap-2 py-2.5 bg-red-500/10 hover:bg-red-600 hover:text-white text-red-400 font-bold rounded-xl border border-red-500/20 text-xs uppercase tracking-widest transition-all">
+                        <button type="button"
+                                data-product-name="@Model.ProductName"
+                                data-action-url="@Url.Action("Delete", "Product", new { id = Model.Id, information = Model.GetInformation() })"
+                                onclick="triggerDeleteModal(this)"
+                                class="flex-1 flex justify-center items-center gap-2 py-2.5 bg-red-500/10 hover:bg-red-600 hover:text-white text-red-400 font-bold rounded-xl border border-red-500/20 text-xs uppercase tracking-widest transition-all">
                             <i class="bi bi-trash"></i> Delete
-                        </a>
+                        </button>
                     </div>
                 </div>
             }

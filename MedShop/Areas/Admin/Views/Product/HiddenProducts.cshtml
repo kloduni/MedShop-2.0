@@ -1,0 +1,228 @@
+﻿@model AllProductsQueryModel
+
+@{
+    ViewData["Title"] = "Hidden Products";
+
+    var previousPage = Model.CurrentPage - 1;
+    if (previousPage < 1)
+    {
+        previousPage = 1;
+    }
+    var maxPage = Math.Ceiling((double)Model.TotalProductsCount / Model.ProductsPerPage);
+    var shouldButtonBeDisabled = Model.CurrentPage == (int)maxPage || !Model.Products.Any();
+}
+
+<div class="py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div>
+            <h1 class="text-4xl font-black text-white tracking-tight flex items-center gap-3">
+                <i class="bi bi-eye-slash-fill text-purple-500"></i> @ViewData["Title"]
+            </h1>
+            <p class="mt-2 text-lg text-slate-400">Manage listings currently hidden from the storefront.</p>
+        </div>
+    </div>
+
+    <form method="get" class="mb-10 bg-slate-900 border border-slate-700/50 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-blue-500 opacity-50"></div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end relative z-10">
+            <div>
+                <label asp-for="SearchTerm" class="block text-sm font-bold text-slate-300 mb-2">Search</label>
+                <div class="relative group">
+                    <i class="bi bi-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-purple-500 transition-colors"></i>
+                    <input asp-for="SearchTerm" placeholder="Search hidden products..." class="w-full bg-slate-800 border border-slate-600 hover:border-purple-500/50 hover:bg-slate-700/50 text-white rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 py-3 pl-11 pr-4 transition-all outline-none" />
+                </div>
+            </div>
+
+            <div>
+                <label asp-for="Category" class="block text-sm font-bold text-slate-300 mb-2">Category</label>
+                <div class="relative">
+                    <select asp-for="Category" class="w-full bg-slate-800 border border-slate-600 hover:border-purple-500/50 hover:bg-slate-700/50 text-white rounded-xl appearance-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 py-3 px-4 pr-10 transition-all outline-none cursor-pointer">
+                        <option value="">All Categories</option>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <option value="@category">@category</option>
+                        }
+                    </select>
+                    <i class="bi bi-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                </div>
+            </div>
+
+            <div>
+                <label asp-for="Sorting" class="block text-sm font-bold text-slate-300 mb-2">Sort By</label>
+                <div class="relative">
+                    <select asp-for="Sorting" class="w-full bg-slate-800 border border-slate-600 hover:border-purple-500/50 hover:bg-slate-700/50 text-white rounded-xl appearance-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 py-3 px-4 pr-10 transition-all outline-none cursor-pointer">
+                        <option value="0">Newest</option>
+                        <option value="1">Price</option>
+                    </select>
+                    <i class="bi bi-chevron-down absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none"></i>
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="w-full flex justify-center items-center gap-2 py-3 bg-slate-800 text-white font-bold rounded-xl border border-slate-600 hover:bg-slate-700 hover:border-purple-500/50 transition-all active:scale-95">
+                    <i class="bi bi-funnel-fill"></i> Filter Results
+                </button>
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Products.Any())
+    {
+        <div class="flex flex-col items-center justify-center py-20 px-4 bg-slate-900 rounded-2xl border border-slate-700/50 shadow-xl">
+            <div class="h-24 w-24 bg-slate-800 rounded-full flex items-center justify-center mb-6 shadow-inner border border-slate-700">
+                <i class="bi bi-eye text-5xl text-slate-500"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">No Hidden Products</h2>
+            <p class="text-slate-400 text-center max-w-md text-lg">
+                All active listings are currently visible on the storefront.
+            </p>
+        </div>
+    }
+    else
+    {
+        <div class="bg-slate-900 rounded-2xl border border-slate-700/50 shadow-xl overflow-hidden mb-8">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-800">
+                    <thead class="bg-slate-950/50">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">Product</th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">Category</th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">Price</th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-slate-400 uppercase tracking-widest">Seller</th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-slate-400 uppercase tracking-widest">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800 bg-transparent">
+                        @foreach (var product in Model.Products)
+                        {
+                            <tr class="hover:bg-slate-800/50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-12 w-12 bg-slate-800 rounded-lg p-1 border border-slate-700">
+                                            <img class="h-full w-full object-contain rounded-md" src="@product.ImageUrl" alt="@product.ProductName">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-bold text-white">@product.ProductName</div>
+                                            <div class="text-xs text-slate-500 mt-1">ID: @product.Id</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-3 py-1 bg-blue-600/10 text-blue-400 text-[10px] font-black uppercase tracking-[0.1em] rounded-md border border-blue-500/20">
+                                        @product.Category
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-baseline text-emerald-400">
+                                        <span class="text-sm font-bold mr-1 opacity-80">€</span>
+                                        <span class="text-lg font-black tracking-tight">@product.Price.ToString("0.00")</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-slate-300 flex items-center gap-2">
+                                        <i class="bi bi-person-badge text-slate-500"></i> @product.Seller
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <button type="button"
+                                            onclick="openUnhideModal(@product.Id, '@Html.Raw(product.ProductName.Replace("'", "\\'"))')"
+                                            class="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 hover:bg-purple-600 text-purple-400 hover:text-white border border-purple-500/20 text-xs font-bold uppercase tracking-widest rounded-xl transition-all active:scale-95">
+                                        <i class="bi bi-eye-fill"></i> Unhide
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-between items-center border-t border-slate-800 pt-8 gap-4">
+            <a asp-action="HiddenProducts"
+                   asp-route-currentPage="@previousPage"
+                   asp-route-category="@Model.Category"
+                   asp-route-searchTerm="@Model.SearchTerm"
+                   asp-route-sorting="@((int)Model.Sorting)"
+                   class="inline-flex justify-center items-center w-full sm:w-auto px-6 py-3 border border-slate-600 text-sm font-bold rounded-xl text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white hover:-translate-y-1 hover:shadow-lg transition-all @(Model.CurrentPage == 1 ? "opacity-40 pointer-events-none" : "")">
+                <i class="bi bi-chevron-left mr-2"></i> Previous
+            </a>
+
+            <div class="px-6 py-2 bg-slate-900 border border-slate-700 rounded-lg text-sm text-slate-400 font-medium">
+                Page <span class="text-white font-bold mx-1">@Model.CurrentPage</span> of <span class="text-white font-bold mx-1">@(maxPage == 0 ? 1 : maxPage)</span>
+            </div>
+
+            <a asp-action="HiddenProducts"
+                   asp-route-currentPage="@(Model.CurrentPage + 1)"
+                   asp-route-category="@Model.Category"
+                   asp-route-searchTerm="@Model.SearchTerm"
+                   asp-route-sorting="@((int)Model.Sorting)"
+                   class="inline-flex justify-center items-center w-full sm:w-auto px-6 py-3 border border-slate-600 text-sm font-bold rounded-xl text-slate-300 bg-slate-800 hover:bg-slate-700 hover:text-white hover:-translate-y-1 hover:shadow-lg transition-all @(shouldButtonBeDisabled ? "opacity-40 pointer-events-none" : "")">
+                Next <i class="bi bi-chevron-right ml-2"></i>
+            </a>
+        </div>
+    }
+</div>
+
+<div id="unhideModal" class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
+    <div id="unhideModalContent" class="bg-slate-900 border border-slate-700/50 rounded-[2rem] shadow-2xl p-8 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300">
+        <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-6 border border-purple-500/30">
+            <i class="bi bi-eye-fill text-3xl text-purple-400"></i>
+        </div>
+        
+        <h3 class="text-2xl font-black text-white text-center mb-2">Restore Visibility</h3>
+        <p class="text-slate-400 text-center mb-6 leading-relaxed">
+            Are you sure you want to make <span id="unhideProductName" class="text-white font-bold block mt-1"></span> visible on the storefront again?
+        </p>
+
+        <form id="unhideForm" method="post" asp-action="Unhide">
+            <input type="hidden" id="unhideProductId" name="id" value="" />
+            
+            <div class="flex gap-4">
+                <button type="button" onclick="closeUnhideModal()" class="flex-1 px-6 py-3 bg-slate-800 text-white font-bold rounded-xl border border-slate-700 hover:bg-slate-700 transition-all active:scale-95">
+                    Cancel
+                </button>
+                <button type="submit" class="flex-1 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl shadow-[0_4px_15px_rgba(168,85,247,0.3)] transition-all active:scale-95">
+                    Yes, Unhide
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const modal = document.getElementById('unhideModal');
+        const modalContent = document.getElementById('unhideModalContent');
+        const productIdInput = document.getElementById('unhideProductId');
+        const productNameSpan = document.getElementById('unhideProductName');
+
+        function openUnhideModal(id, name) {
+            productIdInput.value = id;
+            productNameSpan.textContent = name;
+            
+            modal.classList.remove('pointer-events-none');
+            
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            });
+        }
+
+        function closeUnhideModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('pointer-events-none');
+                productIdInput.value = '';
+            }, 300);
+        }
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeUnhideModal();
+            }
+        });
+    </script>
+}
